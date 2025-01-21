@@ -20,7 +20,7 @@ cloudinary.config({
 const storage = multer.diskStorage({});
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB
+    limits: { fileSize: 5 * 1024 * 1024 }, // Limiting file size to 5MB
     fileFilter: (req, file, cb) => {
         if (['image/jpeg', 'image/png', 'application/pdf'].includes(file.mimetype)) {
             cb(null, true);

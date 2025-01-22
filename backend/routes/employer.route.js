@@ -101,7 +101,7 @@ router.post('/login', async (req, res) => {
     try {
         let employer = await Employer.findOne({ email });
         if (!employer) {
-            return res.status(400).json({ msg: 'Invalid credentials' });
+            return res.status(400).json({ msg: 'User Not found' });
         }
 
         const isMatch = await bcrypt.compare(password, employer.password);

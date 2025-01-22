@@ -9,7 +9,7 @@ const router = express.Router();
 
 // Signup route
 router.post('/signup', async (req, res) => {
-    const { name, phone, email, password, website,joinType } = req.body;
+    const { name, phone, email, password, website,joinType, } = req.body;
 
     if (!name) {
         return res.status(400).json({ msg: 'Name is required' });
@@ -23,17 +23,26 @@ router.post('/signup', async (req, res) => {
     if (!password) {
         return res.status(400).json({ msg: 'Password is required' });
     }
+
     if (!joinType) {
         return res.status(400).json({ msg: 'Join type is required' });
     }
     if (!website) {
         return res.status(400).json({ msg: 'Website is required' });
     }
+    const urlPattern = new RegExp('^(https?:\\/\\/)?(www\\.)?' + // protocol and www
+        '(([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}\\.com|\\.edu|\\.org'  // domain name with .com, .edu, .org
+    )
+
+    if (!urlPattern.test(website)) {
+        return res.status(400).json({ msg: 'Invalid website URL' });
+    }
+    
 
     try {
         let employer = await Employer.findOne({ email });
         if (employer) {
-            return res.status(400).json({ msg: 'Employer already exists' });
+            return res.status(400).json({ msg: 'Email already exists' });
         }
 
         employer = new Employer({

@@ -48,11 +48,21 @@ const uploadToCloudinary = (filePath, folder) => {
 router.post('/signup', upload, async (req, res) => {
     try {
         const { firstName, lastName, email, password, experienceLevel, jobType, phoneNumber } = req.body;
+        // const match = password.compare(confirmPassword);
 
+        // if(!match)
+        // {
+        //     return res.status(400).json({ msg: 'Password mismatch' });
+        // }
         // Validate fields
         if (!firstName || !lastName || !email || !password || !experienceLevel || !jobType || !phoneNumber) {
             return res.status(400).json({ msg: 'All fields are required' });
         }
+
+        // if (password !== confirmPassword) {
+        //     return res.status(400).json({ msg: 'Password mismatch' });
+        // }
+        
 
         // Validate file uploads
         if (!req.files || !req.files['profilePhoto'] || !req.files['resume']) {
@@ -69,7 +79,7 @@ router.post('/signup', upload, async (req, res) => {
         // Check if candidate already exists
         let candidate = await Candidate.findOne({ email });
         if (candidate) {
-            return res.status(400).json({ msg: 'Candidate already exists' });
+            return res.status(400).json({ msg: 'Email already exists' });
         }
 
         // Create new candidate
@@ -119,7 +129,7 @@ router.post('/login', async (req, res) => {
     try {
         let candidate = await Candidate.findOne({ email });
         if (!candidate) {
-            return res.status(400).json({ msg: 'Invalid credentials' });
+            return res.status(400).json({ msg: 'User not found' });
         }
 
         const isMatch = await bcrypt.compare(password, candidate.password);

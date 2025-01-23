@@ -4,11 +4,13 @@ import Footer from "./components/Footer";
 import HomePage from "./pages/HomePage";
 import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   const location = useLocation();
   const noPaths = ["/signup", "/login"];
   return (
+    <AuthProvider>
     <div className="flex flex-col min-h-screen">
       {/* Conditionally render Header */}
       {!noPaths.includes(location.pathname) && <Header />}
@@ -21,6 +23,7 @@ function App() {
       </main>
       {!noPaths.includes(location.pathname) && <Footer />}
     </div>
+    </AuthProvider>
   );
 } 
 

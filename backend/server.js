@@ -15,8 +15,10 @@ app.use(cors(
         origin: process.env.VERCEL_URL,
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
         credentials: true,
+        allowedHeaders: ['Content-Type', 'Authorization'],
     }
 ));
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 app.use('/api/v1/candidates', candidateRoutes);

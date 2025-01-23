@@ -12,9 +12,9 @@ const port = process.env.PORT || 8181;
 
 app.use(cors(
     {
-        // origin: process.env.VERCEL_URL,
-        // methods: ['GET', 'POST', 'PUT', 'DELETE'],
-        // credentials: true,
+        origin: process.env.VERCEL_URL,
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        credentials: true,
     }
 ));
 app.use(cors())

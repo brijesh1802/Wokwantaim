@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 function LoginForm({ userType }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -8,6 +9,7 @@ function LoginForm({ userType }) {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const {login}=useContext(AuthContext)
 
   useEffect(() => {
     // Clear the form when userType changes
@@ -52,6 +54,7 @@ function LoginForm({ userType }) {
 
         setTimeout(() => {
           setPopup({ visible: false, message: "", isError: false });
+          login(userType)
           navigate("/");
         }, 1500);
       } else {

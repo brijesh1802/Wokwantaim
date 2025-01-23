@@ -48,20 +48,58 @@ const uploadToCloudinary = (filePath, folder) => {
 router.post('/signup', upload, async (req, res) => {
     try {
         const { firstName, lastName, email, password, experienceLevel, jobType, phoneNumber } = req.body;
-        // const match = password.compare(confirmPassword);
 
-        // if(!match)
-        // {
-        //     return res.status(400).json({ msg: 'Password mismatch' });
-        // }
-        // Validate fields
-        if (!firstName || !lastName || !email || !password || !experienceLevel || !jobType || !phoneNumber) {
-            return res.status(400).json({ msg: 'All fields are required' });
+        // Validate required fields
+        if (!firstName) {
+            return res.status(400).json({ msg: 'First name is required' });
+        }
+        if (!lastName) {
+            return res.status(400).json({ msg: 'Last name is required' });
+        }
+        if (!email) {
+            return res.status(400).json({ msg: 'Email is required' });
+        }
+        if (!password) {
+            return res.status(400).json({ msg: 'Password is required' });
+        }
+        if (!experienceLevel) {
+            return res.status(400).json({ msg: 'Experience level is required' });
+        }
+        if (!jobType) {
+            return res.status(400).json({ msg: 'Job type is required' });
+        }
+        if (!phoneNumber) {
+            return res.status(400).json({ msg: 'Phone number is required' });
         }
 
-        // if (password !== confirmPassword) {
-        //     return res.status(400).json({ msg: 'Password mismatch' });
-        // }
+        if (firstName.length < 4) {
+            return res.status(400).json({ msg: 'First name must be at least 4 characters' });
+        }
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.(com|net|org|edu)$/;
+        if (!emailPattern.test(email)) {
+        return res.status(400).json({ msg: 'Invalid email format' });
+        }
+
+        if (phoneNumber.length !== 10) {
+            return res.status(400).json({ msg: 'Phone number must be exactly 10 digits' });
+        }
+        if (phoneNumber.startsWith('0')) {
+            return res.status(400).json({ msg: 'Phone number should not start with 0' });
+        }
+        const phonePattern = /^[1-9]\d{9}$/;
+        if (!phonePattern.test(phoneNumber)) {
+            return res.status(400).json({ msg: 'Invalid phone number format' });
+        }
+
+        if (password.length < 8) {
+            return res.status(400).json({ msg: 'Password must be at least 8 characters' });
+        }
+
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!passwordPattern.test(password)) {
+            return res.status(400).json({ msg: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character' });
+        }
         
 
         // Validate file uploads
@@ -125,6 +163,12 @@ router.post('/login', async (req, res) => {
     if (!email || !password) {
         return res.status(400).json({ msg: 'Please provide email and password' });
     }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.(com|net|org|edu)$/;
+        if (!emailPattern.test(email)) {
+        return res.status(400).json({ msg: 'Invalid email format' });
+        }
+
 
     try {
         let candidate = await Candidate.findOne({ email });

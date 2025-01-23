@@ -7,8 +7,6 @@ import LoginPage from "./pages/LoginPage";
 
 function App() {
   const location = useLocation();
-
-  // Paths where the Header should not be displayed
   const noPaths = ["/signup", "/login"];
   return (
     <div className="flex flex-col min-h-screen">
@@ -24,6 +22,6 @@ function App() {
       {!noPaths.includes(location.pathname) && <Footer />}
     </div>
   );
-}
+} 
 
 export default App;

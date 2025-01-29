@@ -13,14 +13,14 @@ function Header() {
     logout()
   }
   return (
-    <header className="bg-white shadow-sm flex">
+    <header className="flex bg-white shadow-sm">
       <div className="container flex items-center justify-between px-4 py-4 mx-auto">
         <div className="flex items-center space-x-6">
         <img src={Logo} alt="Logo" className="h-8" />
           <Link to="/" className="text-xl font-medium text-orange-500">
             Home
           </Link>
-          {userType === "candidate" || userType === "undefined" ? (
+          {userType === "candidate" || userType === null ? (
             <Link to="/joblist" state={{userType:userType}} className="text-gray-600 hover:text-orange-500">
               Job List
             </Link>

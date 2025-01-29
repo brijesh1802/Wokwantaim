@@ -139,6 +139,7 @@ function SignupForm({ userType }) {
         message: "Signup successful!",
         isError: false,
       }));
+
       setTimeout(() => {
         setPopup({ visible: false, message: "", isError: false });
         navigate("/login");

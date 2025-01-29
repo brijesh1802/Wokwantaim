@@ -6,25 +6,26 @@ import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
 import { AuthProvider } from "./context/AuthContext";
 
+
 function App() {
   const location = useLocation();
-  const noPaths = ["/signup", "/login"];
+  const noPaths = ["/siSSgnup", "/login"];
   return (
     <AuthProvider>
-    <div className="flex flex-col min-h-screen">
-      {/* Conditionally render Header */}
-      {!noPaths.includes(location.pathname) && <Header />}
-      <main className="flex-grow">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/login" element={<LoginPage />} />
-        </Routes>
-      </main>
-      {!noPaths.includes(location.pathname) && <Footer />}
-    </div>
+      <div className="flex flex-col min-h-screen">
+        {/* Conditionally render Header */}
+        {!noPaths.includes(location.pathname) && <Header />}
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/login" element={<LoginPage />} />
+          </Routes>
+        </main>
+        {!noPaths.includes(location.pathname) && <Footer />}
+      </div>
     </AuthProvider>
   );
-} 
+}
 
 export default App;

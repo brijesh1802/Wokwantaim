@@ -7,79 +7,80 @@ import { useContext } from "react";
 import Logo from "../assets/Logo.png";
 
 function Header() {
-  const { userType, logout } = useContext(AuthContext);
-  const [nav, setNav] = useState(false);
-  const [username, setUserName] = useState("");
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Initialize with the screen size
-
-  // Effect to handle window resize and set the screen size state
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth >= 768) {
-        setNav(false); // Close mobile menu on switching to desktop
-      }
+    const { userType, logout } = useContext(AuthContext);
+    const [nav, setNav] = useState(false);
+    const [username, setUserName] = useState("");
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Initialize with the screen size
+  
+    // Effect to handle window resize and set the screen size state
+    useEffect(() => {
+      const handleResize = () => {
+        setIsMobile(window.innerWidth < 768);
+        if (window.innerWidth >= 768) {
+          setNav(false); // Close mobile menu on switching to desktop
+        }
+      };
+  
+      // Listen to window resize
+      window.addEventListener("resize", handleResize);
+  
+      return () => window.removeEventListener("resize", handleResize); // Cleanup on unmount
+    }, []);
+  
+    const handleLogout = () => {
+      logout();
+      setUserName(""); // Clear the username state
+      setNav(false); // Close the menu after logging out
     };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const handleLogout = () => {
-    logout();
-    username = "";
-    setNav(false); // Close the menu after logging out
-  };
-
-  useEffect(() => {
-    const fetchUsername = async () => {
-      try {
-        const token = localStorage.getItem("authToken"); // Adjust this based on your storage method
-
-        if (!token) {
-          console.log("No token found, please log in.");
-          return;
+  
+    useEffect(() => {
+      const fetchUsername = async () => {
+        try {
+          const token = localStorage.getItem("authToken"); // Adjust this based on your storage method
+  
+          if (!token) {
+            console.log("No token found, please log in.");
+            return;
+          }
+  
+          // Dynamically choose the API URL based on userType
+          const url =
+            userType === "candidate"
+              ? `${import.meta.env.VITE_BASE_URL}/api/v1/candidates/profile`
+              : `${import.meta.env.VITE_BASE_URL}/api/v1/employers/profile`;
+  
+          const response = await fetch(url, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`, // Include token here
+            },
+          });
+  
+          if (!response.ok) {
+            throw new Error("Failed to fetch data");
+          }
+  
+          const data = await response.json();
+          if (userType === "candidate") {
+            setUserName(`${data.fullName.firstName} ${data.fullName.lastName}`); // Set full name to state
+          } else {
+            setUserName(`${data.name}`); // Set full name to state
+          }
+          console.log("Username fetched successfully:", username);
+        } catch (error) {
+          console.error("Error fetching username:", error);
         }
-
-        const url =
-          userType === "candidate"
-            ? `${import.meta.env.VITE_BASE_URL}/api/v1/candidates/profile`
-            : `${import.meta.env.VITE_BASE_URL}/api/v1/employers/profile`;
-
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Include token here
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-
-        const data = await response.json();
-        if (userType == "candidate") {
-          setUserName(`${data.fullName.firstName} ${data.fullName.lastName}`); // Set full name to state
-          console.log(
-            "Full Name:",
-            `${data.fullName.firstName} ${data.fullName.lastName}`
-          ); // Log full name in the console
-        } else {
-          setUserName(`${data.name}`); // Set full name to state
-          console.log("Full Name:", `${data.name}`);
-        }
-      } catch (error) {
-        console.error("Error fetching username:", error);
+      };
+  
+      if (userType) {
+        fetchUsername(); // Fetch username only if there's a userType
       }
-    };
-
-    fetchUsername();
-  }, []);
+    }, [userType]);
+  
 
   return (
-    <header className="bg-white shadow-sm w-full fixed z-50">
+    <header className="fixed z-50 w-full bg-white shadow-sm">
       <div className="flex items-center justify-between px-4 py-4">
         {/* Logo */}
         <div>
@@ -89,7 +90,7 @@ function Header() {
         {/* Hamburger Icon for Mobile */}
         {isMobile && (
           <div
-            className="cursor-pointer text-gray-500 md:hidden"
+            className="text-gray-500 cursor-pointer md:hidden"
             onClick={() => setNav(!nav)}
           >
             {nav ? <FaTimes size={25} /> : <FaBars size={25} />}
@@ -123,7 +124,7 @@ function Header() {
             </div>
 
             <div className="flex items-center space-x-4">
-              <span className="text-gray-600">{username}</span>
+              <span className="text-black">{username}</span>
               {userType === "candidate" || userType === "employer" ? (
                 <button className="px-4 py-2 text-white transition-colors bg-orange-500 rounded-md hover:bg-orange-600">
                   <Link
@@ -169,7 +170,7 @@ function Header() {
 
       {/* Mobile Menu */}
       {nav && isMobile && (
-        <ul className="absolute top-16 left-0 w-full bg-white flex flex-col items-center space-y-4 py-4 shadow-md">
+        <ul className="absolute left-0 flex flex-col items-center w-full py-4 space-y-4 bg-white shadow-md top-16">
           <li>
             <Link
               to="/"
@@ -268,7 +269,7 @@ function Header() {
         </ul>
       )}
     </header>
-  );
+  )
 }
 
 export default Header;

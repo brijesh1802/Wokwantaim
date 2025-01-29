@@ -18,7 +18,7 @@ app.use(cors(
         allowedHeaders: ['Content-Type', 'Authorization'],
     }
 ));
-app.use(cors({ origin: '*' }));
+// app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 app.use('/api/v1/candidates', candidateRoutes);

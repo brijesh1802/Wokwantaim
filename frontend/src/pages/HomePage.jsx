@@ -11,7 +11,7 @@ import {
 function HomePage() {
   return (
     <div className="bg-gray-50">
-      {/* Hero Section */}
+      /* Hero Section */
       <section className="py-20 text-white bg-gradient-to-r from-orange-500 to-orange-600">
         <div className="container px-4 mx-auto">
           <div className="max-w-3xl mx-auto text-center">
@@ -21,21 +21,21 @@ function HomePage() {
             <p className="mb-8 text-xl">
               Connecting talented professionals with amazing opportunities
             </p>
-            <div className="flex items-center p-2 bg-white rounded-lg">
+            <div className="flex items-center p-1 bg-white rounded-lg">
               <input
                 type="text"
                 placeholder="Job title, keywords, or company"
                 className="flex-grow px-4 py-2 text-gray-800 focus:outline-none"
               />
-              <button className="flex items-center px-6 py-2 text-white transition-colors bg-orange-500 rounded-md hover:bg-orange-600">
-                <Search className="w-5 h-5 mr-2" />
-                Search
+              <button className="flex items-center px-4 py-2 text-white transition-colors bg-orange-500 rounded-md hover:bg-orange-600 max-w-xs sm:max-w-none m-1">
+                <Search className="w-5 h-5 mr-2 hidden sm:block" />
+                <span className="hidden sm:block">Search</span>
+                <Search className="w-5 h-5 sm:hidden" />
               </button>
             </div>
           </div>
         </div>
       </section>
-
       {/* Featured Categories */}
       <section className="py-16">
         <div className="container px-4 mx-auto">
@@ -97,7 +97,6 @@ function HomePage() {
           </div>
         </div>
       </section>
-
       {/* Statistics Section */}
       <section className="py-16 text-white bg-orange-500">
         <div className="container px-4 mx-auto">
@@ -128,7 +127,6 @@ function HomePage() {
           </div>
         </div>
       </section>
-
       {/* How It Works */}
       <section className="py-16">
         <div className="container px-4 mx-auto">
@@ -165,7 +163,6 @@ function HomePage() {
           </div>
         </div>
       </section>
-
       {/* CTA Section */}
       <section className="py-16 bg-gray-100">
         <div className="container px-4 mx-auto text-center">

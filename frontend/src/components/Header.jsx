@@ -4,6 +4,7 @@ import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
 import Logo from "../assets/Logo.png";
 
+
 function Header() {
   const {userType}=useContext(AuthContext);
   console.log('Header : ',userType);
@@ -20,8 +21,8 @@ function Header() {
           <Link to="/" className="text-xl font-medium text-orange-500">
             Home
           </Link>
-          {userType === "candidate" || userType === "undefined" ? (
-            <Link to="/joblist" state={{userType:userType}} className="text-gray-600 hover:text-orange-500">
+          {userType === "candidate" || userType === null ? (
+            <Link to="/joblist"className="text-gray-600 hover:text-orange-500">
               Job List
             </Link>
           ) : (

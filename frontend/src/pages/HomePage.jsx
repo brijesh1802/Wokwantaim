@@ -1,7 +1,12 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Search, Briefcase, Users, Building2, TrendingUp, BarChart2 } from 'lucide-react'
+import { useContext } from 'react'
+import { AuthContext } from "../context/AuthContext";
+
 
 function HomePage() {
+
+  const {userType}=useContext(AuthContext);
   return (
     <div className="bg-gray-50">
       {/* Hero Section */}
@@ -43,7 +48,10 @@ function HomePage() {
             <div key={index} className="p-6 transition-shadow bg-white rounded-lg shadow-md hover:shadow-lg">
               <div className="mb-4 text-orange-500">{category.icon}</div>
               <h3 className="mb-2 text-xl font-semibold">{category.title}</h3>
-              <p className="text-gray-600">{category.count} jobs available</p>
+              <p className="text-gray-600 mb-2">{category.count} jobs available</p>
+              {userType==='candidate' || userType===null?(
+             <Link to ='/joblist' className='text-orange-400 hover:text-orange-600'>View Jobs!</Link>)
+                  :(<Link to ='/addjob' className='text-orange-400 hover:text-orange-600'>Add Jobs!</Link>)}
             </div>
           ))}
             </div>

@@ -166,7 +166,9 @@ router.post('/login', async (req, res) => {
 // Profile route
 router.get('/profile', authMiddleware, async (req, res) => {
     try {
-        const employer = await Employer.findById(req.user.id).select('-password');
+        const token = req.header('Authorization').replace('Bearer ', '');
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const employer = await Employer.findById(decoded.employer.id).select('-password');
         if (!employer) {
             return res.status(404).json({ msg: 'Employer not found' });
         }

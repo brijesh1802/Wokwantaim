@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaBars, FaTimes } from "react-icons/fa";
 import { Facebook, Twitter, Linkedin } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
@@ -23,7 +22,7 @@ function Header() {
 
   const handleLogout = () => {
     logout();
-    username = "";
+    setUserName("");
     setNav(false); // Close the menu after logging out
   };
 
@@ -94,7 +93,7 @@ function Header() {
         <div className="flex items-center ">
           <div className="flex items-center">
             {userType === "candidate" || userType === "employer" ? (
-              <Link onClick={handleOnCLick}
+              <Link onClick={handleLogout}
                 className="px-4 py-2 text-white transition-colors bg-orange-500 rounded-md hover:bg-orange-600"
               >
                 Log Out

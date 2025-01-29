@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { FaBars, FaTimes } from "react-icons/fa";
 import { Facebook, Twitter, Linkedin } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
@@ -13,16 +14,21 @@ function Header() {
 
   // Effect to handle window resize and set the screen size state
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      if (window.innerWidth >= 768) {
+        setNav(false); // Close mobile menu on switching to desktop
+      }
+    };
+
     window.addEventListener("resize", handleResize);
 
-    // Cleanup event listener on unmount
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const handleLogout = () => {
     logout();
-    setUserName("");
+    username = "";
     setNav(false); // Close the menu after logging out
   };
 

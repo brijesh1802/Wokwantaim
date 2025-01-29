@@ -213,14 +213,20 @@ router.post('/login', async (req, res) => {
 // Profile route
 router.get('/profile', authMiddleware, async (req, res) => {
     try {
-        const candidate = await Candidate.findById(req.user.id).select('-password');
+        // Get the logged-in user's ID from the JWT
+        const userId = req.user.id;
+
+        // Find the candidate by userId
+        const candidate = await Candidate.findById(userId);
+
+        // If candidate not found, return 404 error
         if (!candidate) {
             return res.status(404).json({ msg: 'Candidate not found' });
         }
         res.json(candidate);
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ msg: 'Server error' });
+        res.status(500).json({ msg: 'Server error while updating profile' });
     }
 });
 

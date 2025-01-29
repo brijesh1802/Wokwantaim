@@ -166,16 +166,20 @@ router.post('/login', async (req, res) => {
 // Profile route
 router.get('/profile', authMiddleware, async (req, res) => {
     try {
-        const token = req.header('Authorization').replace('Bearer ', '');
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const employer = await Employer.findById(decoded.employer.id).select('-password');
+        // Get the logged-in user's ID from the JWT
+        const userId = req.user.id;
+
+        // Find the candidate by userId
+        const employer = await Employer.findById(userId);
+
+        // If candidate not found, return 404 error
         if (!employer) {
             return res.status(404).json({ msg: 'Employer not found' });
         }
         res.json(employer);
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ msg: 'Server error' });
+        res.status(500).json({ msg: 'Server error while updating profile' });
     }
 });
 

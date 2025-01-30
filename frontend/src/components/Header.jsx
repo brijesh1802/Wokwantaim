@@ -6,6 +6,7 @@ import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
 import Logo from "../assets/Logo.png";
 
+
 function Header() {
     const { userType, logout } = useContext(AuthContext);
     const [nav, setNav] = useState(false);
@@ -80,11 +81,22 @@ function Header() {
   
 
   return (
-    <header className="fixed z-50 w-full bg-white shadow-sm">
-      <div className="flex items-center justify-between px-4 py-4">
-        {/* Logo */}
-        <div>
-          <img src={Logo} alt="Logo" className="h-8" />
+    <header className="bg-white shadow-sm flex">
+      <div className="container flex items-center justify-between px-4 py-4 mx-auto">
+        <div className="flex items-center space-x-6">
+        <img src={Logo} alt="Logo" className="h-8" />
+          <Link to="/" className="text-xl font-medium text-orange-500">
+            Home
+          </Link>
+          {userType === "candidate" || userType === null ? (
+            <Link to="/joblist"className="text-gray-600 hover:text-orange-500">
+              Job List
+            </Link>
+          ) : (
+            <Link to="/addjobs" className="text-gray-600 hover:text-orange-500">
+              Add Jobs
+            </Link>
+          )}
         </div>
 
         {/* Hamburger Icon for Mobile */}

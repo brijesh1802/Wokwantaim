@@ -10,7 +10,7 @@ import JobList from "./pages/JobList";
 
 function App() {
   const location = useLocation();
-  const noPaths = ["/siSSgnup", "/login"];
+  const noPaths = ["/signup", "/login"];
   return (
     <AuthProvider>
       <div className="flex flex-col min-h-screen">
@@ -21,7 +21,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/login" element={<LoginPage />} />
-              <Route path='/joblist' element={<JobList/>}/>
+            <Route path='/joblist' element={<JobList/>}/>
           </Routes>
         </main>
         {!noPaths.includes(location.pathname) && <Footer />}

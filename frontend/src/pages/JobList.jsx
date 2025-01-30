@@ -61,7 +61,7 @@ const JobList = () => {
       {/*Job search*/}
       <div className="gap-4">
         <div
-          className="mt-6 bg-banner lg:h-72 bg-cover bg-center min-h-52 p-12 flex flex-col items-center justify-center shadow-lg relative"
+          className="relative flex flex-col items-center justify-center p-12 mt-6 bg-center bg-cover shadow-lg bg-banner lg:h-72 min-h-52"
           style={{
             backgroundImage: `url(${banner})`,
             backgroundPosition: "center",
@@ -74,25 +74,25 @@ const JobList = () => {
             style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
           ></div>
 
-          <div className="relative z-10">
-            <p className="font-bold text-4xl text-white">Job List</p>
-            <div className=" mt-4 flex gap-2">
+          <div className="relative">
+            <p className="text-4xl font-bold text-white">Job List</p>
+            <div className="flex gap-2 mt-4 ">
               <Link to="/" className="flex gap-1 text-white">
                 <House size={20} />
                 Home
               </Link>
               <span className="text-xl text-white">/</span>
-              <p className="text-orange-500 font-semibold">Job List</p>
+              <p className="font-semibold text-orange-500">Job List</p>
             </div>
           </div>
 
           {/*Input*/}
         </div>
         <div>
-          <div className="bg-gray-100 my-10 mx-7 rounded-md lg:-mt-20 flex flex-col px-5 py-5 justify-center items-center relative z-10">
-            <div className="px-10 text-lg py-2 w-full flex flex-wrap mx-5 md:flex-row flex-col justify-evenly gap-3">
-              <input className=" p-3 md:w-2/4" placeholder="Job Title"></input>
-              <select className="p-3 cursor-pointer flex-1">
+          <div className="relative flex flex-col items-center justify-center px-5 py-5 my-10 bg-gray-100 rounded-md mx-7 lg:-mt-20">
+            <div className="flex flex-col flex-wrap w-full gap-3 px-10 py-2 mx-5 text-lg md:flex-row justify-evenly">
+              <input className="p-3 md:w-2/4" placeholder="Job Title"></input>
+              <select className="flex-1 p-3 cursor-pointer">
                 <option value="" disabled>
                   Select Country
                 </option>
@@ -102,7 +102,7 @@ const JobList = () => {
                   </option>
                 ))}
               </select>
-              <select className="p-3 flex-1">
+              <select className="flex-1 p-3">
                 <option value="" disabled>
                   Select Job Type
                 </option>
@@ -114,22 +114,22 @@ const JobList = () => {
               </select>
             </div>
             <div>
-              <button className=" bg-orange-500 p-2 w-40 lg:w-52 lg:h-12 mt-2 text-white rounded hover:bg-orange-600">
+              <button className="w-40 p-2 mt-2 text-white bg-orange-500 rounded lg:w-52 lg:h-12 hover:bg-orange-600">
                 Find Jobs
               </button>
             </div>
           </div>
         </div>
 
-        <div className="flex lg:flex-row flex-col">
+        <div className="flex flex-col lg:flex-row">
           {/*Entries */}
-          <div className=" bg-gray-100 flex flex-col rounded-lg py-5 gap-2 px-5 mx-7 lg:w-1/3">
+          <div className="flex flex-col gap-2 px-5 py-5 bg-gray-100 rounded-lg mx-7 lg:w-1/3">
             <div className="flex flex-col items-center">
               {/*Date Posted*/}
-              <div onClick={() => handleSection("DatePosted")} className=" border-l-4 border-orange-400 bg-white shadow-md mb-5 h-16 w-full px-10 items-center flex justify-between">
-                <div className="flex gap-2 items-center w-full">
-                  <Calendar s color="orange" size={30}></Calendar>
-                  <p className="font-bold font-mono cursor-default">Date Posted</p>
+              <div onClick={() => handleSection("DatePosted")} className="flex items-center justify-between w-full h-16 px-10 mb-5 bg-white border-l-4 border-orange-400 shadow-md ">
+                <div className="flex items-center w-full gap-2">
+                  <Calendar  color="orange" size={30}></Calendar>
+                  <p className="font-mono font-bold cursor-default">Date Posted</p>
                 </div>
                 <div>
                   {visibleSection.DatePosted ? <ChevronUp /> : <ChevronDown />}
@@ -147,14 +147,14 @@ const JobList = () => {
                 ).map((option, index) => (
                   <label
                     key={index}
-                    className="flex gap-4 text-gray-400 text-lg"
+                    className="flex gap-4 text-lg text-gray-400"
                   >
                     <input type="radio" name="DatePosted" value={option} />
                     <span>{option}</span>
                   </label>
                 ))}
                 <button
-                  className="pl-5 pt-2 w-fit text-blue-700 hover:text-orange-400 "
+                  className="pt-2 pl-5 text-blue-700 w-fit hover:text-orange-400 "
                   onClick={() => handleShowMore("DatePosted")}
                 >
                   {DatePosted.length > 4
@@ -166,12 +166,12 @@ const JobList = () => {
               </div>
             </div>
 
-            <div className=" flex flex-col gap-2 items-center mb-5">
+            <div className="flex flex-col items-center gap-2 mb-5 ">
               {/*Job Role*/}
-              <div onClick={() => handleSection("JobRoles")} className=" border-l-4 border-orange-400 bg-white shadow-md h-16 w-full px-10 items-center flex justify-between">
-                <div className="flex gap-2 items-center w-full">
+              <div onClick={() => handleSection("JobRoles")} className="flex items-center justify-between w-full h-16 px-10 bg-white border-l-4 border-orange-400 shadow-md ">
+                <div className="flex items-center w-full gap-2">
                   <Briefcase color="orange" size={30}></Briefcase>
-                  <p className="font-bold font-mono cursor-default">Job Role</p>
+                  <p className="font-mono font-bold cursor-default">Job Role</p>
                 </div>
                 <div>
                   {visibleSection.JobRoles ? <ChevronUp /> : <ChevronDown />}
@@ -187,7 +187,7 @@ const JobList = () => {
                   (option, index) => (
                     <label
                       key={index}
-                      className="flex gap-4 text-gray-400 text-lg"
+                      className="flex gap-4 text-lg text-gray-400"
                     >
                       <input type="checkbox" name="jobrole" value={option} />
                       <span>{option}</span>
@@ -195,7 +195,7 @@ const JobList = () => {
                   )
                 )}
                 <button
-                  className="pl-5 pt-2 w-fit text-blue-700 hover:text-orange-400 "
+                  className="pt-2 pl-5 text-blue-700 w-fit hover:text-orange-400 "
                   onClick={() => handleShowMore("JobRoles")}
                 >
                   {JobRoles.length > 4
@@ -207,12 +207,12 @@ const JobList = () => {
               </div>
             </div>
 
-            <div className=" flex flex-col gap-2 items-center">
+            <div className="flex flex-col items-center gap-2 ">
               {/*Salary*/}
-              <div onClick={() => handleSection("Salary")} className=" border-l-4 border-orange-400 bg-white shadow-md h-16 px-10 w-full items-center flex justify-between">
-                <div className="flex gap-2 items-center w-full">
+              <div onClick={() => handleSection("Salary")} className="flex items-center justify-between w-full h-16 px-10 bg-white border-l-4 border-orange-400 shadow-md ">
+                <div className="flex items-center w-full gap-2">
                   <HandCoins color="orange" size={30}></HandCoins>
-                  <p className="font-bold font-mono cursor-default">Salary</p>
+                  <p className="font-mono font-bold cursor-default">Salary</p>
                 </div>
                 <div>
                   {visibleSection.Salary ? <ChevronUp /> : <ChevronDown />}
@@ -228,7 +228,7 @@ const JobList = () => {
                   (option, index) => (
                     <label
                       key={index}
-                      className="flex gap-4 text-gray-400 text-lg"
+                      className="flex gap-4 text-lg text-gray-400"
                     >
                       <input type="radio" name="salary" value={option} />
                       <span>{option}</span>
@@ -236,7 +236,7 @@ const JobList = () => {
                   )
                 )}
                 <button
-                  className="pl-5 pt-2 w-fit text-blue-700 hover:text-orange-400 "
+                  className="pt-2 pl-5 text-blue-700 w-fit hover:text-orange-400 "
                   onClick={() => handleShowMore("Salary")}
                 >
                   {Salary.length > 4
@@ -247,12 +247,12 @@ const JobList = () => {
                 </button>
               </div>
 
-              <div className=" flex flex-col items-center w-full mt-5">
+              <div className="flex flex-col items-center w-full mt-5 ">
                 {/*Industry*/}
-                <div onClick={() => handleSection("Industry")} className=" border-l-4 border-orange-400 bg-white shadow-md h-16 w-full px-10 items-center flex justify-between">
-                  <div className="flex gap-2 items-center w-full">
+                <div onClick={() => handleSection("Industry")} className="flex items-center justify-between w-full h-16 px-10 bg-white border-l-4 border-orange-400 shadow-md ">
+                  <div className="flex items-center w-full gap-2">
                     <Building2 color="orange" size={30}></Building2>
-                    <p className="font-bold font-mono cursor-default">Industry</p>
+                    <p className="font-mono font-bold cursor-default">Industry</p>
                   </div>
                   <div>
                     {visibleSection.Industry ? <ChevronUp /> : <ChevronDown />}
@@ -270,14 +270,14 @@ const JobList = () => {
                   ).map((option, index) => (
                     <label
                       key={index}
-                      className="flex gap-4 text-gray-400 text-lg"
+                      className="flex gap-4 text-lg text-gray-400"
                     >
                       <input type="checkbox" name="jobrole" value={option} />
                       <span>{option}</span>
                     </label>
                   ))}
                   <button
-                    className="pl-5 pt-2 w-fit text-blue-700 hover:text-orange-400 "
+                    className="pt-2 pl-5 text-blue-700 w-fit hover:text-orange-400 "
                     onClick={() => handleShowMore("Industry")}
                   >
                     {Industry.length > 4
@@ -289,12 +289,12 @@ const JobList = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2 items-center mb-5 w-full mt-5">
+              <div className="flex flex-col items-center w-full gap-2 mt-5 mb-5">
                 {/*Experience*/}
-                <div  onClick={() => handleSection("Experience")} className=" border-l-4 border-orange-400 bg-white shadow-md h-16 w-full px-10 items-center flex justify-between">
-                  <div className="flex gap-2 items-center w-full">
+                <div  onClick={() => handleSection("Experience")} className="flex items-center justify-between w-full h-16 px-10 bg-white border-l-4 border-orange-400 shadow-md ">
+                  <div className="flex items-center w-full gap-2">
                     <PersonStanding color="orange" size={30}></PersonStanding>
-                    <p className="font-bold font-mono cursor-default">Experience</p>
+                    <p className="font-mono font-bold cursor-default">Experience</p>
                   </div>
                   <div>
                     {visibleSection.Experience ? (
@@ -316,14 +316,14 @@ const JobList = () => {
                   ).map((option, index) => (
                     <label
                       key={index}
-                      className="flex gap-4 text-gray-400 text-lg"
+                      className="flex gap-4 text-lg text-gray-400"
                     >
                       <input type="checkbox" name="jobrole" value={option} />
                       <span>{option}</span>
                     </label>
                   ))}
                   <button
-                    className="pl-5 pt-2 w-fit text-blue-700 hover:text-orange-400 "
+                    className="pt-2 pl-5 text-blue-700 w-fit hover:text-orange-400 "
                     onClick={() => handleShowMore("JobRoles")}
                   >
                     {Experience.length > 4
@@ -338,9 +338,9 @@ const JobList = () => {
           </div>
 
           {/*Search and result */}
-          <div className=" flex flex-col lg:w-3/4 mt-9 lg:mt-0">
+          <div className="flex flex-col lg:w-3/4 mt-9 lg:mt-0">
             {/*Search */}
-            <div className="lg:bg-gray-100 lg:h-20 px-5 flex items-center justify-between mx-7 rounded-md">
+            <div className="flex items-center justify-between px-5 rounded-md lg:bg-gray-100 lg:h-20 mx-7">
               <p>Showing 1-7 of 3 Job Results:</p>
               <div>
                 <span>Sort By : </span>
@@ -355,7 +355,7 @@ const JobList = () => {
             </div>
 
             {/*Result */}
-            <div className="flex justify-center my-10 mx-7 py-5 rounded">
+            <div className="flex justify-center py-5 my-10 rounded mx-7">
               <p className="text-7xl">Result</p>
             </div>
           </div>

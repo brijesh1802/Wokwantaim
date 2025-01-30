@@ -5,6 +5,7 @@ import HomePage from "./pages/HomePage";
 import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
 import { AuthProvider } from "./context/AuthContext";
+import JobList from "./pages/JobList";
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/login" element={<LoginPage />} />
+              <Route path='/joblist' element={<JobList/>}/>
           </Routes>
         </main>
         {!noPaths.includes(location.pathname) && <Footer />}

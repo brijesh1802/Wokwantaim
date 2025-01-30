@@ -9,7 +9,7 @@ const router = express.Router();
 
 // Signup route
 router.post('/signup', async (req, res) => {
-    const { name, phone, email, password, website,joinType, } = req.body;
+    const { name, phone, email, password, website, joinType } = req.body;
 
     if (!name) {
         return res.status(400).json({ msg: 'Name is required' });
@@ -23,16 +23,40 @@ router.post('/signup', async (req, res) => {
     if (!password) {
         return res.status(400).json({ msg: 'Password is required' });
     }
-
     if (!joinType) {
         return res.status(400).json({ msg: 'Join type is required' });
     }
     if (!website) {
         return res.status(400).json({ msg: 'Website is required' });
     }
+
+    if (name.length < 4) {
+        return res.status(400).json({ msg: 'Name must be at least 4 characters' });
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.(com|net|org|edu)$/;
+    if (!emailPattern.test(email)) {
+        return res.status(400).json({ msg: 'Invalid email format' });
+    }
+
+    if (phone.length !== 10) {
+        return res.status(400).json({ msg: 'Phone number must be exactly 10 digits' });
+    }
+    if (phone.startsWith('0')) {
+        return res.status(400).json({ msg: 'Phone number should not start with 0' });
+    }
+    const phonePattern = /^[1-9]\d{9}$/;
+    if (!phonePattern.test(phone)) {
+        return res.status(400).json({ msg: 'Invalid phone number format' });
+    }
+
+    if (password.length < 8) {
+        return res.status(400).json({ msg: 'Password must be at least 6 characters' });
+    }
+
     const urlPattern = new RegExp('^(https?:\\/\\/)?(www\\.)?' + // protocol and www
         '(([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}\\.com|\\.edu|\\.org'  // domain name with .com, .edu, .org
-    )
+    );
 
     if (!urlPattern.test(website)) {
         return res.status(400).json({ msg: 'Invalid website URL' });
@@ -142,14 +166,20 @@ router.post('/login', async (req, res) => {
 // Profile route
 router.get('/profile', authMiddleware, async (req, res) => {
     try {
-        const employer = await Employer.findById(req.user.id).select('-password');
+        // Get the logged-in user's ID from the JWT
+        const userId = req.user.id;
+
+        // Find the candidate by userId
+        const employer = await Employer.findById(userId);
+
+        // If candidate not found, return 404 error
         if (!employer) {
             return res.status(404).json({ msg: 'Employer not found' });
         }
         res.json(employer);
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ msg: 'Server error' });
+        res.status(500).json({ msg: 'Server error while updating profile' });
     }
 });
 

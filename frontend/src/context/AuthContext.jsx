@@ -1,19 +1,35 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
-export const AuthContext=createContext();
-export const AuthProvider=({children})=>{
-    const [userType,setUserType]=useState(null);
-    const login=(type)=>{
-        setUserType(type)
-    }
-    const logout=()=>{
-        setUserType(null);
+export const AuthContext = createContext();
 
-        localStorage.clear();
+export const AuthProvider = ({ children }) => {
+  // Check if there's a saved userType in localStorage
+  const storedUserType = localStorage.getItem("userType");
+
+  const [userType, setUserType] = useState(storedUserType ? storedUserType : null);
+
+  const login = (type) => {
+    setUserType(type);
+    localStorage.setItem("userType", type); // Store userType in localStorage
+    console.log(type);
+  };
+
+  const logout = () => {
+    setUserType(null);
+    localStorage.removeItem("userType"); // Remove userType from localStorage
+    localStorage.clear(); // Optional: Remove all other localStorage data
+  };
+
+  useEffect(() => {
+    // If there's a userType in localStorage on page load, set it
+    if (storedUserType) {
+      setUserType(storedUserType);
     }
-    return(
-        <AuthContext.Provider value={{userType,login,logout}}>
-            {children}
-        </AuthContext.Provider>
-    )
-}
+  }, [storedUserType]);
+
+  return (
+    <AuthContext.Provider value={{ userType, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};

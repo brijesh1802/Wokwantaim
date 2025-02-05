@@ -326,6 +326,7 @@ function SignupForm({ userType }) {
                 id="phone"
                 name="phoneNumber"
                 type="tel"
+                maxLength={10}
                 value={formData.phoneNumber}
                 onChange={handleChange}
                 placeholder="Phone Number"

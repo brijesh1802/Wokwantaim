@@ -6,6 +6,10 @@ import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
 import { AuthProvider } from "./context/AuthContext";
 import JobList from "./pages/JobList";
+import JobDetail from "./pages/JobDetail";
+import CompanyDetail from "./pages/CompanyDetail";
+import Profile from "./components/Profile";
+import InterviewPage from "./components/InterviewPage";
 
 
 function App() {
@@ -22,6 +26,10 @@ function App() {
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path='/joblist' element={<JobList/>}/>
+            <Route path='/jobdetail' element={<JobDetail/>}/>
+            <Route path="/companydetail" element={<CompanyDetail />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path='/interview/:companyId' element={<InterviewPage/>}/>
           </Routes>
         </main>
         {!noPaths.includes(location.pathname) && <Footer />}

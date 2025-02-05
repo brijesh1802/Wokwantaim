@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const Candidate = require('../models/candidate.model');
+const Employer = require('../models/employer.model');
 const { v2 : cloudinary } = require('cloudinary');
 const authMiddleware = require('../middleware/authMiddleware');
 const { addToBlacklist } = require('../utils/blacklist');
@@ -115,8 +116,9 @@ router.post('/signup', upload, async (req, res) => {
         const resumeUpload = await uploadToCloudinary(resumeFile, 'uploads/resumes');
 
         // Check if candidate already exists
+        let employer = await Employer.findOne({ email });
         let candidate = await Candidate.findOne({ email });
-        if (candidate) {
+        if (employer || candidate) {
             return res.status(400).json({ msg: 'Email already exists' });
         }
 

@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Employer = require('../models/employer.model');
+const Candidate = require('../models/candidate.model');
 const authMiddleware = require('../middleware/authMiddleware');
 const { addToBlacklist } = require('../utils/blacklist');
 
@@ -65,7 +66,8 @@ router.post('/signup', async (req, res) => {
 
     try {
         let employer = await Employer.findOne({ email });
-        if (employer) {
+        let candidate = await Candidate.findOne({ email });
+        if (employer || candidate) {
             return res.status(400).json({ msg: 'Email already exists' });
         }
 

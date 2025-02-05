@@ -5,6 +5,9 @@ const express = require('express');
 const dbConnect = require('./db/db');
 const candidateRoutes = require('./routes/candidate.route');
 const employerRoutes = require('./routes/employer.route');
+const resetPassRoute = require('./routes/resetPassword.route');
+const jobsListRoute = require('./routes/jobs.route');
+
 dbConnect();
 
 const app = express();
@@ -20,9 +23,12 @@ app.use(cors(
 ));
 app.use(cors({ origin: '*' }));
 app.use(express.json());
+
 app.use('/uploads', express.static('uploads'));
 app.use('/api/v1/candidates', candidateRoutes);
 app.use('/api/v1/employers', employerRoutes);
+app.use('/api/v1/auth', resetPassRoute);
+app.use('/api/v1/jobs',jobsListRoute)
 
 
 

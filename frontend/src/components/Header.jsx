@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { Facebook, Twitter, Linkedin } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
@@ -9,6 +9,7 @@ import Logo from "../assets/Logo.png";
 function Header() {
   const { userType, logout } = useContext(AuthContext);
   const [nav, setNav] = useState(false);
+  const [profilePhoto, setProfilePhoto] = useState(null);
   const [username, setUserName] = useState("");
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
@@ -26,6 +27,7 @@ function Header() {
   const handleLogout = () => {
     logout();
     setUserName("");
+    setProfilePhoto(null);
     setNav(false);
   };
 
@@ -51,7 +53,13 @@ function Header() {
         if (!response.ok) throw new Error("Failed to fetch data");
 
         const data = await response.json();
-        setUserName(userType === "candidate" ? `${data.fullName.firstName} ${data.fullName.lastName}` : data.name);
+        setUserName(
+          userType === "candidate"
+            ? `${data.fullName.firstName} ${data.fullName.lastName}`
+            : data.name
+        );
+
+        setProfilePhoto(data.profilePhoto);
       } catch (error) {
         console.error("Error fetching username:", error);
       }
@@ -77,26 +85,67 @@ function Header() {
           </div>
         )}
 
-        {/* Desktop Links */}
-        {!isMobile && (
+      {/* Desktop Links */}
+      {!isMobile && (
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center space-x-6">
-              <Link to="/" className="text-xl font-medium text-orange-500">
+              {/* Home Link */}
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  `text-xl ml-4 font-medium ${
+                    isActive
+                      ? "text-orange-500 font-semibold"
+                      : "text-gray-600 hover:text-orange-500"
+                  }`
+                }
+              >
                 Home
-              </Link>
+              </NavLink>
+
+              {/* Conditional Rendering for Candidate or Employer */}
               {userType === "candidate" || userType === null ? (
-                <Link to="/joblist" className="text-gray-600 hover:text-orange-500">
+                <NavLink
+                  to="/joblist"
+                  className={({ isActive }) =>
+                    `text-xl ml-4 ${
+                      isActive
+                        ? "text-orange-500 font-semibold"
+                        : "text-gray-600 hover:text-orange-500"
+                    }`
+                  }
+                >
                   Job List
-                </Link>
+                </NavLink>
               ) : (
-                <Link to="/addjobs" className="text-gray-600 hover:text-orange-500">
+                <NavLink
+                  to="/addjobs"
+                  className={({ isActive }) =>
+                    `text-xl ml-4 mt-1 ${
+                      isActive
+                        ? "text-orange-500 font-semibold"
+                        : "text-gray-600 hover:text-orange-500"
+                    }`
+                  }
+                >
                   Add Jobs
-                </Link>
+                </NavLink>
               )}
             </div>
 
             <div className="flex items-center space-x-4">
-              <span className="text-black">{username}</span>
+            <Link to="/profile" className="flex items-center space-x-2">
+                {profilePhoto && (
+                  <div>
+                    <img
+                      src={profilePhoto}
+                      alt="Profile"
+                      className="object-cover w-10 h-10 rounded-full"
+                    />
+                  </div>
+                )}
+                <span className="text-black">{username}</span>
+              </Link>
               {userType ? (
                 <button className="px-4 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600">
                   <Link to="/" onClick={handleLogout} className="text-white">
@@ -135,7 +184,7 @@ function Header() {
             <Link
               to="/"
               onClick={() => setNav(false)}
-              className="text-xl font-medium text-orange-500"
+              className="text-xl font-medium text-orange-500 hover:font-semibold"
             >
               Home
             </Link>
@@ -145,7 +194,7 @@ function Header() {
               <Link
                 to="/joblist"
                 onClick={() => setNav(false)}
-                className="text-gray-600 hover:text-orange-500"
+                className="text-gray-600 hover:text-orange-500 hover:font-semibold hover:text-xl"
               >
                 Job List
               </Link>
@@ -153,7 +202,7 @@ function Header() {
               <Link
                 to="/addjobs"
                 onClick={() => setNav(false)}
-                className="text-gray-600 hover:text-orange-500"
+                className="text-gray-600 hover:text-orange-500 hover:font-semibold hover:text-xl"
               >
                 Add Jobs
               </Link>
@@ -175,11 +224,19 @@ function Header() {
               </button>
             ) : (
               <button className="px-4 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600">
-                <Link to="/signup" onClick={() => setNav(false)} className="text-white">
+                <Link
+                  to="/signup"
+                  onClick={() => setNav(false)}
+                  className="text-white"
+                >
                   Sign Up
                 </Link>
                 <span className="mx-2 text-gray-400">/</span>
-                <Link to="/login" onClick={() => setNav(false)} className="text-white">
+                <Link
+                  to="/login"
+                  onClick={() => setNav(false)}
+                  className="text-white"
+                >
                   Login
                 </Link>
               </button>
@@ -187,17 +244,29 @@ function Header() {
           </li>
           <div className="flex gap-3">
             <li>
-              <a href="#" className="text-gray-600 hover:text-orange-500" onClick={() => setNav(false)}>
+              <a
+                href="#"
+                className="text-gray-600 hover:text-orange-500"
+                onClick={() => setNav(false)}
+              >
                 <Facebook className="w-5 h-5" />
               </a>
             </li>
             <li>
-              <a href="#" className="text-gray-600 hover:text-orange-500" onClick={() => setNav(false)}>
+              <a
+                href="#"
+                className="text-gray-600 hover:text-orange-500"
+                onClick={() => setNav(false)}
+              >
                 <Twitter className="w-5 h-5" />
               </a>
             </li>
             <li>
-              <a href="#" className="text-gray-600 hover:text-orange-500" onClick={() => setNav(false)}>
+              <a
+                href="#"
+                className="text-gray-600 hover:text-orange-500"
+                onClick={() => setNav(false)}
+              >
                 <Linkedin className="w-5 h-5" />
               </a>
             </li>

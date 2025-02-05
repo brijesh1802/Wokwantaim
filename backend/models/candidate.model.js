@@ -43,7 +43,9 @@ const candidateSchema = new Schema({
     phoneNumber: {
         type: String,
         required: true
-    }
+    },
+    resetToken: { type: String, default: null },  // Store reset token
+  resetTokenExpiry: { type: Date, default: null },  // Store token expiry time
 }, {
     timestamps: true
 });

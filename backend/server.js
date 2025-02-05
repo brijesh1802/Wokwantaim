@@ -13,15 +13,24 @@ dbConnect();
 const app = express();
 const port = process.env.PORT || 8181;
 
-app.use(cors(
-    {
-        origin: process.env.VERCEL_URL,
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
-        credentials: true,
-        allowedHeaders: ['Content-Type', 'Authorization'],
-    }
-));
-app.use(cors({ origin: '*' }));
+const allowedOrigins = [
+    'https://localhost:5173',  // Replace with your first frontend URL
+    'https://wokwantaim.vercel.app',  // Replace with your second frontend URL
+  ];
+
+// Configure CORS
+app.use(cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);  // Allow the request
+      } else {
+        callback(new Error('Not allowed by CORS'));  // Reject the request
+      }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  }));
+
 app.use(express.json());
 
 app.use('/uploads', express.static('uploads'));

@@ -1,23 +1,22 @@
-import { useState, useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { useState } from "react";
 import { X } from "lucide-react";
 
 const ForgotPassword = ({ closeModal }) => {
-  const { userType } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [popup, setPopup] = useState({
+    visible: false,
+    message: "",
+    isError: false,
+  });
 
   const handleSubmit = async () => {
     if (!email) return;
 
     setLoading(true);
-    setError("");
+    setPopup({ visible: false, message: "", isError: false }); // Reset popup before submit
 
     const url = `${import.meta.env.VITE_BASE_URL}/api/v1/auth/request-password-reset`;
-      // userType === "candidate"
-      //   ? `${import.meta.env.VITE_BASE_URL}/api/v1/candidates/forgot-password`
-      //   : `${import.meta.env.VITE_BASE_URL}/api/v1/employers/forgot-password`;
 
     try {
       const response = await fetch(url, {
@@ -25,19 +24,42 @@ const ForgotPassword = ({ closeModal }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email}),
+        body: JSON.stringify({ email }),
       });
 
       const data = await response.json();
+      console.log("Response Data:", data); // Debugging response
 
       if (response.ok) {
-        alert("Password reset link sent to mail successfully!"); // Show success alert
-        closeModal(); 
+        setPopup({
+          visible: true,
+          message: "Password reset link sent to your email successfully!",
+          isError: false,
+        });
+        setTimeout(() => {
+          setPopup({ visible: false, message: "", isError: false });
+          closeModal(); // Close modal after success
+        }, 3000);
       } else {
-        setError(data.msg || "An error occurred. Please try again.");
+        setPopup({
+          visible: true,
+          message: data.message || "An error occurred. Please try again.",
+          isError: true,
+        });
+        setTimeout(() => {
+          setPopup({ visible: false, message: "", isError: false });
+        }, 3000);
       }
     } catch (err) {
-      setError("Network error. Please try again later.");
+      console.error("Network error:", err);
+      setPopup({
+        visible: true,
+        message: "Network error. Please try again later.",
+        isError: true,
+      });
+      setTimeout(() => {
+        setPopup({ visible: false, message: "", isError: false });
+      }, 3000);
     } finally {
       setLoading(false);
     }
@@ -69,8 +91,7 @@ const ForgotPassword = ({ closeModal }) => {
           />
         </div>
 
-        {/* Error Message Inside Modal */}
-        {error && <p className="mb-2 text-sm text-red-500">{error}</p>}
+    
 
         {/* Submit Button */}
         <button
@@ -94,6 +115,17 @@ const ForgotPassword = ({ closeModal }) => {
           </span>
         </p>
       </div>
+
+      {/* Popup Message */}
+      {popup.visible && (
+        <div
+          className={`fixed top-0 left-1/2 transform -translate-x-1/2 mt-10 px-4 py-2 rounded-lg shadow-lg text-white ${
+            popup.isError ? "bg-red-500" : "bg-green-500"
+          }`}
+        >
+          {popup.message}
+        </div>
+      )}
     </div>
   );
 };

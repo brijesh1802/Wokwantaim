@@ -12,6 +12,7 @@ router.post('/request-password-reset', async (req, res) => {
   let user;
 
   try {
+
     user = await candidate.findOne({ email }) || await employer.findOne({ email });
 
     if (!user) {
@@ -19,19 +20,11 @@ router.post('/request-password-reset', async (req, res) => {
     }
 
     const currentTime = Date.now();
-    const oneDayInMillis = 24 * 60 * 60 * 1000;
-
-
-    if (user.lastResetRequest && (currentTime - user.lastResetRequest < oneDayInMillis)) {
-      const remainingTime = oneDayInMillis - (currentTime - user.lastResetRequest);
-      const hoursLeft = Math.ceil(remainingTime / (1000 * 60 * 60));
-      return res.status(429).json({ message: `You can request a password reset after ${hoursLeft} hours.` });
-    }
-
     const token = crypto.randomBytes(32).toString('hex');
+    const resetTokenExpiry = currentTime + 3600000;
+
     user.resetToken = token;
-    user.resetTokenExpiry = currentTime + oneDayInMillis; 
-    user.lastResetRequest = currentTime;  
+    user.resetTokenExpiry = resetTokenExpiry;
 
     await user.save();
 
@@ -43,6 +36,7 @@ router.post('/request-password-reset', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 
 router.post('/reset-password', async (req, res) => {
@@ -61,18 +55,14 @@ router.post('/reset-password', async (req, res) => {
 
     user = await employer.findOne({
       resetToken: token,
-      resetTokenExpiry: { $gt: Date.now() }, 
+      resetTokenExpiry: { $gt: Date.now() }
+    }) || await candidate.findOne({
+      resetToken: token,
+      resetTokenExpiry: { $gt: Date.now() }
     });
-    
-    if (!user) {
-      user = await candidate.findOne({
-        resetToken: token,
-        resetTokenExpiry: { $gt: Date.now() },
-      });
-    }
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'Link Expired' });
     }
 
     const isSamePassword = await bcrypt.compare(newPassword, user.password);

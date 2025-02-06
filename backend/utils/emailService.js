@@ -1,3 +1,5 @@
+const dotenv = require('dotenv');
+dotenv.config();
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
@@ -10,7 +12,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendPasswordResetEmail = (email, token) => {
-  const resetLink = `http://localhost:5173/reset-password?token=${token}`;
+  const resetLink = `${process.env.VERCEL_URL}/reset-password?token=${token}`;
 
   const mailOptions = {
     from: 'no-reply@wokwantaim.com',

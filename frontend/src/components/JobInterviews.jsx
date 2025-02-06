@@ -64,7 +64,7 @@ const JobInterviews = () => {
                 />
                 <div>
                   <h3 className="text-lg font-semibold">{company.name}</h3>
-                  <p className="text-gray-300">
+                  <p className="text-gray-600">
                     📌 {company.questions.length} Interview Questions
                   </p>
                 </div>

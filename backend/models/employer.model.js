@@ -25,7 +25,21 @@ const employerSchema = new mongoose.Schema({
         type: String,
         required: true,
         enum: ['company', 'recruiter', 'agency']
-    }
+    },
+    resetToken: { 
+        type: String, 
+        default: null 
+    },
+    resetTokenExpiry: { 
+        type: Date, 
+        default: null 
+    },
+    lastResetRequest: { 
+        type: Date, 
+        default: null 
+    },
+}, {
+    timestamps: true
 });
 
 const Employer = mongoose.model('employers', employerSchema);

@@ -14,8 +14,8 @@ const app = express();
 const port = process.env.PORT || 8181;
 
 const allowedOrigins = [
-    'https://localhost:5173',  // Replace with your first frontend URL
-    'https://wokwantaim.vercel.app',  // Replace with your second frontend URL
+    'http://localhost:5173',  
+    'https://wokwantaim.vercel.app', 
   ];
 
 // Configure CORS
@@ -27,6 +27,7 @@ app.use(cors({
         callback(new Error('Not allowed by CORS'));  // Reject the request
       }
     },
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   }));

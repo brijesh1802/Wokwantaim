@@ -77,11 +77,21 @@ function Header() {
 
         {/* Hamburger Icon for Mobile */}
         {isMobile && (
-          <div
-            className="text-gray-500 cursor-pointer md:hidden"
-            onClick={() => setNav(!nav)}
-          >
-            {nav ? <FaTimes size={25} /> : <FaBars size={25} />}
+          <div className="flex text-gray-500 cursor-pointer md:hidden">
+            <Link to="/profile" className="flex items-center mr-3 -mt-1">
+              {profilePhoto && (
+                <div>
+                  <img
+                    src={profilePhoto}
+                    alt="Profile"
+                    className="object-cover w-10 h-10 rounded-full"
+                  />
+                </div>
+              )}
+            </Link>
+            <div onClick={() => setNav(!nav)}>
+              {nav ? <FaTimes size={25} /> : <FaBars size={25} />}
+            </div>
           </div>
         )}
 

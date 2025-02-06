@@ -44,8 +44,18 @@ const candidateSchema = new Schema({
         type: String,
         required: true
     },
-    resetToken: { type: String, default: null },  // Store reset token
-  resetTokenExpiry: { type: Date, default: null },  // Store token expiry time
+    resetToken: { 
+        type: String, 
+        default: null 
+    },
+    resetTokenExpiry: { 
+        type: Date, 
+        default: null 
+    },
+    lastResetRequest: { 
+        type: Date, 
+        default: null 
+    },
 }, {
     timestamps: true
 });

@@ -10,6 +10,7 @@ import JobDetail from "./pages/JobDetail";
 import CompanyDetail from "./pages/CompanyDetail";
 import Profile from "./components/Profile";
 import InterviewPage from "./components/InterviewPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         {!noPaths.includes(location.pathname) && <Header />}
         <main className="flex-grow">
           <Routes>
+            <Route path="*" element={<h1>Not Found</h1>} /> 
             <Route path="/" element={<HomePage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/login" element={<LoginPage />} />
@@ -30,6 +32,7 @@ function App() {
             <Route path="/companydetail" element={<CompanyDetail />} />
             <Route path="/profile" element={<Profile />} />
             <Route path='/interview/:companyId' element={<InterviewPage/>}/>
+            <Route path='/reset-password' element={<ResetPasswordPage/>}/>
           </Routes>
         </main>
         {!noPaths.includes(location.pathname) && <Footer />}

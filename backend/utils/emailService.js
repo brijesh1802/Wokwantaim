@@ -16,7 +16,7 @@ const sendPasswordResetEmail = (email, token) => {
   const resetLink = `${process.env.VERCEL_URL}/reset-password?token=${token}`;
 
   const mailOptions = {
-    from: 'no-reply@wokwantaim.com',
+    from: process.env.EMAIL_USER,
     to: email,
     subject: 'Password Reset Request',
     html: `

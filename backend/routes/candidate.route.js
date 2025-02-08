@@ -138,7 +138,7 @@ router.post('/signup', upload, async (req, res) => {
 
         // Generate JWT
         const payload = { user: { id: candidate._id } };
-        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
+        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '100h' }, (err, token) => {
             if (err) throw err;
 
             res.json({
@@ -189,7 +189,7 @@ router.post('/login', async (req, res) => {
             }
         };
 
-        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
+        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '100h' }, (err, token) => {
             if (err) {
                 console.error('Error generating JWT:', err);
                 throw err;

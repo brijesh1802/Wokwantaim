@@ -2,15 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import companyLogo from "../assets/comlogo-1.png";
 import {
-    Calendar,
-    House,
-    Briefcase,
-    HandCoins,
-    Building2,
-    PersonStanding,
     MapPin,
-    ChevronUp,
-    ChevronDown,
   } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -150,3 +142,6 @@ const JobResults = () => {
 };
 
 export default JobResults;
+
+
+

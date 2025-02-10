@@ -12,6 +12,7 @@ import Profile from "./components/Profile";
 import InterviewPage from "./components/InterviewPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ScrollToTop from "./components/ScrollToTop";
+import JobFilter from "./components/JobFilter";
 
 
 function App() {
@@ -35,6 +36,8 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path='/interview/:companyId' element={<InterviewPage/>}/>
             <Route path='/reset-password' element={<ResetPasswordPage/>}/>
+            <Route path='/jobfilter' element={<JobFilter/>}/>
+
           </Routes>
         </main>
         {!noPaths.includes(location.pathname) && <Footer />}

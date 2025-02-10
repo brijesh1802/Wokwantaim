@@ -19,7 +19,25 @@ const JobList = () => {
   const handleClick = (jobs) => {
     navigate("/jobdetail", { state: { jobs } });
   };
+  const [jobs, setJobs] = useState([]);
+  const [industry, setIndustry] = useState([]);
+  const [jobRole,setJobRole]=useState([]);
 
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/jobs/getAll`)
+      .then((response) => response.json())
+      .then((data) => setJobs(data))
+      .catch((error) => console.error("Error fetching jobs:", error));
+  }, []);
+
+  useEffect(() => {
+    const industries = jobs.map((job) => job.industry);
+    const jobRole = jobs.map((job) => job.title);
+    const uniqueIndustriesSet = new Set(industries);
+    const uniqueJobRoleSet = new Set(jobRole);
+    setIndustry(Array.from(uniqueIndustriesSet));
+    setJobRole(Array.from(uniqueJobRoleSet));
+  });
   
   return (
     <div>
@@ -74,7 +92,7 @@ const JobList = () => {
 
       <div className="flex flex-col lg:flex-row">
         {/* Filter Section */}
-        <JobFilter />
+        <JobFilter industry={industry} jobRole={jobRole}/>
         {/* Job Results */}
         <JobResults/>
       </div>

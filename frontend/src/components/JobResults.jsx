@@ -2,11 +2,20 @@ import React from "react";
 import { useState, useEffect } from "react";
 import companyLogo from "../assets/comlogo-1.png";
 import {
+    Calendar,
+    House,
+    Briefcase,
+    HandCoins,
+    Building2,
+    PersonStanding,
     MapPin,
+    ChevronUp,
+    ChevronDown,
   } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const JobResults = () => {
-  
+  const navigate=useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 7;
   const [jobs, setJobs] = useState([]);
@@ -28,6 +37,10 @@ const JobResults = () => {
     indexOfLastJob > jobs.length ? jobs.length : indexOfLastJob;
 
   console.log(totalPages);
+
+  const handleClick=(jobs)=>{
+    navigate("/jobdetail",{state:{jobs}})
+  }
   return (
     <div className="flex flex-col mb-10 lg:w-3/4 mt-9 lg:mt-0">
       <div className="flex items-center justify-between mx-4 rounded-md lg:bg-gray-100 lg:h-20">

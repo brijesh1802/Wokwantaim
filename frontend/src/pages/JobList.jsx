@@ -89,29 +89,18 @@ const JobList = () => {
     setFilteredJobRole(
       jobs.filter((job) =>
         currentJoleRole.some((role) =>
-          job.title.toLowerCase().includes(role.toLowerCase())
+          job.title.toLowerCase().includes(role.toLowerCase()||job.industry.toLowerCase().includes(role.toLowerCase))
         )
       )
     );
   }, [currentJoleRole, jobs]);
-  const handleClick = (jobs) => {
-    navigate("/jobdetail", { state: { jobs } });
-  };
+
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 7;
 
-  const indexOfLastJob = currentPage * jobsPerPage;
-  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+  
   const filteredJob=filteredJobRole.length>0?filteredJobRole:jobs
-  const currentSliceJob = filteredJob.slice(
-    indexOfFirstJob,
-    indexOfLastJob
-  );
-  const totalPages = Math.ceil(filteredJob.length / jobsPerPage);
-
-  const firstJobIndex = indexOfFirstJob + 1; // Adding 1 to make it 1-based index
-  const lastJobIndex =
-    indexOfLastJob > filteredJob.length ? filteredJob.length : indexOfLastJob;
+  
 
   //console.log(totalPages);
   console.log(currentJoleRole)

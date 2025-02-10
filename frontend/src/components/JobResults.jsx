@@ -2,32 +2,20 @@ import React from "react";
 import { useState, useEffect } from "react";
 import companyLogo from "../assets/comlogo-1.png";
 import {
-    Calendar,
-    House,
-    Briefcase,
-    HandCoins,
-    Building2,
-    PersonStanding,
+  
     MapPin,
-    ChevronUp,
-    ChevronDown,
+  
   } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const JobResults = ({filteredJob,handleJobRoleChange}) => {
+const JobResults = ({filteredJob}) => {
   const navigate=useNavigate();
   
 
   const [jobs, setJobs] = useState([]);
 
 
-  
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/jobs/getAll`)
-      .then((response) => response.json())
-      .then((data) => setJobs(data))
-      .catch((error) => console.error("Error fetching jobs:", error));
-  }, []);
+
 
   const [currentPage, setCurrentPage] = useState(1);
    const jobsPerPage = 7;

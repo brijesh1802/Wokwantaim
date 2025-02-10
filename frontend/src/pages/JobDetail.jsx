@@ -5,7 +5,8 @@ import companyLogo from "../assets/comlogo-1.png";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
-import { House, Building2, MapPin, PersonStanding, Calendar, Briefcase, HandCoins } from "lucide-react";
+import { Building2, MapPin, PersonStanding, Calendar, Briefcase, HandCoins } from "lucide-react";
+import Banner from "../components/Banner";
 
 const AlertBox = ({ message, onClose }) => {
   return (
@@ -64,14 +65,7 @@ const JobDetail = () => {
 return (
   <div>
     {/* Banner Section */}
-    <div
-      className="flex flex-col items-center justify-center p-8 mt-6 bg-center bg-cover shadow-lg lg:h-72 min-h-52"
-      style={{
-        backgroundImage: `url(${banner})`,
-        backgroundPosition: 'center',
-        backgroundSize: 'cover',
-      }}
-    ></div>
+    <Banner/>
 
     <div className="px-4 py-8 lg:mx-8">
       <div className="max-w-4xl p-6 mx-auto bg-white rounded-md shadow-md">

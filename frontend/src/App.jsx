@@ -11,6 +11,7 @@ import CompanyDetail from "./pages/CompanyDetail";
 import Profile from "./components/Profile";
 import InterviewPage from "./components/InterviewPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ScrollToTop from "./components/ScrollToTop";
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
   const noPaths = ["/signup", "/login"];
   return (
     <AuthProvider>
+      <ScrollToTop/>
       <div className="flex flex-col min-h-screen">
         {/* Conditionally render Header */}
         {!noPaths.includes(location.pathname) && <Header />}

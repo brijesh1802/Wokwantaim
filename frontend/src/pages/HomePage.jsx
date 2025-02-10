@@ -122,7 +122,6 @@
 
 
 import { Link } from "react-router-dom";
-import JobInterviews from "../components/JobInterviews";
 
 import {
   Search,
@@ -134,9 +133,48 @@ import {
 } from "lucide-react";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-
+import JobInterviews from "./JobInterviews";
+import FeaturedJobCategories from "../components/Home/Featured/FeaturedJobCategories";
 function HomePage() {
   const { userType } = useContext(AuthContext);
+  const categories = [
+    {
+      icon: <Briefcase className="w-8 h-8" />,
+      title: "Business & Management",
+      count: 230,
+    },
+    {
+      icon: <TrendingUp className="w-8 h-8" />,
+      title: "Marketing & Sales",
+      count: 184,
+    },
+    {
+      icon: <Users className="w-8 h-8" />,
+      title: "Human Resources",
+      count: 142,
+    },
+    {
+      icon: <Building2 className="w-8 h-8" />,
+      title: "Project Management",
+      count: 165,
+    },
+    {
+      icon: <Briefcase className="w-8 h-8" />,
+      title: "Finance & Accounting",
+      count: 120,
+    },
+    {
+      icon: <TrendingUp className="w-8 h-8" />,
+      title: "Customer Service",
+      count: 98,
+    },
+    { icon: <Users className="w-8 h-8" />, title: "IT & Software", count: 210 },
+    {
+      icon: <Building2 className="w-8 h-8" />,
+      title: "Engineering",
+      count: 175,
+    },
+  ];
 
   return (
     <div className="bg-gray-50">
@@ -168,87 +206,14 @@ function HomePage() {
 
       {/* Featured Categories */}
       <section className="py-16">
-        <div className="container px-4 mx-auto slike-slide">
-          <h2 className="mb-12 text-3xl font-bold text-center">
-            Featured Job Categories
-          </h2>
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                icon: <Briefcase className="w-8 h-8" />,
-                title: "Business & Management",
-                count: 235,
-              },
-              {
-                icon: <TrendingUp className="w-8 h-8" />,
-                title: "Marketing & Sales",
-                count: 184,
-              },
-              {
-                icon: <Users className="w-8 h-8" />,
-                title: "Human Resources",
-                count: 142,
-              },
-              {
-                icon: <Building2 className="w-8 h-8" />,
-                title: "Project Management",
-                count: 165,
-              },
-              {
-                icon: <Briefcase className="w-8 h-8" />,
-                title: "Finance & Accounting",
-                count: 120,
-              },
-              {
-                icon: <TrendingUp className="w-8 h-8" />,
-                title: "Customer Service",
-                count: 98,
-              },
-              {
-                icon: <Users className="w-8 h-8" />,
-                title: "IT & Software",
-                count: 210,
-              },
-              {
-                icon: <Building2 className="w-8 h-8" />,
-                title: "Engineering",
-                count: 175,
-              },
-            ].map((category, index) => (
-              <div
-                key={index}
-                className="p-6 transition-shadow bg-white rounded-lg shadow-md hover:shadow-lg"
-              >
-                <div className="mb-4 text-orange-500">{category.icon}</div>
-                <h3 className="mb-2 text-xl font-semibold">{category.title}</h3>
-                <p className="mb-2 text-gray-600">
-                  {category.count} jobs available
-                </p>
-                {userType === "candidate" || userType === null ? (
-                  <Link
-                    to="/joblist"
-                    className="text-orange-400 hover:text-orange-600"
-                  >
-                    View Jobs!
-                  </Link>
-                ) : (
-                  <Link
-                    to="/addjob"
-                    className="text-orange-400 hover:text-orange-600"
-                  >
-                    Add Jobs!
-                  </Link>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
+        <FeaturedJobCategories
+          sectionTitle="Featured Job Categories"
+          categories={categories}
+        />
       </section>
 
       <section className="py-16">
-        {userType === "candidate" ? (
-          <JobInterviews/>
-        ) : null}
+        {userType === "candidate" ? <JobInterviews /> : null}
       </section>
 
       {/* Statistics Section */}

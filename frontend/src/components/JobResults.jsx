@@ -6,7 +6,7 @@ import {
   } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const JobResults = () => {
+const JobResults = ({filteredJob}) => {
   const navigate=useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 7;
@@ -20,13 +20,13 @@ const JobResults = () => {
   }, []);
   const indexOfLastJob = currentPage * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
-  const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
+  const currentJobs = filteredJob.slice(indexOfFirstJob, indexOfLastJob);
 
-  const totalPages = Math.ceil(jobs.length / jobsPerPage);
+  const totalPages = Math.ceil(filteredJob.length / jobsPerPage);
 
   const firstJobIndex = indexOfFirstJob + 1; // Adding 1 to make it 1-based index
   const lastJobIndex =
-    indexOfLastJob > jobs.length ? jobs.length : indexOfLastJob;
+    indexOfLastJob > filteredJob.length ? filteredJob.length : indexOfLastJob;
 
   console.log(totalPages);
 
@@ -37,7 +37,7 @@ const JobResults = () => {
     <div className="flex flex-col mb-10 lg:w-3/4 mt-9 lg:mt-0">
       <div className="flex items-center justify-between mx-4 rounded-md lg:bg-gray-100 lg:h-20">
         <p className="text-sm">
-          Showing {firstJobIndex}-{lastJobIndex} of {jobs.length} Job Results:
+          Showing {firstJobIndex}-{lastJobIndex} of {filteredJob.length} Job Results:
         </p>
         <div>
           <span className="text-sm">Sort By : </span>
@@ -52,7 +52,7 @@ const JobResults = () => {
       </div>
 
       <div className="flex flex-col items-center justify-center h-full gap-3 py-5 mx-5 mt-3 rounded">
-        {currentJobs.map((job, index) => (
+        {filteredJob.map((job, index) => (
           <div
             key={index}
             className="flex items-start justify-between w-full max-w-3xl p-4 mx-4 my-3 transition bg-white shadow-md hover:shadow-lg"

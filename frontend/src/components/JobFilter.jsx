@@ -1,4 +1,6 @@
-// import React, { useState } from "react";
+
+
+// import React, { useEffect, useState } from "react";
 // import {
 //   Calendar,
 //   Briefcase,
@@ -9,45 +11,46 @@
 //   ChevronDown,
 // } from "lucide-react";
 
-// const filters = [
-//   {
-//     id: "DatePosted",
-//     label: "Date Posted",
-//     icon: <Calendar color="orange" size={30} />,
-//     options: ["Last 24 hours", "Last Week", "Last Month", "Older"],
-//     type: "radio",
-//   },
-//   {
-//     id: "JobRoles",
-//     label: "Job Role",
-//     icon: <Briefcase color="orange" size={30} />,
-//     options: ["Developer", "Designer", "Manager", "Tester"],
-//     type: "checkbox",
-//   },
-//   {
-//     id: "Salary",
-//     label: "Salary",
-//     icon: <HandCoins color="orange" size={30} />,
-//     options: ["₹10,000 - ₹20,000", "₹20,000 - ₹30,000", "₹30,000 - ₹50,000"],
-//     type: "radio",
-//   },
-//   {
-//     id: "Industry",
-//     label: "Industry",
-//     icon: <Building2 color="orange" size={30} />,
-//     options: ["IT", "Finance", "Healthcare", "Marketing"],
-//     type: "checkbox",
-//   },
-//   {
-//     id: "Experience",
-//     label: "Experience",
-//     icon: <PersonStanding color="orange" size={30} />,
-//     options: ["0-2 years", "3-5 years", "5+ years"],
-//     type: "checkbox",
-//   },
-// ];
+// const JobFilter = ({industry,jobRole}) => {
+  
 
-// const JobFilter = () => {
+//   const filters = [
+//     {
+//       id: "DatePosted",
+//       label: "Date Posted",
+//       icon: <Calendar color="orange" size={30} />,
+//       options: ["Last 24 hours", "Last Week", "Last Month", "Older"],
+//       type: "radio",
+//     },
+//     {
+//       id: "JobRoles",
+//       label: "Job Role",
+//       icon: <Briefcase color="orange" size={30} />,
+//       options: jobRole,
+//       type: "checkbox",
+//     },
+//     {
+//       id: "Salary",
+//       label: "Salary",
+//       icon: <HandCoins color="orange" size={30} />,
+//       options: ["₹10,000 - ₹20,000", "₹20,000 - ₹30,000", "₹30,000 - ₹50,000"],
+//       type: "radio",
+//     },
+//     {
+//       id: "Industry",
+//       label: "Industry",
+//       icon: <Building2 color="orange" size={30} />,
+//       options: industry,
+//       type: "checkbox",
+//     },
+//     {
+//       id: "Experience",
+//       label: "Experience",
+//       icon: <PersonStanding color="orange" size={30} />,
+//       options: ["0-2 years", "3-5 years", "5+ years"],
+//       type: "checkbox",
+//     },
+//   ];
 //   const [visibleSection, setVisibleSection] = useState({});
 //   const [showMore, setShowMore] = useState({});
 
@@ -87,15 +90,19 @@
 //               visibleSection[id] ? "block" : "hidden"
 //             }`}
 //           >
-//             {options
-//               .slice(0, showMore[id] ? options.length : 4)
-//               .map((option, index) => (
-//                 <label key={index} className="flex gap-4 text-lg text-gray-400">
-//                   <input type={type} name={id} value={option} />
-//                   <span>{option}</span>
-//                 </label>
-//               ))}
-
+//             {Array.isArray(options)
+//               ? options
+//                   .slice(0, showMore[id] ? options.length : 4)
+//                   .map((option, index) => (
+//                     <label
+//                       key={index}
+//                       className="flex gap-4 text-lg text-gray-400"
+//                     >
+//                       <input type={type} name={id} value={option} />
+//                       <span>{option}</span>
+//                     </label>
+//                   ))
+//               : console.error("Expected options to be an array, got:", options)}
 //             {options.length > 4 && (
 //               <button
 //                 className="pt-2 pl-5 text-blue-700 w-fit hover:text-orange-400"
@@ -113,7 +120,9 @@
 
 // export default JobFilter;
 
-import React, { useEffect, useState } from "react";
+
+
+import React, { useState } from "react";
 import {
   Calendar,
   Briefcase,
@@ -124,9 +133,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 
-const JobFilter = ({industry,jobRole}) => {
-  
-
+const JobFilter = ({ industry, jobRole, handleJobRoleChange }) => {
   const filters = [
     {
       id: "DatePosted",
@@ -146,7 +153,7 @@ const JobFilter = ({industry,jobRole}) => {
       id: "Salary",
       label: "Salary",
       icon: <HandCoins color="orange" size={30} />,
-      options: ["₹10,000 - ₹20,000", "₹20,000 - ₹30,000", "₹30,000 - ₹50,000"],
+      options: ["₹10,000 - ₹20,000", "₹20,000 - ₹30,000", "₹30,000 - ₹50,000","Above ₹50,000"],
       type: "radio",
     },
     {
@@ -164,6 +171,7 @@ const JobFilter = ({industry,jobRole}) => {
       type: "checkbox",
     },
   ];
+
   const [visibleSection, setVisibleSection] = useState({});
   const [showMore, setShowMore] = useState({});
 
@@ -207,11 +215,13 @@ const JobFilter = ({industry,jobRole}) => {
               ? options
                   .slice(0, showMore[id] ? options.length : 4)
                   .map((option, index) => (
-                    <label
-                      key={index}
-                      className="flex gap-4 text-lg text-gray-400"
-                    >
-                      <input type={type} name={id} value={option} />
+                    <label key={index} className="flex gap-4 text-lg text-gray-400">
+                      <input
+                        type={type}
+                        name={id}
+                        value={option}
+                        onChange={handleJobRoleChange}
+                      />
                       <span>{option}</span>
                     </label>
                   ))

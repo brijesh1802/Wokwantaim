@@ -362,12 +362,12 @@ const Profile = () => {
   }
 
   return (
-    <div className="mx-auto px-4 flex h-full w-full mb-10 mt-2">
-      <div className="flex h-96 mt-10 sticky top-0">
-        <ProfileCard user={user} />
+    <div className="mx-auto px-4 flex flex-col lg:flex-row h-full w-full mb-10 mt-2 sm:ml-4">
+      <div className="flex flex-col items-center xl:items-start xl:ml-2 xl:px-5 lg:w-max xl:w-1/3 mt-10 xl:mt-5">
+        <ProfileCard user={user} className="xl:ml-2 xl:mr-2" />
       </div>
 
-      <div className="flex flex-col w-full ml-4 mr-4">
+      <div className="flex flex-col w-full lg:py-8 xl:w-2/3 mt-1 xl:mt-0 xl:mr-5 space-y-4">
         <EditableSection
           user={user}
           title="About Me"
@@ -474,7 +474,7 @@ const Profile = () => {
           }}
           contentExists={socialLinks.linkedin || socialLinks.github}
         >
-          <div className="mt-10">
+          <div className="mt-4">
             {socialLinks.linkedin || socialLinks.github ? (
               <SocialLinks socialLinks={socialLinks} />
             ) : (

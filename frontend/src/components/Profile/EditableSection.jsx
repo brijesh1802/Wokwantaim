@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const EditableSection = ({ title ,user}) => {
+const EditableSection = ({ title, user }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState("");
 
@@ -19,7 +19,7 @@ const EditableSection = ({ title ,user}) => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-lg w-full mt-5">
+    <div className="p-6 bg-white rounded-lg shadow-lg w-full mt-0">
       <div className="flex justify-between items-center w-full">
         <h2 className="text-xl font-semibold">{title}</h2>
         {!isEditing && (

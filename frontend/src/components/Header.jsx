@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
-import { Facebook, Twitter, Linkedin } from "lucide-react";
+
 import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
 import Logo from "../assets/Logo.png";
@@ -35,7 +35,10 @@ function Header() {
     const fetchUsername = async () => {
       try {
         const token = localStorage.getItem("authToken");
-        if (!token) return;
+        if (!token) {
+          console.error("No token found");
+          return;
+        }
 
         const url =
           userType === "candidate"
@@ -50,13 +53,17 @@ function Header() {
           },
         });
 
+        if (response.status === 401) {
+          console.error("Unauthorized: Invalid or expired token");
+          handleLogout(); // Log out the user if the token is invalid
+          return;
+        }
+
         if (!response.ok) throw new Error("Failed to fetch data");
 
         const data = await response.json();
         setUserName(
-          userType === "candidate"
-            ? `${data.fullName.firstName} ${data.fullName.lastName}`
-            : data.name
+          userType === "candidate" ? `${data.fullName.firstName} ` : data.name
         );
 
         setProfilePhoto(data.profilePhoto);
@@ -69,7 +76,7 @@ function Header() {
   }, [userType]);
 
   return (
-    <header className="flex bg-white shadow-sm z-1">
+    <header className="flex bg-white shadow-sm z-10">
       <div className="container flex items-center justify-between px-4 py-4 mx-auto">
         <div className="flex items-center space-x-6">
           <img src={Logo} alt="Logo" className="h-8" />
@@ -78,25 +85,14 @@ function Header() {
         {/* Hamburger Icon for Mobile */}
         {isMobile && (
           <div className="flex text-gray-500 cursor-pointer md:hidden">
-            <Link to="/profile" className="flex items-center mr-3 -mt-1">
-              {profilePhoto && (
-                <div>
-                  <img
-                    src={profilePhoto}
-                    alt="Profile"
-                    className="object-cover w-10 h-10 rounded-full"
-                  />
-                </div>
-              )}
-            </Link>
             <div onClick={() => setNav(!nav)}>
               {nav ? <FaTimes size={25} /> : <FaBars size={25} />}
             </div>
           </div>
         )}
 
-      {/* Desktop Links */}
-      {!isMobile && (
+        {/* Desktop Links */}
+        {!isMobile && (
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center space-x-6">
               {/* Home Link */}
@@ -144,7 +140,7 @@ function Header() {
             </div>
 
             <div className="flex items-center space-x-4">
-            <Link to="/profile" className="flex items-center space-x-2">
+              <Link to="/profile" className="flex items-center space-x-2">
                 {profilePhoto && (
                   <div>
                     <img
@@ -173,15 +169,6 @@ function Header() {
                   </Link>
                 </button>
               )}
-              <a href="#" className="text-gray-600 hover:text-orange-500">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-gray-600 hover:text-orange-500">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-gray-600 hover:text-orange-500">
-                <Linkedin className="w-5 h-5" />
-              </a>
             </div>
           </div>
         )}
@@ -189,12 +176,33 @@ function Header() {
 
       {/* Mobile Menu */}
       {nav && isMobile && (
-        <ul className="absolute left-0 flex flex-col items-center w-full py-4 space-y-4 bg-white shadow-md top-16">
+        <ul className="absolute left-0 flex flex-col items-start pl-4 w-full py-3 space-y-2 bg-white shadow-md top-16">
+          <li>
+            <Link
+              to="/profile"
+              className="flex flex-col items-center "
+              onClick={() => setNav(false)}
+            >
+              {profilePhoto && (
+                // <div className="flex flex-col items-center">
+                //   <img
+                //     src={profilePhoto}
+                //     alt="Profile"
+                //     className="object-cover w-12 h-12 rounded-full  hover:shadow-orange-400 hover:shadow-2xl"
+                //   />
+                //   <span className="mt-1 text-lg font-semibold text-black">
+                //     {username}
+                //   </span>
+                // </div>
+                <p>Profile</p>
+              )}
+            </Link>
+          </li>
           <li>
             <Link
               to="/"
               onClick={() => setNav(false)}
-              className="text-xl font-medium text-orange-500 hover:font-semibold"
+              className="text-lg font-medium text-orange-500 hover:font-semibold"
             >
               Home
             </Link>
@@ -204,7 +212,7 @@ function Header() {
               <Link
                 to="/joblist"
                 onClick={() => setNav(false)}
-                className="text-gray-600 hover:text-orange-500 hover:font-semibold hover:text-xl"
+                className="text-gray-600 hover:text-orange-500 hover:font-semibold"
               >
                 Job List
               </Link>
@@ -212,7 +220,7 @@ function Header() {
               <Link
                 to="/addjobs"
                 onClick={() => setNav(false)}
-                className="text-gray-600 hover:text-orange-500 hover:font-semibold hover:text-xl"
+                className="text-gray-600 hover:text-orange-500 hover:font-semibold"
               >
                 Add Jobs
               </Link>
@@ -220,7 +228,7 @@ function Header() {
           </li>
           <li>
             {userType ? (
-              <button className="px-4 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600">
+              <button className="px-5 py-2 mt-2 text-white bg-orange-500 rounded-md shadow-lg hover:bg-orange-600">
                 <Link
                   to="/"
                   onClick={() => {
@@ -233,7 +241,7 @@ function Header() {
                 </Link>
               </button>
             ) : (
-              <button className="px-4 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600">
+              <button className="px-5 py-2 mt-2 text-white bg-orange-500 rounded-md shadow-lg hover:bg-orange-600">
                 <Link
                   to="/signup"
                   onClick={() => setNav(false)}
@@ -252,35 +260,6 @@ function Header() {
               </button>
             )}
           </li>
-          <div className="flex gap-3">
-            <li>
-              <a
-                href="#"
-                className="text-gray-600 hover:text-orange-500"
-                onClick={() => setNav(false)}
-              >
-                <Facebook className="w-5 h-5" />
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="text-gray-600 hover:text-orange-500"
-                onClick={() => setNav(false)}
-              >
-                <Twitter className="w-5 h-5" />
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="text-gray-600 hover:text-orange-500"
-                onClick={() => setNav(false)}
-              >
-                <Linkedin className="w-5 h-5" />
-              </a>
-            </li>
-          </div>
         </ul>
       )}
     </header>

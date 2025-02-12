@@ -136,7 +136,7 @@ function SignupForm({ userType }) {
       setPopup((prevState) => ({
         ...prevState,
         visible: true,
-        message: "Signup successful!",
+        message: "Email sent for verification!",
         isError: false,
       }));
 

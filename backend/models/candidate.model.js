@@ -44,6 +44,14 @@ const candidateSchema = new Schema({
         type: String,
         required: true
     },
+    verificationToken:{
+        type: String,
+        default: null
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
     resetToken: { 
         type: String, 
         default: null 

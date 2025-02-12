@@ -8,6 +8,7 @@ const employerRoutes = require('./routes/employer.route');
 const resetPassRoute = require('./routes/resetPassword.route');
 const jobsListRoute = require('./routes/jobs.route');
 const candidateProfileRoute = require('./routes/candidate.profile.route');
+const authRoute = require('./routes/auth.route');
 
 dbConnect();
 
@@ -41,6 +42,7 @@ app.use('/api/v1/candidates/info', candidateProfileRoute);
 app.use('/api/v1/employers', employerRoutes);
 app.use('/api/v1/auth', resetPassRoute);
 app.use('/api/v1/jobs',jobsListRoute)
+app.use('/api/v1', authRoute);
 
 
 

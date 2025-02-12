@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { X, Eye, EyeOff, Lock } from "lucide-react";
 
 function ResetPasswordPage() {
@@ -15,10 +15,10 @@ function ResetPasswordPage() {
     message: '',
     isError: false,
   });
-  const [searchParams] = useSearchParams();
+  const {token} = useParams();
   const navigate = useNavigate();
 
-  const token = searchParams.get('token');
+  console.log(token);
 
   const handleSubmit = async () => {
     if (!password || !confirmPassword) {
@@ -43,15 +43,16 @@ function ResetPasswordPage() {
     setPopup({ visible: false, message: '', isError: false }); // Reset popup before submit
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/reset-password`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/reset-password/${token}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ token, newPassword: password }),
+        body: JSON.stringify({ newPassword: password }),
       });
 
       const data = await response.json();
+      console.log(data);
 
       if (response.ok) {
         setPopup({
@@ -61,7 +62,7 @@ function ResetPasswordPage() {
         });
         setTimeout(() => {
           setPopup({ visible: false, message: '', isError: false });
-          window.close(); // Close the window after success
+          navigate('/login'); // Redirect to login page after success
         }, 3000);
       } else {
         setPopup({
@@ -101,14 +102,13 @@ function ResetPasswordPage() {
         {/* Popup Message */}
         {popup.visible && (
           <div
-            className={`fixed top-0 left-1/2 transform -translate-x-1/2 mt-10 px-4 py-2 rounded-lg shadow-lg text-white ${
+            className={`mb-4 px-4 py-2 rounded-lg shadow-lg text-white ${
               popup.isError ? "bg-red-500" : "bg-green-500"
             }`}
           >
             {popup.message}
           </div>
         )}
-
 
         {/* Password Field */}
         <div className="mt-5">

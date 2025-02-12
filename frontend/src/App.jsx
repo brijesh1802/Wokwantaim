@@ -12,6 +12,8 @@ import Profile from "./pages/Profile";
 import InterviewPage from "./pages/InterviewPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import SafetySections from "./pages/SafetySections";
+import EmailVerifiedPage from "./pages/EmailVerifiedPage";
+
 
 
 function App() {
@@ -36,7 +38,8 @@ function App() {
             <Route path="/safety" element={<SafetySections />} />
 
             <Route path="/interview/:companyId" element={<InterviewPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+            <Route path='/verify-email/:token' element={<EmailVerifiedPage />} />
           </Routes>
         </main>
         {!noPaths.includes(location.pathname) &&

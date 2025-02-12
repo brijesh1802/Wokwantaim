@@ -63,7 +63,7 @@ function Header() {
 
         const data = await response.json();
         setUserName(
-          userType === "candidate" ? `${data.fullName.firstName} ` : data.name
+          userType === "candidate" ? `${data.fullName.firstName}` : data.name
         );
 
         setProfilePhoto(data.profilePhoto);
@@ -93,83 +93,99 @@ function Header() {
 
         {/* Desktop Links */}
         {!isMobile && (
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center space-x-6">
-              {/* Home Link */}
-              <NavLink
-                to="/"
-                className={({ isActive }) =>
-                  `text-xl ml-4 font-medium ${
-                    isActive
-                      ? "text-orange-500 font-semibold"
-                      : "text-gray-600 hover:text-orange-500"
-                  }`
-                }
-              >
-                Home
-              </NavLink>
+          <div className="flex items-center justify-end w-full space-x-3 pr-5">
+            {/* Home Link */}
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `text-xl ml-4 font-medium ${
+                  isActive
+                    ? "text-orange-500 font-semibold"
+                    : "text-gray-600 hover:text-orange-500"
+                }`
+              }
+            >
+              Home
+            </NavLink>
 
-              {/* Conditional Rendering for Candidate or Employer */}
-              {userType === "candidate" || userType === null ? (
-                <NavLink
-                  to="/joblist"
-                  className={({ isActive }) =>
-                    `text-xl ml-4 ${
+            {/* Conditional Rendering for Candidate or Employer */}
+                  {userType === "candidate" || userType === null ? (
+                    <NavLink
+                    to="/joblist"
+                    className={({ isActive }) =>
+                      `text-xl ml-4 ${
                       isActive
                         ? "text-orange-500 font-semibold"
                         : "text-gray-600 hover:text-orange-500"
-                    }`
-                  }
-                >
-                  Job List
-                </NavLink>
-              ) : (
-                <NavLink
-                  to="/addjobs"
-                  className={({ isActive }) =>
-                    `text-xl ml-4 mt-1 ${
+                      }`
+                    }
+                    >
+                    Job List
+                    </NavLink>
+                  ) : (
+                    <NavLink
+                    to="/addjobs"
+                    className={({ isActive }) =>
+                      `text-xl ml-4 mt-1 ${
                       isActive
                         ? "text-orange-500 font-semibold"
                         : "text-gray-600 hover:text-orange-500"
-                    }`
-                  }
-                >
-                  Add Jobs
-                </NavLink>
-              )}
-            </div>
+                      }`
+                    }
+                    >
+                    Add Jobs
+                    </NavLink>
+                  )}
 
-            <div className="flex items-center space-x-4">
-              <Link to="/profile" className="flex items-center space-x-2">
-                {profilePhoto && (
-                  <div>
-                    <img
-                      src={profilePhoto}
-                      alt="Profile"
-                      className="object-cover w-10 h-10 rounded-full"
-                    />
-                  </div>
-                )}
-                <span className="text-black">{username}</span>
-              </Link>
-              {userType ? (
-                <button className="px-4 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600">
-                  <Link to="/" onClick={handleLogout} className="text-white">
+                  <div className="relative">
+                    <button
+                    onClick={() => setNav(!nav)}
+                    className="flex items-center focus:outline-none xl:ml-3 sm:-mr-10"
+                    >
+                    {profilePhoto && (
+                      <div className="flex items-center ">
+                      <img
+                        src={profilePhoto}
+                        alt="Profile"
+                        className="object-cover w-10 h-10 rounded-full"
+                      />
+                      </div>
+                    )}
+                    </button>
+                    {nav && (
+                    <div className="absolute right-0 w-48 py-2 mt-2 bg-white rounded-md shadow-lg">
+                      <Link
+                      to="/profile"
+                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                      onClick={() => setNav(false)}
+                      >
+                      Profile
+                      </Link>
+                      <button
+                      onClick={() => {
+                      handleLogout();
+                      setNav(false);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
+                  >
                     Log Out
-                  </Link>
-                </button>
-              ) : (
-                <button className="px-4 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600">
-                  <Link to="/signup" className="text-white">
-                    Sign Up
-                  </Link>
-                  <span className="mx-2 text-gray-400">/</span>
-                  <Link to="/login" className="text-white">
-                    Login
-                  </Link>
-                </button>
+                  </button>
+                </div>
               )}
             </div>
+
+            {userType ? (
+              "") : (
+              <button className="px-4 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600">
+                <Link to="/signup" className="text-white">
+                  Sign Up
+                </Link>
+                <span className="mx-2 text-gray-400">/</span>
+                <Link to="/login" className="text-white">
+                  Login
+                </Link>
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -180,22 +196,22 @@ function Header() {
           <li>
             <Link
               to="/profile"
-              className="flex flex-col items-center "
+              className="flex flex-col items-center"
               onClick={() => setNav(false)}
             >
               {profilePhoto && (
-                // <div className="flex flex-col items-center">
-                //   <img
-                //     src={profilePhoto}
-                //     alt="Profile"
-                //     className="object-cover w-12 h-12 rounded-full  hover:shadow-orange-400 hover:shadow-2xl"
-                //   />
-                //   <span className="mt-1 text-lg font-semibold text-black">
-                //     {username}
-                //   </span>
-                // </div>
-                <p>Profile</p>
+                <div className="flex flex-col items-center">
+                  <img
+                    src={profilePhoto}
+                    alt="Profile"
+                    className="object-cover w-12 h-12 rounded-full hover:shadow-orange-400 hover:shadow-2xl"
+                  />
+                  <span className="mt-1 text-lg font-semibold text-black">
+                    {username}
+                  </span>
+                </div>
               )}
+              <p>Profile</p>
             </Link>
           </li>
           <li>

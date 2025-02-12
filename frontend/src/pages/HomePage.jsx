@@ -120,7 +120,6 @@
 
 // export default HomePage;
 
-
 import { Link } from "react-router-dom";
 
 import {
@@ -192,7 +191,7 @@ function HomePage() {
               <input
                 type="text"
                 placeholder="Job title, keywords, or company"
-                className="flex-grow px-4 py-2 text-gray-800 cus:outline-none sm:z-1"
+                className="flex-grow px-4 py-2 text-gray-800 outline-none sm:z-1"
               />
               <button className="flex items-center max-w-xs px-4 py-2 m-1 text-white transition-colors bg-orange-500 rounded-md hover:bg-orange-600 sm:max-w">
                 <Search className="hidden w-5 h-5 mr-2 sm:block" />

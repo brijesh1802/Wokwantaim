@@ -11,6 +11,7 @@ import CompanyDetail from "./pages/CompanyDetail";
 import Profile from "./pages/Profile";
 import InterviewPage from "./pages/InterviewPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ScrollToTop from './components/ScrollToTop'
 
 
 function App() {
@@ -18,11 +19,13 @@ function App() {
   const noPaths = ["/signup", "/login"];
   const noFooter = ["/profile"];
   return (
+    
     <AuthProvider>
       <div className="flex flex-col min-h-screen">
         {/* Conditionally render Header */}
         {!noPaths.includes(location.pathname) && <Header />}
         <main className="flex-grow">
+        <ScrollToTop/>
           <Routes>
             <Route path="*" element={<h1>Not Found</h1>} />
             <Route path="/" element={<HomePage />} />

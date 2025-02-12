@@ -18,9 +18,12 @@ const JobResults = ({filteredJob}) => {
       .then((data) => setJobs(data))
       .catch((error) => console.error("Error fetching jobs:", error));
   }, []);
+
+  const [sortOrder, setSortOrder] = useState("");
+  const [sortedJobs, setSortedJobs] = useState([...filteredJob]);
   const indexOfLastJob = currentPage * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
-  const currentJobs = filteredJob.slice(indexOfFirstJob, indexOfLastJob);
+  const currentJobs = sortedJobs.slice(indexOfFirstJob, indexOfLastJob);
 
   const totalPages = Math.ceil(filteredJob.length / jobsPerPage);
 
@@ -33,6 +36,15 @@ const JobResults = ({filteredJob}) => {
   const handleClick=(jobs)=>{
     navigate("/jobdetail",{state:{jobs}})
   }
+  useEffect(() => {
+    let sortedFilteredJob = [...filteredJob];
+    if (sortOrder === "ascending") {
+      sortedFilteredJob.sort((a, b) => a.company.localeCompare(b.company));
+    } else if (sortOrder === "descending") {
+      sortedFilteredJob.sort((a, b) => b.company.localeCompare(a.company));
+    }
+    setSortedJobs(sortedFilteredJob);
+  }, [sortOrder, filteredJob]);
   return (
     <div className="flex flex-col mb-10 lg:w-3/4 mt-9 lg:mt-0">
       <div className="flex items-center justify-between mx-4 rounded-md lg:bg-gray-100 lg:h-20">
@@ -41,7 +53,11 @@ const JobResults = ({filteredJob}) => {
         </p>
         <div>
           <span className="text-sm">Sort By : </span>
-          <select className="text-gray-400 bg-transparent">
+          <select className="text-gray-400 bg-transparent"
+          value={sortOrder}
+          onChange={(e)=>{
+            setSortOrder(e.target.value)
+          }}>
             <option value="" disabled>
               Select
             </option>

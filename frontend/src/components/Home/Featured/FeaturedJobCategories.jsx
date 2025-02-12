@@ -1,22 +1,25 @@
 // FeaturedJobCategories.js
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import {BriefcaseBusiness } from 'lucide-react'
+import { AuthContext } from "../../../context/AuthContext";
 
-const FeaturedJobCategories = ({ sectionTitle, categories }) => {
+const FeaturedJobCategories = ({ sectionTitle}) => {
+  const {industry}=useContext(AuthContext)
   return (
     <section className="py-4">
       <div className="container px-4 mx-auto slike-slide">
         <h2 className="mb-12 text-3xl font-bold text-center">{sectionTitle}</h2>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {categories.map((category, index) => (
+          {industry.map((job, index) => (
             <div
               key={index}
               className="p-6 transition-shadow bg-white rounded-lg shadow-md hover:shadow-lg"
             >
-              <div className="mb-4 text-orange-500">{category.icon}</div>
-              <h3 className="mb-2 text-xl font-semibold">{category.title}</h3>
+               <div className="mb-2 text-orange-500"><BriefcaseBusiness size={30}/></div>
+              <h3 className="mb-2 text-xl font-semibold">{job}</h3>
               <p className="mb-2 text-gray-600">
-                {category.count} jobs available
+                10 jobs available
               </p>
               <Link
                 to="/joblist"

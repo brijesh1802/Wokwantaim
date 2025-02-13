@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useState, useEffect } from "react";
 import companyLogo from "../assets/comlogo-1.png";
@@ -158,6 +159,3 @@ const JobResults = ({filteredJob}) => {
 };
 
 export default JobResults;
-
-
-

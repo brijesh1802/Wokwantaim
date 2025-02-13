@@ -1,4 +1,6 @@
 
+
+
 // import { Link, useNavigate } from "react-router-dom";
 
 // import {
@@ -14,50 +16,13 @@
 // import JobInterviews from "./JobInterviews";
 // import FeaturedJobCategories from "../components/Home/Featured/FeaturedJobCategories";
 // function HomePage() {
-//   const { userType,handleJobRoleChange } = useContext(AuthContext);
-//   const categories = [
-//     {
-//       icon: <Briefcase className="w-8 h-8" />,
-//       title: "Business & Management",
-//       count: 230,
-//     },
-//     {
-//       icon: <TrendingUp className="w-8 h-8" />,
-//       title: "Marketing & Sales",
-//       count: 184,
-//     },
-//     {
-//       icon: <Users className="w-8 h-8" />,
-//       title: "Human Resources",
-//       count: 142,
-//     },
-//     {
-//       icon: <Building2 className="w-8 h-8" />,
-//       title: "Project Management",
-//       count: 165,
-//     },
-//     {
-//       icon: <Briefcase className="w-8 h-8" />,
-//       title: "Finance & Accounting",
-//       count: 120,
-//     },
-//     {
-//       icon: <TrendingUp className="w-8 h-8" />,
-//       title: "Customer Service",
-//       count: 98,
-//     },
-//     { icon: <Users className="w-8 h-8" />, title: "IT & Software", count: 210 },
-//     {
-//       icon: <Building2 className="w-8 h-8" />,
-//       title: "Engineering",
-//       count: 175,
-//     },
-//   ];
+//   const { userType,handleJobRoleChange} = useContext(AuthContext);
 //   const navigate=useNavigate();
 //   const handleSearch=()=>{
 //     navigate('/joblist')
 //   }
 
+  
 //   return (
 //     <div className="bg-gray-50">
 //       {/* Hero Section */}
@@ -78,7 +43,7 @@
 //                 onChange={handleJobRoleChange}
 //               />
 //               <button className="flex items-center max-w-xs px-4 py-2 m-1 text-white transition-colors bg-orange-500 rounded-md hover:bg-orange-600 sm:max-w"
-//               onClick={()=>handleSearch}>
+//               onClick={handleSearch}>
 //                 <Search className="hidden w-5 h-5 mr-2 sm:block" />
 //                 <span className="hidden sm:block">Search</span>
 //                 <Search className="w-5 h-5 sm:hidden" />
@@ -92,7 +57,6 @@
 //       <section className="py-16">
 //         <FeaturedJobCategories
 //           sectionTitle="Featured Job Categories"
-//           categories={categories}
 //         />
 //       </section>
 
@@ -213,7 +177,6 @@ import {
   Briefcase,
   Users,
   Building2,
-  TrendingUp,
   BarChart2,
 } from "lucide-react";
 import { useContext } from "react";
@@ -222,6 +185,7 @@ import JobInterviews from "./JobInterviews";
 import FeaturedJobCategories from "../components/Home/Featured/FeaturedJobCategories";
 function HomePage() {
   const { userType,handleJobRoleChange} = useContext(AuthContext);
+ 
   const navigate=useNavigate();
   const handleSearch=()=>{
     navigate('/joblist')
@@ -242,8 +206,9 @@ function HomePage() {
             <div className="flex items-center p-1 bg-white rounded-lg">
               <input
                 type="text"
-                placeholder="Job title, keywords, or company"
+                placeholder="Job title or company"
                 className="flex-grow px-4 py-2 text-gray-800 cus:outline-none sm:z-1"
+                name='TitleAndCompany'
                 onChange={handleJobRoleChange}
               />
               <button className="flex items-center max-w-xs px-4 py-2 m-1 text-white transition-colors bg-orange-500 rounded-md hover:bg-orange-600 sm:max-w"

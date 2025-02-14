@@ -63,7 +63,7 @@ const JobResults = ({ filteredJob }) => {
               Select
             </option>
             <option value="ascending">A-Z</option>
-            <option value="decending">Z-A</option>
+            <option value="descending">Z-A</option>
           </select>
         </div>
       </div>

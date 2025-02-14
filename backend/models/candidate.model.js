@@ -24,11 +24,13 @@ const candidateSchema = new Schema({
     experienceLevel: {
         type: String,
         required: false,
+        default: 'Fresher',
         enum: ['Fresher', 'Mid-Level', 'Senior-Level', 'Entry-Level']
     },
     jobType: {
         type: String,
         required: false,
+        default: 'Full-time',
         enum: ['Full-time', 'Part-time', 'Contract', 'Internship']
     },
     profilePhoto: {
@@ -46,6 +48,7 @@ const candidateSchema = new Schema({
     gender: {
         type: String,
         required: false,
+        default: 'Male',
         enum: ['Male', 'Female', 'Others']
     },
     location: {
@@ -57,6 +60,12 @@ const candidateSchema = new Schema({
             type: String,
             required: false
         }
+    },
+    modeofLogin: {
+        type: String,
+        required: false,
+        default: 'email',
+        enum: ['email', 'google', 'facebook']
     },
     verificationToken: {
         type: String,

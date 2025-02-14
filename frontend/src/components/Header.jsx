@@ -365,7 +365,7 @@ function Header() {
               <hr className="w-full my-2 border-gray-300" />
 
               {/* Section 4: Logout or Sign-up/Login */}
-              {userType ? (
+              {profilePhoto ? (
                 <button
                   onClick={handleLogout}
                   className="py-2 text-lg hover:text-orange-500"

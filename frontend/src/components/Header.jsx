@@ -31,7 +31,7 @@ function Header() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
+  /*fetch data*/
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -95,7 +95,7 @@ function Header() {
       document.body.style.overflow = "auto";
     };
   }, [navOpen]);
-
+  console.log(userData?.profilePhoto);
   return (
     <header className="fixed z-10 w-full bg-white shadow-md">
       <div className="flex items-center justify-between px-6 py-4">
@@ -241,8 +241,17 @@ function Header() {
             <div className="flex flex-col items-start px-4 py-6">
               {userType === "candidate" && userData ? (
                 <div className="flex flex-col ml-2 text-sm">
-                  <span className="flex items-start">{userData.name}</span>
-                  <span>{userData.email}</span>
+                  <img
+                    src={userData.profilePhoto || profileimage} //
+                    alt="Profile"
+                    className="object-cover w-10 h-10 rounded-full"
+                  />
+                  {/* Full name (first name only) */}
+                  <span className="flex items-start">
+                    {userData?.fullName?.firstName || "Unknown"}
+                  </span>
+                  {/* Email */}
+                  <span>{userData?.email || "No email provided"}</span>
                 </div>
               ) : userType === "employer" && userData ? (
                 <div className="flex flex-col ml-2 text-sm">

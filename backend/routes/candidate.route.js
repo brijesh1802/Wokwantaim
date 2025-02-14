@@ -25,4 +25,5 @@ router.get('/profile',authMiddleware, profile);
 
 router.get("/verify/:token", verifyEmail);
 
+
 module.exports = router;

@@ -144,7 +144,7 @@ const login = async (req, res) => {
         const token = jwt.sign(
             { id: employer._id, email: employer.email },
             process.env.JWT_SECRET,
-            { expiresIn: "7d" }
+            { expiresIn: "7d", algorithm: "HS256"  }
         );  
         res.json({ message: "Login successful!", token });
 

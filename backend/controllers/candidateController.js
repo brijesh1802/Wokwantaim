@@ -164,10 +164,11 @@ const login = async (req, res) => {
         
 
         const token = jwt.sign(
-            { id: candidate._id, email: candidate.email },
+            { email: candidate.email },
             process.env.JWT_SECRET,
-            { expiresIn: "7d" }
+            { expiresIn: "7d", algorithm: "HS256" }
         );  
+        
         res.json({ message: "Login successful!", token });
 
     } catch (err) {
@@ -177,13 +178,13 @@ const login = async (req, res) => {
 };
 
 // Profile route
-const profile =  async (req, res) => {
+const profile = async (req, res) => {
     try {
-        // Get the logged-in user's ID from the JWT
-        const userId = req.user.id;
+        // Get the logged-in user's email from the JWT
+        const userEmail = req.user.email;
 
-        // Find the candidate by userId
-        const candidate = await Candidate.findById(userId);
+        // Find the candidate by email
+        const candidate = await Candidate.findOne({ email: userEmail });
 
         // If candidate not found, return 404 error
         if (!candidate) {
@@ -192,9 +193,9 @@ const profile =  async (req, res) => {
         res.json(candidate);
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ msg: 'Server error while updating profile' });
+        res.status(500).json({ msg: 'Server error while fetching profile' });
     }
-}
+};
 
 
 const verifyEmail = async (req, res) => {
@@ -228,4 +229,4 @@ const verifyEmail = async (req, res) => {
 };
 
 
-module.exports = { signup, login, profile, verifyEmail};
+module.exports = { signup, login, profile, verifyEmail };

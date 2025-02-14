@@ -9,7 +9,7 @@
 // });
 
 const express = require('express');
-const { signup, login, profile, verifyEmail } = require('../controllers/candidateController');
+const { signup, login, profile, verifyEmail } = require('../controllers/employerController');
 const authMiddleware = require('../middleware/authMiddleware'); 
 
 const router = express.Router();

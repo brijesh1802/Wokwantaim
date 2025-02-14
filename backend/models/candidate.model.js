@@ -19,44 +19,44 @@ const candidateSchema = new Schema({
         unique: true
     },
     password: {
-        type: String,
-        required: true
+        type: String,  // This can be an empty string for Google login users
+        required: false  // Optional for Google login
     },
     experienceLevel: {
         type: String,
-        required: true,
+        required: false,
         enum: ['Fresher', 'Mid-Level', 'Senior-Level', 'Entry-Level']
     },
     jobType: {
         type: String,
-        required: true,
+        required: false,
         enum: ['Full-time', 'Part-time', 'Contract', 'Internship']
     },
     profilePhoto: {
         type: String,
-        required: true
+        required: false
     },
     resume: {
         type: String,
-        required: true
+        required: false
     },
     phoneNumber: {
         type: String,
-        required: true
+        required: false
     },
     gender: {
         type: String,
-        required: true,
+        required: false,
         enum: ['Male', 'Female', 'Others']
     },
     location: {
         city: {
             type: String,
-            required: true
+            required: false
         },
         state: {
             type: String,
-            required: true
+            required: false
         }
     },
     verificationToken: {
@@ -65,7 +65,7 @@ const candidateSchema = new Schema({
     },
     isVerified: {
         type: Boolean,
-        default: false
+        default: true  // Automatically verify when using Google login
     },
     resetToken: { 
         type: String, 
@@ -83,6 +83,6 @@ const candidateSchema = new Schema({
     timestamps: true
 });
 
-const Candidate = mongoose.model('candidates', candidateSchema);
+const Candidate = mongoose.model('Candidate', candidateSchema);
 
 module.exports = Candidate;

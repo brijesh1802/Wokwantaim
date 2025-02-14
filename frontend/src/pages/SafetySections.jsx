@@ -180,7 +180,7 @@ const Section = ({ title, items }) => (
 // Main Safety Page Component
 const SafetySections = () => {
   return (
-    <section className="max-w-7xl mx-auto px-8 py-14">
+    <section className="max-w-7xl mx-auto px-8 py-14 mt-14">
       {/* Header */}
       <div className="flex justify-center">
         <h2 className="text-2xl sm:text-3xl md:text-5xl font-semibold text-orange-900 text-center mb-10">

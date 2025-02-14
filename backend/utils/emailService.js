@@ -2,13 +2,22 @@ const dotenv = require('dotenv');
 dotenv.config();
 const nodemailer = require('nodemailer');
 
+// const transporter = nodemailer.createTransport({
+//   service: process.env.EMAIL_HOST,
+//   port: process.env.EMAIL_PORT,
+//   secure: process.env.PORT_STATUS,
+//   auth: {
+//     user: process.env.EMAIL_USER,
+//     pass: process.env.EMAIL_PASS,
+//   },
+// });
 const transporter = nodemailer.createTransport({
-  service: process.env.EMAIL_HOST,
-  port: process.env.EMAIL_PORT,
-  secure: process.env.PORT_STATUS,
+  host: process.env.EMAIL_HOST,  // smtp.office365.com
+  port: process.env.EMAIL_PORT,  // 587
+  secure: process.env.PORT_STATUS === "true",  // false for TLS, true for SSL
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.EMAIL_USER,  // Your Microsoft email
+    pass: process.env.EMAIL_PASS,  // Your email password or app password
   },
 });
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link, NavLink } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { Facebook, Twitter, Linkedin } from "lucide-react";
@@ -13,6 +14,10 @@ function Header() {
   const [username, setUserName] = useState("");
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
+  const navigate = useNavigate();
+  const handleClick=()=>{
+    navigate('/')
+  }
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -72,7 +77,7 @@ function Header() {
     <header className="flex bg-white shadow-sm z-1">
       <div className="container flex items-center justify-between px-4 py-4 mx-auto">
         <div className="flex items-center space-x-6">
-          <img src={Logo} alt="Logo" className="h-8" />
+          <img src={Logo} alt="Logo" className="h-8" onClick={handleClick}/>
         </div>
 
         {/* Hamburger Icon for Mobile */}

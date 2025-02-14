@@ -5,10 +5,10 @@ const express = require('express');
 const passport = require('passport');
 const session = require('express-session');
 require('./utils/googleConfig');
+require('./utils/facebookConfig');  
 const jwt = require('jsonwebtoken');
 
 const dbConnect = require('./db/db');
-const Candidate = require('./models/candidate.model');
 const candidateRoutes = require('./routes/candidate.route');
 const employerRoutes = require('./routes/employer.route');
 const resetPassRoute = require('./routes/resetPassword.route');
@@ -54,6 +54,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// console.log("Registered Passport Strategies:", passport._strategies);
+
+
 // Google Login Route
 app.get('/auth/google',
   passport.authenticate('google', {
@@ -75,6 +78,25 @@ app.get('/auth/google/callback',
       res.redirect(`${process.env.VERCEL_URL}/redirect?token=${token}`);
   }
 );
+
+app.get('/auth/facebook',
+  passport.authenticate('facebook', { scope: ['email'] })
+);
+
+app.get('/auth/facebook/callback',
+  passport.authenticate('facebook', { failureRedirect: `${process.env.VERCEL_URL}/` }),
+  (req, res) => {
+
+      const token = jwt.sign(
+          { email: req.user.email },
+          process.env.JWT_SECRET,
+          { expiresIn: "7d", algorithm: "HS256" }
+      );
+      res.redirect(`${process.env.VERCEL_URL}/redirect?token=${token}`);
+  }
+);
+;
+
 
 
 // Static file serving for uploads

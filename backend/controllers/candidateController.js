@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const Candidate = require('../models/candidate.model');
+const CandidateProfile = require('../models/candidate.profile.model');
 const jwt = require('jsonwebtoken');
 const Employer  = require('../models/employer.model');
 const crypto = require('crypto');
@@ -102,7 +103,10 @@ const signup = async (req, res) => {
         });
 
         // Save the candidate to DB
-        await candidate.save();
+        const newCandidate = await candidate.save();
+
+        const newProfile = new CandidateProfile({ candidateId: newCandidate._id });
+        await newProfile.save();
 
         // Send verification email
         const verificationURL = `${process.env.VERCEL_URL}/verify-email/${verificationToken}`;

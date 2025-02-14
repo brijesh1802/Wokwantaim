@@ -16,7 +16,8 @@ passport.use(new GoogleStrategy({
             candidate = new Candidate({
                 fullName: {
                     firstName: profile.name.givenName,
-                    lastName: profile.name.familyName,
+                    lastName: profile.name.familyName
+
                 },
                 email: profile.emails[0].value,
                 password: '', 

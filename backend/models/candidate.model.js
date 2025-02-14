@@ -10,7 +10,6 @@ const candidateSchema = new Schema({
         },
         lastName: {
             type: String,
-            required: true
         }
     },
     email: {

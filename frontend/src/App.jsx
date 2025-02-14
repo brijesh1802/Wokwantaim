@@ -11,6 +11,10 @@ import CompanyDetail from "./pages/CompanyDetail";
 import Profile from "./pages/Profile";
 import InterviewPage from "./pages/InterviewPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import SafetySections from "./pages/SafetySections";
+import EmailVerifiedPage from "./pages/EmailVerifiedPage";
+import RedirectPage from "./pages/RedirectPage";
+
 import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
@@ -34,9 +38,13 @@ function App() {
             <Route path="/jobdetail" element={<JobDetail />} />
             <Route path="/companydetail" element={<CompanyDetail />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/safety" element={<SafetySections />} />
+
 
             <Route path="/interview/:companyId" element={<InterviewPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+            <Route path='/verify-email/:token' element={<EmailVerifiedPage />} />
+            <Route path="/redirect" element={<RedirectPage />} />
           </Routes>
         </main>
         

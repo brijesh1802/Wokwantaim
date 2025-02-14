@@ -31,6 +31,7 @@ function SignupForm({ userType }) {
     address: "",
     phone: "",
     website: "",
+    joinType: "",
   });
 
   useEffect(() => {
@@ -48,6 +49,7 @@ function SignupForm({ userType }) {
       name: "",
       address: "",
       phone: "",
+      joinType: "",
       website: "",
     });
   }, [userType]);
@@ -136,7 +138,7 @@ function SignupForm({ userType }) {
       setPopup((prevState) => ({
         ...prevState,
         visible: true,
-        message: "Signup successful!",
+        message: "Email sent for verification!",
         isError: false,
       }));
 
@@ -145,10 +147,10 @@ function SignupForm({ userType }) {
         navigate("/login");
       }, 1500);
     } catch (error) {
-      console.error("Signup error:", error.response.data);
+      console.error("Signup error:", error.message);
       setPopup({
         visible: true,
-        message: error.response.data.msg || "Signup failed!",
+        message: error.message || "Signup failed!",
         isError: true,
       });
 
@@ -172,6 +174,8 @@ function SignupForm({ userType }) {
       [field]: !prevState[field],
     }));
   };
+
+  console.log(userType)
 
   return (
     <>

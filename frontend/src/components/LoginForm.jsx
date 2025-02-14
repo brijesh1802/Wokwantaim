@@ -11,6 +11,7 @@ function LoginForm({ userType }) {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [redirect,setRedirect] = useState(false);
   const { login } = useContext(AuthContext);
 
   useEffect(() => {
@@ -56,12 +57,13 @@ function LoginForm({ userType }) {
           message: message || "Login successful!",
           isError: false,
         });
-
+        setRedirect(true)
         setTimeout(() => {
           setPopup({ visible: false, message: "", isError: false });
-          login(userType);
-          navigate("/");
-        }, 1500);
+          setRedirect(true)
+          setTimeout(()=>{login(userType);
+          navigate("/");},1000)
+        }, 3000);
       } else {
         const errorData = await response.json();
         const errorMessage = errorData.msg || "An unexpected error occurred";
@@ -162,7 +164,7 @@ function LoginForm({ userType }) {
           disabled={loading}
           className="w-full px-4 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
         >
-          {loading ? <div className="spinner"></div> : "Log In"}
+          {loading ? <div className="spinner"></div> : (redirect ? "Redirecting..." : "Log In")}
         </button>
 
         <p className="text-sm text-center text-gray-600">

@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react";
 
 const ProfileCard = ({ user }) => {
   return (
-    <div className="p-6 text-center bg-white rounded-lg shadow-lg w-80 ml-4 pt-14">
+    <div className="p-6 text-center bg-white rounded-lg shadow-lg w-80 mr-8 ml-3 pt-14 xl:w-96 xl:h-96 mb-10 xl:sticky xl:top-0">
       <img
         src={user.profilePhoto}
         alt="Profile"

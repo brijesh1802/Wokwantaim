@@ -5,6 +5,7 @@ import SocialAuthButtons from '../components/SocialAuthButtons'
 
 function LoginPage() {
   const [userType, setUserType] = useState('candidate')
+  
 
   return (
     <div className="container max-w-md px-4 py-12 mx-auto">
@@ -48,7 +49,7 @@ function LoginPage() {
             </div>
           </div>
 
-          <SocialAuthButtons />
+          <SocialAuthButtons  />
         </div>
       )}
     </div>

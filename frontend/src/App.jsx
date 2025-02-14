@@ -13,6 +13,7 @@ import InterviewPage from "./pages/InterviewPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import SafetySections from "./pages/SafetySections";
 import EmailVerifiedPage from "./pages/EmailVerifiedPage";
+import RedirectPage from "./pages/RedirectPage";
 
 
 
@@ -40,6 +41,7 @@ function App() {
             <Route path="/interview/:companyId" element={<InterviewPage />} />
             <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
             <Route path='/verify-email/:token' element={<EmailVerifiedPage />} />
+            <Route path="/redirect" element={<RedirectPage />} />
           </Routes>
         </main>
         {!noPaths.includes(location.pathname) &&

@@ -294,7 +294,7 @@ function Header() {
   const navigate = useNavigate();
   const [navOpen, setNavOpen] = useState(false);
   const [profilePhoto, setProfilePhoto] = useState(null);
-  const[email,setEmail] = useState("")
+  const [email, setEmail] = useState("");
   const [username, setUserName] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
@@ -345,7 +345,7 @@ function Header() {
           userType === "candidate" ? data.fullName.firstName : data.name
         );
         setProfilePhoto(data.profilePhoto);
-         setEmail(data.email);
+        setEmail(data.email);
       } catch (error) {
         console.error("Error fetching username:", error);
       }
@@ -431,7 +431,7 @@ function Header() {
             <NavLink
               to="/addjobs"
               className={({ isActive }) =>
-                `text-xl ml-4 mt-1 ${
+                `text-xl ml-4 ${
                   isActive
                     ? "text-orange-500 font-semibold"
                     : "text-gray-600 hover:text-orange-500"
@@ -453,7 +453,7 @@ function Header() {
                   className="object-cover w-10 h-10 rounded-full"
                 />
               </button>
-            ) : (
+            ) : userType === null ? (
               <button className="px-4 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600">
                 <NavLink to="/signup" className="text-white">
                   Sign Up
@@ -463,12 +463,23 @@ function Header() {
                   Login
                 </NavLink>
               </button>
+            ) : (
+              <button
+                className="px-4 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600"
+                onClick={() => {
+                  handleLogout();
+                  setDropdownOpen(false);
+                }}
+              >
+                {" "}
+                Log Out
+              </button>
             )}
             {dropdownOpen && (
               <div className="absolute right-0 w-48 py-2 mt-2 bg-white rounded-md shadow-lg">
                 {/* Profile with Submenu */}
                 <button
-                  className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 flex justify-between items-center"
+                  className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 flex justify-between items-center"
                   onClick={() => setManageProfileOpen(!manageProfileOpen)}
                 >
                   Profile{" "}

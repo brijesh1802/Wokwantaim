@@ -7,7 +7,7 @@ const jobSchema = new mongoose.Schema({
     index: true
   },
   company: {
-    type: String, // Kept as String since you didn't define it as a reference
+    type: String, 
     required: true,
     index: true
   },
@@ -69,14 +69,6 @@ const jobSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Text Index for Efficient Search
-jobSchema.index({
-  title: 'text',
-  description: 'text',
-  skills: 'text',
-  company: 'text',
-  location: 'text'
-});
 
 const Job = mongoose.model('Job', jobSchema);
 

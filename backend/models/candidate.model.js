@@ -44,7 +44,22 @@ const candidateSchema = new Schema({
         type: String,
         required: true
     },
-    verificationToken:{
+    gender: {
+        type: String,
+        required: true,
+        enum: ['Male', 'Female', 'Others']
+    },
+    location: {
+        city: {
+            type: String,
+            required: true
+        },
+        state: {
+            type: String,
+            required: true
+        }
+    },
+    verificationToken: {
         type: String,
         default: null
     },

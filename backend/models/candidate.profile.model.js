@@ -1,101 +1,151 @@
 const mongoose = require('mongoose');
+
 const Schema = mongoose.Schema;
 
-const experienceSchema = new Schema({
-    title: String,
-    company: String,
-    location: String,
-    startDate: Date,
-    endDate: Date,
-    description: String,
-    isCurrentRole: {
-        type: Boolean,
-        default: false
-    }
-});
-
-const educationSchema = new Schema({
-    institution: String,
-    degree: String,
-    fieldOfStudy: String,
-    startDate: Date,
-    endDate: Date,
-    grade: String
-});
-
-const certificationSchema = new Schema({
-    name: String,
-    issuingOrganization: String,
-    issueDate: Date,
-    expiryDate: Date,
-    credentialId: String,
-    credentialUrl: String
-});
+const urlPattern = /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,6})(\/[\w.-]*)*\/?$/;
 
 const candidateProfileSchema = new Schema({
     candidateId: {
         type: Schema.Types.ObjectId,
         ref: 'candidates',
-        required: true,
-        unique: true
+        required: true
     },
-    aboutMe: {
-        type: String,
-        default: null
-    },
-    experience: {
-        type: [experienceSchema],
-        default: []
-    },
-    education: {
-        type: [educationSchema],
-        default: []
-    },
-    socialLinks: {
-        github: {
-            type: String,
-            default: null,
-            validate: {
-                validator: function(v) {
-                    return v === null || /^https:\/\/github\.com\//.test(v);
-                },
-                message: 'Must be a valid GitHub URL'
-            }
-        },
-        linkedin: {
-            type: String,
-            default: null,
-            validate: {
-                validator: function(v) {
-                    return v === null || /^https:\/\/[a-z]{2,}\.linkedin\.com\//.test(v);
-                },
-                message: 'Must be a valid LinkedIn URL'
+    education: [
+        {
+            degree: {
+                type: String,
+                required: true
+            },
+            institution: {
+                type: String,
+                required: true
+            },
+            startDate: {
+                type: Date,
+                required: true
+            },
+            endDate: {
+                type: Date
+            },
+            grade: {
+                type: String
+            },
+            description: {
+                type: String
             }
         }
-    },
-    certifications: {
-        type: [certificationSchema],
-        default: []
-    },
-    skills: {
-        type: [{
-            name: String,
-            level: {
+    ],
+    workExperience: [
+        {
+            jobTitle: {
                 type: String,
-                enum: ['Beginner', 'Intermediate', 'Advanced', 'Expert']
+                required: true
+            },
+            company: {
+                type: String,
+                required: true
+            },
+            industry: {
+                type: String,
+                required: true
+            },
+            location: {
+                type: String
+            },
+            startDate: {
+                type: Date,
+                required: true
+            },
+            endDate: {
+                type: Date
+            },
+            isCurrentJob: {
+                type: Boolean,
+                default: false
+            },
+            description: {
+                type: String
             }
-        }],
-        default: []
-    },
-    completionStatus: {
-        type: Number,
-        default: 0
+        }
+    ],
+    skills: [
+        {
+            type: String,
+            required: true
+        }
+    ],
+    certifications: [
+        {
+            title: {
+                type: String,
+                required: true
+            },
+            issuingOrganization: {
+                type: String,
+                required: true
+            },
+            issueDate: {
+                type: Date,
+                required: true
+            },
+            expirationDate: {
+                type: Date
+            },
+            credentialId: {
+                type: String
+            },
+            credentialURL: {
+                type: String,
+                match: urlPattern
+            }
+        }
+    ],
+    personalProjects: [
+        {
+            title: {
+                type: String,
+                required: true
+            },
+            description: {
+                type: String
+            },
+            technologiesUsed: [
+                {
+                    type: String
+                }
+            ],
+            projectURL: {
+                type: String,
+                match: urlPattern
+            },
+            githubRepo: {
+                type: String,
+                match: urlPattern
+            }
+        }
+    ],
+    socialLinks: {
+        linkedin: {
+            type: String,
+            match: /^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/ 
+        },
+        github: {
+            type: String,
+            match: /^(https?:\/\/)?(www\.)?github\.com\/.*$/ 
+        },
+        portfolio: {
+            type: String,
+            match: urlPattern 
+        },
+        other: {
+            type: String,
+            match: urlPattern 
+        }
     }
 }, {
     timestamps: true
 });
 
-
-const CandidateProfile = mongoose.model('candidate_profiles', candidateProfileSchema);
+const CandidateProfile = mongoose.model('candidateProfiles', candidateProfileSchema);
 
 module.exports = CandidateProfile;

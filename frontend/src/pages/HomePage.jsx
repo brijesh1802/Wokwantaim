@@ -178,7 +178,7 @@ function HomePage() {
   return (
     <div className="bg-gray-50">
       {/* Hero Section */}
-      <section className="py-20 text-white bg-gradient-to-r from-orange-500 to-orange-600">
+      <section className="py-20 mt-10 text-white bg-gradient-to-r from-orange-500 to-orange-600">
         <div className="container px-4 mx-auto">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="mb-6 text-4xl font-bold md:text-5xl">

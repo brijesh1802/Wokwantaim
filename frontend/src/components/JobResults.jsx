@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useState, useEffect } from "react";
 import companyLogo from "../assets/comlogo-1.png";
@@ -52,6 +51,7 @@ const JobResults = ({filteredJob}) => {
         <p className="text-sm px-3">
           Showing {firstJobIndex}-{lastJobIndex} of {filteredJob.length} Job Results:
         </p>
+
         <div>
           <span className="text-sm">Sort By : </span>
           <select className="text-gray-400 bg-transparent"
@@ -159,3 +159,4 @@ const JobResults = ({filteredJob}) => {
 };
 
 export default JobResults;
+

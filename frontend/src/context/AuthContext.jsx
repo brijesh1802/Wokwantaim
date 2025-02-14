@@ -73,8 +73,17 @@ export const AuthProvider = ({ children }) => {
     setIndustry(industryArray);
   }, [jobs]);
 
+  const [showScroll,setShowScroll]=useState(false)
+  useEffect(()=>{
+    const handleScroll=()=>{
+      setShowScroll(window.scrollY>50);
+    };
+    window.addEventListener("scroll", handleScroll);    
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ userType, login, logout,handleJobRoleChange,jobs,currentJobRole,industry }}>
+    <AuthContext.Provider value={{ userType, login, logout,handleJobRoleChange,jobs,currentJobRole,industry,showScroll }}>
       {children}
     </AuthContext.Provider>
   );

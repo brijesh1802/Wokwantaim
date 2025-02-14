@@ -5,45 +5,56 @@ import Banner from "../components/Banner";
 import JobFilter from "../components/JobFilter";
 import JobResults from "../components/JobResults";
 import { AuthContext } from "../context/AuthContext";
+import { RefreshCcw} from "lucide-react";
 
 const JobList = () => {
-  const {handleJobRoleChange,currentJobRole,jobs}=useContext(AuthContext)
-  // const jobTypes = ["Full-time", "Part-Time", "Contract"]; // Example job type data
+  const { handleJobRoleChange, currentJobRole, jobs} = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [industry, setIndustry] = useState([]);
-  const [jobcountry,setCountry]=useState([])
+  const [jobcountry, setCountry] = useState([]);
   const [jobRole, setJobRole] = useState([]);
-  const [jobTypes,setJobTypes]=useState([]);
-  
+  const [jobTypes, setJobTypes] = useState([]);
+
   const [filteredJobRole, setFilteredJobRole] = useState([]);
 
-  const [title,setTitle]=useState("");
-  const [location,setLocation]=useState("");
-  const [jobType,setJobType]=useState("");
+  const [title, setTitle] = useState("");
+  const [location, setLocation] = useState("");
+  const [jobType, setJobType] = useState("");
 
-  
+  const [isRefreshed, setIsRefresh] = useState(false);
 
   const handleClick = (jobs) => {
     navigate("/jobdetail", { state: { jobs } });
   };
 
-  // Handle search input change
-  const handleSearchChange = () => {
-    console.log('searching for : ',{title,location,jobType})
-    const filteredJobs = jobs.filter((job) => {
-      const matchTitle = title ? job.title.toLowerCase().includes(title.toLowerCase()) : true;
-      const matchLocation = location ? job.location.toLowerCase().includes(location.toLowerCase()) : true;
-      const matchJobType = jobType ? job.jobType.toLowerCase().includes(jobType.toLowerCase()) : true;
-    
-      return matchTitle && matchLocation && matchJobType;
-    });
-    console.log('filtered jobs: ',{filteredJobs})
-    setFilteredJobRole(filteredJobs)
+  const handleRefresh = () => {
+    console.log("before refresh : ", { title, location, jobType });
+    setIsRefresh(true);
+    setFilteredJobRole(jobs);
+    console.log("after refresh : ", { title, location, jobType });
   };
 
 
-  
+  const handleSearchChange = () => {
+    console.log("searching for : ", { title, location, jobType });
+    const filteredJobs = jobs.filter((job) => {
+      const matchTitle = title
+        ? job.title.toLowerCase().includes(title.toLowerCase())
+        : true;
+      const matchLocation = location
+        ? job.location.toLowerCase().includes(location.toLowerCase())
+        : true;
+      const matchJobType = jobType
+        ? job.jobType.toLowerCase().includes(jobType.toLowerCase())
+        : true;
+
+      return matchTitle && matchLocation && matchJobType;
+    });
+    console.log("filtered jobs: ", { filteredJobs });
+    setFilteredJobRole(filteredJobs);
+  };
+
   useEffect(() => {
     const industries = jobs.map((job) => job.industry);
     const countries = jobs.map((job) => job.location);
@@ -57,7 +68,6 @@ const JobList = () => {
     setJobRole(Array.from(uniqueJobRolesSet));
     setCountry(Array.from(uniqueCountrySet));
     setJobTypes(Array.from(uniqueJobTypeSet));
-    
   }, [jobs]);
 
   useEffect(() => {
@@ -74,11 +84,15 @@ const JobList = () => {
 
     setFilteredJobRole(
       jobs.filter((job) => {
+        console.log(isRefreshed);
+        setIsRefresh(false);
+        console.log(isRefreshed);
         const daysAgo = getDaysDifference(job.applicationPostedDate);
 
         const matchDate =
           !currentJobRole.DatePosted.length ||
-          (currentJobRole.DatePosted.includes("Last 24 hours") && daysAgo <= 1) ||
+          (currentJobRole.DatePosted.includes("Last 24 hours") &&
+            daysAgo <= 1) ||
           (currentJobRole.DatePosted.includes("Last Week") && daysAgo <= 7) ||
           (currentJobRole.DatePosted.includes("Last Month") && daysAgo <= 30) ||
           (currentJobRole.DatePosted.includes("Older") && daysAgo > 30);
@@ -106,7 +120,7 @@ const JobList = () => {
             return false;
           });
 
-          const matchTitleAndCompany =
+        const matchTitleAndCompany =
           !currentJobRole.TitleAndCompany.length ||
           currentJobRole.TitleAndCompany.some(
             (role) =>
@@ -124,8 +138,6 @@ const JobList = () => {
             if (range === "5+ years") return job.experienceYearsMax >= 5;
             return false;
           });
-
-        
 
         return (
           matchDate &&
@@ -150,28 +162,29 @@ const JobList = () => {
               className="w-full p-3 border border-gray-300 rounded-md md:w-1/3 focus:outline-none"
               placeholder="Search Job Title"
               style={{ fontFamily: "Poppins, sans-serif" }}
-              onChange={(e)=>setTitle(e.target.value)}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
             />
             <select
               className="flex-1 w-full p-3 border border-gray-300 rounded-md cursor-pointer md:w-1/4"
-              defaultValue=""
+              defaultValue={isRefreshed?undefined:location}
               style={{ fontFamily: "Poppins, sans-serif" }}
-              onChange={(e)=>setLocation(e.target.value)}
+              onChange={(e) => setLocation(e.target.value)}
             >
               <option value="" disabled>
                 Select Country
-              </option >
+              </option>
               {jobcountry.map((country, index) => (
-                <option key={index} value={country} >
+                <option key={index} value={country}>
                   {country}
                 </option>
               ))}
             </select>
             <select
               className="flex-1 w-full p-3 border border-gray-300 rounded-md md:w-1/4"
-              defaultValue=""
+              defaultValue={isRefreshed?"":jobType}
               style={{ fontFamily: "Poppins, sans-serif" }}
-              onChange={(e)=>setJobType(e.target.value)}
+              onChange={(e) => setJobType(e.target.value)}
             >
               <option value="" disabled>
                 Select Job Type
@@ -185,10 +198,15 @@ const JobList = () => {
           </div>
 
           {/* Search Button */}
-          <div className="flex justify-center mt-4">
-            <button className="w-full p-3 text-white transition-all bg-orange-500 rounded-md md:w-1/3 hover:bg-orange-600"
-            onClick={handleSearchChange}>
+          <div className="flex justify-center items-center gap-3 mt-4">
+            <button
+              className="p-3 w-full text-white transition-all bg-orange-500 rounded-md hover:bg-orange-600"
+              onClick={handleSearchChange}
+            >
               Find Jobs
+            </button>
+            <button className="hover:text-orange-500" onClick={handleRefresh}>
+              <RefreshCcw />
             </button>
           </div>
         </div>
@@ -209,3 +227,5 @@ const JobList = () => {
 };
 
 export default JobList;
+
+

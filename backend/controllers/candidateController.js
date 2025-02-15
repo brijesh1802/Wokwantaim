@@ -111,16 +111,31 @@ const signup = async (req, res) => {
         // Send verification email
         const verificationURL = `${process.env.VERCEL_URL}/verify-email/${verificationToken}`;
 
-        const subject = "🔐 Verify Your Email"
+        const subject = "🔐 Confirm Your Email Address"
+
         const body = `
-        <div style="font-family: Arial, sans-serif; padding: 20px;">
-                <h2>Welcome! 🎉</h2>
-                <p>Click the button below to verify your email:</p>
-                <a href="${verificationURL}" 
-                   style="display:inline-block; padding:10px 20px; background:#007bff; color:#fff; text-decoration:none; border-radius:5px;">
-                  ✅ Verify Email
-                </a>
-              </div> `
+        <div style="font-family: Arial, sans-serif; padding: 40px; background-color: #f4f4f4; text-align: center;">
+        <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            <h2 style="color: #333;">Welcome to Wokwantaim 🎉</h2>
+            <p style="color: #555; font-size: 16px; line-height: 1.6;">
+            Please confirm your email address to activate your account. Simply click the button below to verify:
+            </p>
+            <a href="${verificationURL}" 
+            style="display: inline-block; padding: 12px 24px; margin-top: 20px; background: #007bff; color: #ffffff; 
+            text-decoration: none; font-size: 16px; font-weight: bold; border-radius: 6px;">
+            ✅ Verify Email
+            </a>
+            <p style="color: #888; font-size: 14px; margin-top: 20px;">
+            If you did not sign up for this account, you can safely ignore this email.
+            </p>
+            <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+            <p style="color: #888; font-size: 12px;">
+            Need help? <a href="mailto:support@wokwantaim.com" style="color: #007bff; text-decoration: none;">Contact Support</a>
+            </p>
+        </div>
+        </div>
+        `
+
               
 
         await sendEmail(email, subject, body);

@@ -151,10 +151,12 @@ function SignupForm({ userType }) {
         { navigate("/login");},1500)
       }, 3000);
     } catch (error) {
-      console.error("Signup error:", error.message);
+      console.error("Signup error:", error.response ? error.response.data : error.message);
       setPopup({
         visible: true,
-        message: error.message || "Signup failed!",
+        message: error.response && error.response.data && error.response.data.message 
+          ? error.response.data.message 
+          : error.message || "Signup failed!",
         isError: true,
       });
 

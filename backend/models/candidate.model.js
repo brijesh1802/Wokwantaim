@@ -73,7 +73,7 @@ const candidateSchema = new Schema({
     },
     isVerified: {
         type: Boolean,
-        default: true  // Automatically verify when using Google login
+        default: false  // Automatically verify when using Google login
     },
     resetToken: { 
         type: String, 

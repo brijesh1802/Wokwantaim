@@ -106,6 +106,7 @@ function HomePage() {
 
       <section className="py-16">
         {userType === "candidate" ? <JobInterviews /> : null}
+        {userType === "candidate" ? <JobInterviews /> : null}
       </section>
 
       {/* Statistics Section */}
@@ -211,3 +212,4 @@ function HomePage() {
 }
 
 export default HomePage;
+

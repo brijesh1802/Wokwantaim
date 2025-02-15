@@ -1,11 +1,13 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import companyLogo from "../assets/comlogo-1.png";
-import { MapPin } from "lucide-react";
+import {
+    MapPin,
+  } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const JobResults = ({ filteredJob }) => {
-  const navigate = useNavigate();
+const JobResults = ({filteredJob}) => {
+  const navigate=useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 7;
   const [jobs, setJobs] = useState([]);

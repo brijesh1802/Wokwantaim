@@ -26,6 +26,14 @@ const employerSchema = new mongoose.Schema({
         required: true,
         enum: ['company', 'recruiter', 'agency']
     },
+    verificationToken:{
+        type: String,
+        default: null
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
     resetToken: { 
         type: String, 
         default: null 

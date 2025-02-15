@@ -10,7 +10,6 @@ const candidateSchema = new Schema({
         },
         lastName: {
             type: String,
-            required: true
         }
     },
     email: {
@@ -19,30 +18,62 @@ const candidateSchema = new Schema({
         unique: true
     },
     password: {
-        type: String,
-        required: true
+        type: String,  // This can be an empty string for Google login users
+        required: false  // Optional for Google login
     },
     experienceLevel: {
         type: String,
-        required: true,
+        required: false,
+        default: 'Fresher',
         enum: ['Fresher', 'Mid-Level', 'Senior-Level', 'Entry-Level']
     },
     jobType: {
         type: String,
-        required: true,
+        required: false,
+        default: 'Full-time',
         enum: ['Full-time', 'Part-time', 'Contract', 'Internship']
     },
     profilePhoto: {
         type: String,
-        required: true
+        required: false
     },
     resume: {
         type: String,
-        required: true
+        required: false
     },
     phoneNumber: {
         type: String,
-        required: true
+        required: false
+    },
+    gender: {
+        type: String,
+        required: false,
+        default: 'Male',
+        enum: ['Male', 'Female', 'Others']
+    },
+    location: {
+        city: {
+            type: String,
+            required: false
+        },
+        state: {
+            type: String,
+            required: false
+        }
+    },
+    modeofLogin: {
+        type: String,
+        required: false,
+        default: 'email',
+        enum: ['email', 'google', 'facebook']
+    },
+    verificationToken: {
+        type: String,
+        default: null
+    },
+    isVerified: {
+        type: Boolean,
+        default: false  // Automatically verify when using Google login
     },
     resetToken: { 
         type: String, 
@@ -60,6 +91,6 @@ const candidateSchema = new Schema({
     timestamps: true
 });
 
-const Candidate = mongoose.model('candidates', candidateSchema);
+const Candidate = mongoose.model('Candidate', candidateSchema);
 
 module.exports = Candidate;

@@ -1,12 +1,18 @@
+
+// // Logout route
+// router.post('/logout', authMiddleware, (req, res) => {
+//     const token = req.header('Authorization').replace('Bearer ', '');
+//     const decoded = jwt.decode(token);
+//     const expiry = decoded.exp;
+//     addToBlacklist(token, expiry);
+//     res.json({ msg: 'Logout successful' });
+// });
+
+
 const express = require('express');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const multer = require('multer');
-const Candidate = require('../models/candidate.model');
-const Employer = require('../models/employer.model');
-const { v2 : cloudinary } = require('cloudinary');
-const authMiddleware = require('../middleware/authMiddleware');
-const { addToBlacklist } = require('../utils/blacklist');
+const { signup, login, profile, verifyEmail } = require('../controllers/candidateController');
+const {upload} = require('../middleware/upload');
+const authMiddleware = require('../middleware/authMiddleware'); 
 
 const router = express.Router();
 
@@ -138,7 +144,7 @@ router.post('/signup', upload, async (req, res) => {
 
         // Generate JWT
         const payload = { user: { id: candidate._id } };
-        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '100h' }, (err, token) => {
+        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
             if (err) throw err;
 
             res.json({
@@ -189,7 +195,7 @@ router.post('/login', async (req, res) => {
             }
         };
 
-        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '100h' }, (err, token) => {
+        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
             if (err) {
                 console.error('Error generating JWT:', err);
                 throw err;

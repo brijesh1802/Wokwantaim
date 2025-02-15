@@ -4,6 +4,7 @@ const cors = require('cors');
 const express = require('express');
 const passport = require('passport');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 require('./utils/googleConfig');
 require('./utils/facebookConfig');  
 const jwt = require('jsonwebtoken');
@@ -48,6 +49,10 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_SESSION_URI,  // Ensure this is correctly set in your .env file
+    ttl: 14 * 24 * 60 * 60 // 14 days session expiry
+})
 }));
 
 // Initialize passport

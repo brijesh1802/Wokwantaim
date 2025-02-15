@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
@@ -10,19 +8,16 @@ function Header() {
   const { userType, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const [navOpen, setNavOpen] = useState(false);
-  const [profilePhoto, setProfilePhoto] = useState(null);
-  const[email,setEmail] = useState("")
-  const [username, setUserName] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const [manageProfileOpen, setManageProfileOpen] = useState(false);
   const dropdownRef = useRef(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [userData, setUserData] = useState(null);
 
   const handleLogout = () => {
     logout();
-    setUserName("");
-    setProfilePhoto(null);
+    setUserData(null);
     setNavOpen(false);
   };
 
@@ -36,9 +31,9 @@ function Header() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
+  /*fetch data*/
   useEffect(() => {
-    const fetchUsername = async () => {
+    const fetchUserData = async () => {
       try {
         const token = localStorage.getItem("authToken");
         if (!token) return;
@@ -58,20 +53,15 @@ function Header() {
         }
 
         const data = await response.json();
-        setUserName(
-          userType === "candidate" ? data.fullName.firstName : data.name
-        );
-        setProfilePhoto(data.profilePhoto);
-         setEmail(data.email);
+        setUserData(data);
       } catch (error) {
-        console.error("Error fetching username:", error);
+        console.error("Error fetching user data:", error);
       }
     };
 
-    if (userType) fetchUsername();
+    if (userType) fetchUserData();
   }, [userType]);
 
-  // Close dropdown when clicking outside or resizing
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -93,7 +83,7 @@ function Header() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
+  console.log(userData);
   useEffect(() => {
     if (navOpen) {
       document.body.style.overflow = "hidden";
@@ -105,20 +95,17 @@ function Header() {
       document.body.style.overflow = "auto";
     };
   }, [navOpen]);
-
+  console.log(userData?.profilePhoto);
   return (
     <header className="fixed z-10 w-full bg-white shadow-md">
       <div className="flex items-center justify-between px-6 py-4">
-        {/* Left: Logo & Sidebar Button */}
         <div className="flex items-center space-x-4">
-          {/* Show sidebar button only on small screens */}
           <button
             onClick={() => setNavOpen(true)}
             className="text-gray-700 lg:hidden"
           >
             <FaBars size={25} />
           </button>
-
           <img
             src={Logo}
             alt="Logo"
@@ -126,7 +113,6 @@ function Header() {
             onClick={() => navigate("/")}
           />
         </div>
-
         <nav className="items-center hidden space-x-6 lg:flex">
           <NavLink to="/" className="text-lg hover:text-gray-500">
             Home
@@ -148,7 +134,7 @@ function Header() {
             <NavLink
               to="/addjobs"
               className={({ isActive }) =>
-                `text-xl ml-4 mt-1 ${
+                `text-xl ml-4 ${
                   isActive
                     ? "text-orange-500 font-semibold"
                     : "text-gray-600 hover:text-orange-500"
@@ -159,16 +145,23 @@ function Header() {
             </NavLink>
           )}
           <div className="relative" ref={dropdownRef}>
-            {profilePhoto ? (
+            {userType === "candidate" && userData ? (
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="flex items-center focus:outline-none"
               >
                 <img
-                  src={profilePhoto}
+                  src={userData?.profilePhoto}
                   alt="Profile"
                   className="object-cover w-10 h-10 rounded-full"
                 />
+              </button>
+            ) : userType === "employer" && userData ? (
+              <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="flex items-center focus:outline-none"
+              >
+                <span className="text-lg text-gray-700">{userData?.name}</span>
               </button>
             ) : (
               <button className="px-4 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600">
@@ -183,9 +176,8 @@ function Header() {
             )}
             {dropdownOpen && (
               <div className="absolute right-0 w-48 py-2 mt-2 bg-white rounded-md shadow-lg">
-                {/* Profile with Submenu */}
                 <button
-                  className="flex items-center justify-between block w-full px-4 py-2 text-left text-gray-800 hover:bg-gray-100"
+                  className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 flex justify-between items-center"
                   onClick={() => setManageProfileOpen(!manageProfileOpen)}
                 >
                   Profile{" "}
@@ -213,7 +205,6 @@ function Header() {
                   </div>
                 )}
 
-                {/* Safety Tips */}
                 <NavLink
                   to="/safety"
                   className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
@@ -222,7 +213,6 @@ function Header() {
                   Safety Tips
                 </NavLink>
 
-                {/* Log Out */}
                 <button
                   onClick={() => {
                     handleLogout();
@@ -238,7 +228,6 @@ function Header() {
         </nav>
       </div>
 
-      {/* Sidebar Menu */}
       {navOpen && (
         <div className="fixed inset-0 z-20 bg-gray-700 bg-opacity-50">
           <div className="fixed top-0 left-0 z-30 h-full bg-white shadow-lg w-72">
@@ -250,32 +239,29 @@ function Header() {
             </button>
 
             <div className="flex flex-col items-start px-4 py-6">
-              {/* Section 1: Profile */}
-
-              {profilePhoto ? (
-                <button
-                  onClick={() => {
-                    setNavOpen(false);
-                    navigate("/profile");
-                  }}
-                  className="flex items-center focus:outline-none"
-                >
+              {userType === "candidate" && userData ? (
+                <div className="flex flex-col ml-2 text-sm">
                   <img
-                    src={profilePhoto}
+                    src={userData.profilePhoto || profileimage} //
                     alt="Profile"
                     className="object-cover w-10 h-10 rounded-full"
                   />
-                  <div className="flex flex-col ml-2 text-sm">
-                    <span className="flex items-start">{username}</span>
-                    <span>{email}</span>
-                  </div>
-                </button>
-              ) : (
-                ""
-              )}
+                  {/* Full name (first name only) */}
+                  <span className="flex items-start">
+                    {userData?.fullName?.firstName || "Unknown"}
+                  </span>
+                  {/* Email */}
+                  <span>{userData?.email || "No email provided"}</span>
+                </div>
+              ) : userType === "employer" && userData ? (
+                <div className="flex flex-col ml-2 text-sm">
+                  <span className="flex items-start">{userData.name}</span>
+                  <span>{userData.email}</span>
+                </div>
+              ) : null}
+
               <hr className="w-full my-2 border-gray-300" />
 
-              {/* Section 2: Home & Job List */}
               <NavLink
                 to="/"
                 className="py-2 text-lg hover:text-orange-500"
@@ -284,7 +270,7 @@ function Header() {
                 Home
               </NavLink>
 
-              {userType === "candidate" ? (
+              {userType === "candidate" && (
                 <NavLink
                   to="/application"
                   className="py-2 text-lg hover:text-orange-500"
@@ -292,8 +278,6 @@ function Header() {
                 >
                   My Application
                 </NavLink>
-              ) : (
-                ""
               )}
 
               {userType === "candidate" || userType === null ? (
@@ -315,7 +299,6 @@ function Header() {
               )}
               <hr className="w-full my-2 border-gray-300" />
 
-              {/* Section 3: More (Dropdown) */}
               <button
                 className="flex items-center justify-between w-full py-2 text-lg hover:text-orange-500"
                 onClick={() => setMoreOpen(!moreOpen)}
@@ -333,7 +316,6 @@ function Header() {
                     Safety Tips
                   </NavLink>
 
-                  {/* Manage Profile (Nested Dropdown) */}
                   <button
                     className="flex items-center justify-between w-full py-2 text-lg hover:text-orange-500"
                     onClick={() => setManageProfileOpen(!manageProfileOpen)}
@@ -364,8 +346,7 @@ function Header() {
               )}
               <hr className="w-full my-2 border-gray-300" />
 
-              {/* Section 4: Logout or Sign-up/Login */}
-              {profilePhoto ? (
+              {userData !== null ? (
                 <button
                   onClick={handleLogout}
                   className="py-2 text-lg hover:text-orange-500"

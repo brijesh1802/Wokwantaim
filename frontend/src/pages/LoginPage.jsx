@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { User, Building2 } from 'lucide-react'
 import LoginForm from '../components/LoginForm'
 import SocialAuthButtons from '../components/SocialAuthButtons'
+import BacktoHome from '../components/BacktoHome'
 
 function LoginPage() {
   const [userType, setUserType] = useState('candidate')
@@ -52,6 +53,8 @@ function LoginPage() {
           <SocialAuthButtons  />
         </div>
       )}
+
+      <BacktoHome/>
     </div>
   )
 }

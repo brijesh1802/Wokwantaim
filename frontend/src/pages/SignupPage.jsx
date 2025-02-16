@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import UserTypeSelector from "../components/UserTypeSelector";
 import SignupForm from "../components/SignupForm";
 import SocialAuthButtons from "../components/SocialAuthButtons";
+import BacktoHome from "../components/BacktoHome";
 
 function SignupPage() {
   const [userType, setUserType] = useState("candidate");
@@ -38,30 +39,8 @@ function SignupPage() {
           <SocialAuthButtons />
         </div>
       )}
-      <div className="fixed bottom-6 right-6 p-4 bg-orange-500 text-white rounded-full shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out">
-        <Link to="/" className="flex items-center space-x-2">
-          <svg
-            width="0"
-            height="0"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M3 10l4 4m0 0l4-4m-4 4V3m7 7l4 4m0 0l4-4m-4 4V3"
-            />
-          </svg>
-
-          <span>Go to Homepage</span>
-        </Link>
-      </div>
-
-      {/* <div className="fixed top-1/2 right-0 transform -translate-y-1/2 p-4 bg-white shadow-lg border border-gray-300">
-        <h2 className="text-lg font-semibold">Need Help?</h2>
-        <p className="mt-2 text-sm text-gray-600">
-          If you need any assistance, please contact our support team.
-        </p>
-      </div> */}
+      
+        <BacktoHome/>
     </div>
   );
 }

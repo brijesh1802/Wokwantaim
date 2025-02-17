@@ -1,10 +1,13 @@
 import { createContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; 
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [industry, setIndustry] = useState([]);
   const storedUserType = localStorage.getItem("userType");
+
+  const navigate = useNavigate();
   const [currentJobRole, setcurrentJobRole] = useState({
     DatePosted: [],
     Industry: [],
@@ -36,9 +39,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    setUserType(null);
-    localStorage.removeItem("userType"); // Remove userType from localStorage
-    localStorage.clear(); // Optional: Remove all other localStorage data
+    navigate("/")
+    localStorage.clear();
   };
 
   useEffect(() => {

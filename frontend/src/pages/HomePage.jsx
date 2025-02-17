@@ -104,6 +104,14 @@ function HomePage() {
         <FeaturedJobCategories sectionTitle="Featured Job Categories" />
       </section>
 
+      {/* Featured Categories */}
+      <section className="py-16">
+        <FeaturedJobCategories
+          sectionTitle="Featured Job Categories"
+          categories={categories}
+        />
+      </section>
+
       <section className="py-16">
         {userType === "candidate" ? <JobInterviews /> : null}
       </section>

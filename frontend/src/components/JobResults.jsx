@@ -1,14 +1,16 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import companyLogo from "../assets/comlogo-1.png";
+
 import { MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const JobResults = ({ filteredJob }) => {
   const navigate = useNavigate();
+
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 7;
-  const [jobs, setJobs] = useState([]);
+
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/jobs/getAll`)
@@ -17,11 +19,13 @@ const JobResults = ({ filteredJob }) => {
       .catch((error) => console.error("Error fetching jobs:", error));
   }, []);
 
+
   const [sortOrder, setSortOrder] = useState("");
   const [sortedJobs, setSortedJobs] = useState([...filteredJob]);
   const indexOfLastJob = currentPage * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
   const currentJobs = sortedJobs.slice(indexOfFirstJob, indexOfLastJob);
+
 
   const totalPages = Math.ceil(filteredJob.length / jobsPerPage);
 
@@ -59,17 +63,22 @@ const JobResults = ({ filteredJob }) => {
               setSortOrder(e.target.value);
             }}
           >
+
             <option value="" disabled>
               Select
             </option>
             <option value="ascending">A-Z</option>
+
             <option value="descending">Z-A</option>
+
           </select>
         </div>
       </div>
 
+
       <div className=" flex flex-col items-start justify-start h-full gap-3 py-5 mx-5 mt-3 rounded">
         {currentJobs.map((job, index) => (
+
           <div
             key={index}
             className="flex items-start justify-between w-full max-w-3xl p-4 mx-4 my-3 transition bg-white shadow-md hover:shadow-lg"
@@ -77,7 +86,9 @@ const JobResults = ({ filteredJob }) => {
           >
             {/* Job details */}
             <div
+
               className="flex-shrink-0 rounded-lg bg-slate-400 "
+
               style={{
                 backgroundImage: `url(${job.companyLogo || companyLogo})`,
                 backgroundPosition: "center",
@@ -139,7 +150,9 @@ const JobResults = ({ filteredJob }) => {
           className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-l-md"
           disabled={currentPage === 1}
         >
+
           Prev
+
         </button>
         <span className="px-4 py-2 bg-gray-100">
           {currentPage} of {totalPages}
@@ -159,3 +172,4 @@ const JobResults = ({ filteredJob }) => {
 };
 
 export default JobResults;
+

@@ -1,3 +1,5 @@
+import { Facebook, Twitter, Linkedin } from "lucide-react";
+
 function Footer() {
   return (
     <footer className="mt-auto text-gray-300 bg-gray-900">
@@ -10,32 +12,6 @@ function Footer() {
               Connecting job seekers and employers with ease. Your career, your
               future.
             </p>
-            <div className="flex mt-4 space-x-4">
-              <a
-                href="#"
-                className="text-gray-400 transition hover:text-orange-500"
-              >
-                <i className="fab fa-facebook-f"></i>
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 transition hover:text-orange-500"
-              >
-                <i className="fab fa-twitter"></i>
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 transition hover:text-orange-500"
-              >
-                <i className="fab fa-linkedin-in"></i>
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 transition hover:text-orange-500"
-              >
-                <i className="fab fa-instagram"></i>
-              </a>
-            </div>
           </div>
 
           {/* Quick Contact */}
@@ -63,6 +39,32 @@ function Footer() {
           <p className="text-sm text-gray-400">
             &copy; 2025 JobPortal. All rights reserved.
           </p>
+          <ul className="flex justify-center space-x-4 mt-3 -mb-1 lg:mt-0 md:-mt-1 md:-ml-16 lg:-mr-12">
+            <li>
+              <a
+                href="#"
+                className="text-gray-400 transition hover:text-orange-500"
+              >
+                <Facebook className="w-5 h-5" />
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="text-gray-400 transition hover:text-orange-500"
+              >
+                <Twitter className="w-5 h-5" />
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="text-gray-400 transition hover:text-orange-500"
+              >
+                <Linkedin className="w-5 h-5" />
+              </a>
+            </li>
+          </ul>
           <nav className="mt-4 md:mt-0">
             <ul className="flex space-x-4">
               <li>

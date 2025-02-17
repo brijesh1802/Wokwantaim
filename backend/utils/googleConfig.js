@@ -5,10 +5,10 @@ const Candidate = require('../models/candidate.model');
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.CALLBACK_URL,  
+    callbackURL: process.env.GOOGLE_CALLBACK_URL,  
 }, async (accessToken, refreshToken, profile, done) => {
     try {
-        
+
         let candidate = await Candidate.findOne({ email: profile.emails[0].value });
 
         if (!candidate) {
@@ -17,11 +17,12 @@ passport.use(new GoogleStrategy({
                 fullName: {
                     firstName: profile.name.givenName,
                     lastName: profile.name.familyName
-
                 },
                 email: profile.emails[0].value,
                 password: '', 
-                profilePhoto: profile.photos[0].value, 
+                profilePhoto: profile.photos[0].value,
+                gender:profile.gender, 
+                modeofLogin : 'google', 
                 isVerified: true,  
             });
 

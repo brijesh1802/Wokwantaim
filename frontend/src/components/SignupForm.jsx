@@ -15,6 +15,7 @@ import {
 
 function SignupForm({ userType }) {
   const navigate = useNavigate();
+  
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -71,7 +72,7 @@ function SignupForm({ userType }) {
   };
 
   const [loading, setLoading] = useState(false);
-
+  const [redirect, setRedirect] = useState(false);
   const [popup, setPopup] = useState({
     visible: false,
     message: "",
@@ -141,16 +142,21 @@ function SignupForm({ userType }) {
         message: "Email sent for verification!",
         isError: false,
       }));
+      setRedirect(true)
 
       setTimeout(() => {
         setPopup({ visible: false, message: "", isError: false });
-        navigate("/login");
-      }, 1500);
+        setRedirect(true);
+        setTimeout(()=>
+        { navigate("/login");},1500)
+      }, 3000);
     } catch (error) {
-      console.error("Signup error:", error.message);
+      console.error("Signup error:", error.response ? error.response.data : error.message);
       setPopup({
         visible: true,
-        message: error.message || "Signup failed!",
+        message: error.response && error.response.data && error.response.data.message 
+          ? error.response.data.message 
+          : error.message || "Signup failed!",
         isError: true,
       });
 
@@ -466,7 +472,13 @@ function SignupForm({ userType }) {
           disabled={loading}
           className="w-full px-4 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
         >
-          {loading ? <div className="spinner"></div> : "Sign Up"}
+          {loading ? (
+            <div className="spinner"></div>
+          ) : redirect ? (
+            "Redirecting..."
+          ) : (
+            "Sign Up"
+          )}
         </button>
       </form>
       {popup.visible && (

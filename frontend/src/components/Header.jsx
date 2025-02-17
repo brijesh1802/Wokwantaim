@@ -2,14 +2,11 @@
 
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link, NavLink } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { Facebook, Twitter, Linkedin } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import Logo from "../assets/Logo.png";
-import { FaBars, FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 function Header() {
   const { userType, logout } = useContext(AuthContext);

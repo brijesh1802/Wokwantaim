@@ -29,9 +29,7 @@ export const AuthProvider = ({ children }) => {
       .catch((error) => console.error("Error fetching jobs:", error));
   }, []);
 
-  const [userType, setUserType] = useState(
-    storedUserType ? storedUserType : null
-  );
+ 
 
   const navigate = useNavigate();
 

@@ -179,6 +179,7 @@ import {
 } from "lucide-react";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import JobInterviews from "./JobInterviews";
 import FeaturedJobCategories from "../components/Home/Featured/FeaturedJobCategories";
 function HomePage() {

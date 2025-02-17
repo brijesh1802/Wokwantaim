@@ -47,10 +47,10 @@ const Profile = () => {
   const [experiences, setExperiences] = useState(
     getFromLocalStorage("experiences", [])
   );
-  const [isEditingLinks, setIsEditingLinks] = useState(false);
+  
   const [linkedinUrl, setLinkedinUrl] = useState(socialLinks.linkedin);
   const [githubUrl, setGithubUrl] = useState(socialLinks.github);
-  const [isSocialLinksVisible, setIsSocialLinksVisible] = useState(false);
+
   const [showPopup, setShowPopup] = useState(false);
   const [popupType, setPopupType] = useState("");
   const [popupData, setPopupData] = useState({

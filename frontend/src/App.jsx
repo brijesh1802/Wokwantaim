@@ -17,11 +17,11 @@ import RedirectPage from "./pages/RedirectPage";
 import ScrollToTop from "./components/ScrollToTop";
 
 
+
 function App() {
   const location = useLocation();
   const noPaths = ["/signup", "/login"];
   const noFooter = ["/profile"];
-  
   return (
     <AuthProvider>
       <div className="flex flex-col min-h-screen">
@@ -46,7 +46,6 @@ function App() {
             <Route path="/redirect" element={<RedirectPage />} />
           </Routes>
         </main>
-        
         {!noPaths.includes(location.pathname) &&
           !noFooter.includes(location.pathname) && <Footer />}
       </div>

@@ -23,7 +23,6 @@ const SocialLinks = ({ socialLinks }) => {
         )}
         {socialLinks.github && (
           <div className="flex items-center space-x-3">
-
             <a
               href={socialLinks.github}
               target="_blank"
@@ -31,7 +30,6 @@ const SocialLinks = ({ socialLinks }) => {
               className="flex items-center text-gray-800 hover:text-black transition-colors duration-200"
             >
               <GithubIcon className="w-5 h-5 mr-2" />
-
               <span className="truncate mt-1">{socialLinks.github}</span>
             </a>
           </div>
@@ -42,4 +40,3 @@ const SocialLinks = ({ socialLinks }) => {
 };
 
 export default SocialLinks;
-

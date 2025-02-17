@@ -1,5 +1,53 @@
 // import { Link, useNavigate } from "react-router-dom";
 
+import { Search, Briefcase, Users, Building2, BarChart2 } from "lucide-react";
+import { useContext, useState ,useEffect} from "react";
+import { AuthContext } from "../context/AuthContext";
+import JobInterviews from "./JobInterviews";
+import FeaturedJobCategories from "../components/Home/Featured/FeaturedJobCategories";
+
+function HomePage() {
+  const { userType, handleJobRoleChange, jobRole,companyRole} = useContext(AuthContext);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredSearchJob, setFilteredSearchJob] = useState("");
+  const [showDropdown,setShowDropDown]=useState(false)
+  const navigate = useNavigate();
+  const handleSearch = () => {
+    navigate("/joblist");
+  };
+  const handleSearchChange = (e) => {
+    
+    const value = e.target.value;
+    setSearchTerm(value);
+
+    if(value.trim()==="")
+    {
+      setFilteredSearchJob([])
+      setShowDropDown(false)
+      return
+    }
+    const filteredJobRole = jobRole.filter((role) => role.toLowerCase().includes(value.toLowerCase()));
+    const filteredCompanyRole=companyRole.filter((role)=>role.toLowerCase().includes(value.toLowerCase()))
+    const combinedFilteredRole=Array.from(new Set([...filteredJobRole,...filteredCompanyRole]))
+    console.log(combinedFilteredRole.length)
+    setFilteredSearchJob(combinedFilteredRole);
+    setShowDropDown(combinedFilteredRole.length > 0);
+  };
+
+  const handleSuggestionClick = (title) => {
+    setSearchTerm(title);
+    setFilteredSearchJob([]);
+    setShowDropDown(false)
+    console.log(searchTerm)
+
+   
+  };
+  useEffect(() => {
+    if (searchTerm) {
+      handleJobRoleChange({ target: { name: "TitleAndCompany", value:searchTerm, type: "text" } })
+    }
+  }, [searchTerm]); 
+
 // import {
 //   Search,
 //   Briefcase,
@@ -230,7 +278,7 @@ function HomePage() {
   return (
     <div className="bg-gray-50">
       {/* Hero Section */}
-      <section className="py-20 mt-10 text-white bg-gradient-to-r from-orange-500 to-orange-600">
+      <section className="py-20 text-white bg-gradient-to-r from-orange-500 to-orange-600">
         <div className="container px-4 mx-auto">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="mb-6 text-4xl font-bold md:text-5xl">
@@ -278,12 +326,14 @@ function HomePage() {
 
       {/* Featured Categories */}
       <section className="py-16">
+        <FeaturedJobCategories sectionTitle="Featured Job Categories" />
         <FeaturedJobCategories
           sectionTitle="Featured Job Categories"
         />
       </section>
 
       <section className="py-16">
+        {userType === "candidate" ? <JobInterviews /> : null}
         {userType === "candidate" ? <JobInterviews /> : null}
       </section>
 

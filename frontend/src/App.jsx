@@ -14,7 +14,7 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import SafetySections from "./pages/SafetySections";
 import EmailVerifiedPage from "./pages/EmailVerifiedPage";
 import RedirectPage from "./pages/RedirectPage";
-
+import ScrollToTop from "./components/ScrollToTop";
 
 
 function App() {

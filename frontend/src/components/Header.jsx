@@ -1,8 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link, NavLink } from "react-router-dom";
-import { FaBars, FaTimes } from "react-icons/fa";
-import { Facebook, Twitter, Linkedin } from "lucide-react";
+
 
 
 import React, { useState, useEffect, useContext, useRef } from "react";
@@ -30,7 +26,9 @@ function Header() {
     setProfilePhoto(null);
     setNavOpen(false);
   };
-
+  const handleClick=()=>{
+    navigate('/')
+  }
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);

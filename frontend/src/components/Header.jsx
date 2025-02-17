@@ -244,25 +244,22 @@ function Header() {
               {userType === "candidate" && userData ? (
                 <div className="flex flex-col ml-2 text-sm">
                   <img
-                    src={userData.profilePhoto || profileimage} //
-                    alt="Profile"
+                    src={userData.profilePhoto || profileimage}
                     className="object-cover w-10 h-10 rounded-full"
                   />
-                  {/* Full name (first name only) */}
                   <span className="flex items-start">
                     {userData?.fullName?.firstName || "Unknown"}
                   </span>
-                  {/* Email */}
                   <span>{userData?.email || "No email provided"}</span>
+                  <hr className="w-full my-2 border-gray-300" />
                 </div>
               ) : userType === "employer" && userData ? (
                 <div className="flex flex-col ml-2 text-sm">
                   <span className="flex items-start">{userData.name}</span>
                   <span>{userData.email}</span>
+                  <hr className="w-full my-2 border-gray-300" />
                 </div>
               ) : null}
-
-              <hr className="w-full my-2 border-gray-300" />
 
               <NavLink
                 to="/"

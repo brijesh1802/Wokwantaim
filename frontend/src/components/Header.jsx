@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import Logo from "../assets/Logo.png";
 import { FaBars, FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa";
-
+import default_img from "../assets/default_image.png";
 function Header() {
   const { userType, logout } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -151,7 +151,7 @@ function Header() {
                 className="flex items-center focus:outline-none"
               >
                 <img
-                  src={userData?.profilePhoto}
+                  src={userData.profilePhoto || default_img}
                   alt="Profile"
                   className="object-cover w-10 h-10 rounded-full"
                 />
@@ -161,7 +161,12 @@ function Header() {
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="flex items-center focus:outline-none"
               >
-                <span className="text-lg text-gray-700">{userData?.name}</span>
+                {/* <span className="text-lg text-gray-700">{userData?.name}</span> */}
+                <img
+                  src={userData.profilePhoto || default_img}
+                  alt="Profile"
+                  className="object-cover w-10 h-10 rounded-full"
+                />
               </button>
             ) : (
               <button className="px-4 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600">
@@ -242,7 +247,7 @@ function Header() {
               {userType === "candidate" && userData ? (
                 <div className="flex flex-col ml-2 text-sm">
                   <img
-                    src={userData.profilePhoto || profileimage}
+                    src={userData.profilePhoto || default_img}
                     className="object-cover w-10 h-10 rounded-full"
                   />
                   <span className="flex items-start">
@@ -253,6 +258,10 @@ function Header() {
                 </div>
               ) : userType === "employer" && userData ? (
                 <div className="flex flex-col ml-2 text-sm">
+                  <img
+                    src={userData.profilePhoto || default_img}
+                    className="object-cover w-10 h-10 rounded-full"
+                  />
                   <span className="flex items-start">{userData.name}</span>
                   <span>{userData.email}</span>
                   <hr className="w-full my-2 border-gray-300" />

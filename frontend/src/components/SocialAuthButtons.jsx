@@ -2,7 +2,10 @@ import { Facebook } from 'lucide-react';
 
 function SocialAuthButtons() {
 
-
+  const handleFbAuth = () => {
+    window.location.href = `${import.meta.env.VITE_BASE_URL}/auth/facebook`;
+  };
+  
   // Handle Google login (you can add a redirect to your backend endpoint)
   const handleGoogleAuth = () => {
     window.location.href = `${import.meta.env.VITE_BASE_URL}/auth/google`;
@@ -11,6 +14,7 @@ function SocialAuthButtons() {
   return (
     <div className="grid grid-cols-2 gap-4 mt-6">
       <button 
+      onClick={handleFbAuth}
         className="flex items-center justify-center gap-2 px-4 py-2 bg-[#1877F2] text-white rounded-md hover:bg-[#1877F2]/90 transition-colors"
       >
         <Facebook className="w-4 h-4" />

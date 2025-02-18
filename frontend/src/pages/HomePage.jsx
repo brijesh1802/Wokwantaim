@@ -1,52 +1,52 @@
 // import { Link, useNavigate } from "react-router-dom";
 
-import { Search, Briefcase, Users, Building2, BarChart2 } from "lucide-react";
-import { useContext, useState ,useEffect} from "react";
-import { AuthContext } from "../context/AuthContext";
-import JobInterviews from "./JobInterviews";
-import FeaturedJobCategories from "../components/Home/Featured/FeaturedJobCategories";
+// import { Search, Briefcase, Users, Building2, BarChart2 } from "lucide-react";
+// import { useContext, useState ,useEffect} from "react";
+// import { AuthContext } from "../context/AuthContext";
+// import JobInterviews from "./JobInterviews";
+// import FeaturedJobCategories from "../components/Home/Featured/FeaturedJobCategories";
 
-function HomePage() {
-  const { userType, handleJobRoleChange, jobRole,companyRole} = useContext(AuthContext);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredSearchJob, setFilteredSearchJob] = useState("");
-  const [showDropdown,setShowDropDown]=useState(false)
-  const navigate = useNavigate();
-  const handleSearch = () => {
-    navigate("/joblist");
-  };
-  const handleSearchChange = (e) => {
+// function HomePage() {
+//   const { userType, handleJobRoleChange, jobRole,companyRole} = useContext(AuthContext);
+//   const [searchTerm, setSearchTerm] = useState("");
+//   const [filteredSearchJob, setFilteredSearchJob] = useState("");
+//   const [showDropdown,setShowDropDown]=useState(false)
+//   const navigate = useNavigate();
+//   const handleSearch = () => {
+//     navigate("/joblist");
+//   };
+//   const handleSearchChange = (e) => {
     
-    const value = e.target.value;
-    setSearchTerm(value);
+//     const value = e.target.value;
+//     setSearchTerm(value);
 
-    if(value.trim()==="")
-    {
-      setFilteredSearchJob([])
-      setShowDropDown(false)
-      return
-    }
-    const filteredJobRole = jobRole.filter((role) => role.toLowerCase().includes(value.toLowerCase()));
-    const filteredCompanyRole=companyRole.filter((role)=>role.toLowerCase().includes(value.toLowerCase()))
-    const combinedFilteredRole=Array.from(new Set([...filteredJobRole,...filteredCompanyRole]))
-    console.log(combinedFilteredRole.length)
-    setFilteredSearchJob(combinedFilteredRole);
-    setShowDropDown(combinedFilteredRole.length > 0);
-  };
+//     if(value.trim()==="")
+//     {
+//       setFilteredSearchJob([])
+//       setShowDropDown(false)
+//       return
+//     }
+//     const filteredJobRole = jobRole.filter((role) => role.toLowerCase().includes(value.toLowerCase()));
+//     const filteredCompanyRole=companyRole.filter((role)=>role.toLowerCase().includes(value.toLowerCase()))
+//     const combinedFilteredRole=Array.from(new Set([...filteredJobRole,...filteredCompanyRole]))
+//     console.log(combinedFilteredRole.length)
+//     setFilteredSearchJob(combinedFilteredRole);
+//     setShowDropDown(combinedFilteredRole.length > 0);
+//   };
 
-  const handleSuggestionClick = (title) => {
-    setSearchTerm(title);
-    setFilteredSearchJob([]);
-    setShowDropDown(false)
-    console.log(searchTerm)
+//   const handleSuggestionClick = (title) => {
+//     setSearchTerm(title);
+//     setFilteredSearchJob([]);
+//     setShowDropDown(false)
+//     console.log(searchTerm)
 
    
-  };
-  useEffect(() => {
-    if (searchTerm) {
-      handleJobRoleChange({ target: { name: "TitleAndCompany", value:searchTerm, type: "text" } })
-    }
-  }, [searchTerm]); 
+//   };
+//   useEffect(() => {
+//     if (searchTerm) {
+//       handleJobRoleChange({ target: { name: "TitleAndCompany", value:searchTerm, type: "text" } })
+//     }
+//   }, [searchTerm]); 
 
 // import {
 //   Search,
@@ -327,14 +327,12 @@ function HomePage() {
       {/* Featured Categories */}
       <section className="py-16">
         <FeaturedJobCategories sectionTitle="Featured Job Categories" />
-        <FeaturedJobCategories
-          sectionTitle="Featured Job Categories"
-        />
+        
       </section>
 
       <section className="py-16">
         {userType === "candidate" ? <JobInterviews /> : null}
-        {userType === "candidate" ? <JobInterviews /> : null}
+     
       </section>
 
       {/* Statistics Section */}

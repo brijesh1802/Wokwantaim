@@ -5,7 +5,7 @@ import companyLogo from "../assets/comlogo-1.png";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
-import { Building2, MapPin, PersonStanding, Calendar, Briefcase, HandCoins } from "lucide-react";
+import { Building2, MapPin, PersonStanding, Calendar, Briefcase, HandCoins,Loader2 } from "lucide-react";
 import Banner from "../components/Banner";
 
 const AlertBox = ({ message, onClose }) => {
@@ -27,6 +27,7 @@ const AlertBox = ({ message, onClose }) => {
 };
 
 const JobDetail = () => {
+  const [loading, setLoading] = useState(false);
   const [job, setJob] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,10 +39,17 @@ const JobDetail = () => {
 
   // Handler for Apply Button click
   const onHandleClick = () => {
+    
     if (userType !== "candidate") {
       setShowAlert(true); // Show alert box if user is not a candidate
     } else {
-      setIsApplied(true); // Show "Applied" message if user is a candidate
+      setLoading(true)
+      setTimeout(()=>
+      {
+        setLoading(false)
+        setIsApplied(true); // Show "Applied" message if user is a candidate
+      },2000)
+   
     }
   };
 
@@ -169,16 +177,26 @@ return (
 
         {/* Apply Button */}
         <div className="flex justify-center mt-8">
-          <button onClick={onHandleClick} className="px-8 py-3 text-white bg-orange-500 rounded-md hover:bg-orange-600">
-            Apply Now
+          <button onClick={onHandleClick} className="flex items-center justify-center gap-2 px-8 py-3 text-white bg-orange-500 rounded-md hover:bg-orange-600 w-40 h-12" disabled={loading}>
+          {loading ? <Loader2 className="animate-spin" /> : "Apply Now"}
           </button>
         </div>
         {isApplied && (
-            <div className="mt-4 text-xl font-semibold text-center text-green-600">
-              You have successfully applied for the job!
-            </div>
-          )}
+  <div className="mt-6 flex items-center justify-center">
+    <div className="w-full max-w-md p-5 bg-green-50 border border-green-400 shadow-lg rounded-lg">
+      <div className="flex items-center gap-3">
+        <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <h3 className="text-lg font-semibold text-green-700">Application Submitted</h3>
       </div>
+      <p className="mt-2 text-gray-700">
+        Your application has been successfully submitted!
+      </p>
+    </div>
+  </div>
+)}
+ </div>
     </div>
     {showAlert && <AlertBox message="Please Login to Apply for the Job" onClose={closeAlert} />}
   </div>

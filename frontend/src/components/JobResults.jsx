@@ -12,12 +12,7 @@ const JobResults = ({ filteredJob }) => {
   const jobsPerPage = 7;
 
 
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/jobs/getAll`)
-      .then((response) => response.json())
-      .then((data) => setJobs(data))
-      .catch((error) => console.error("Error fetching jobs:", error));
-  }, []);
+  
 
 
   const [sortOrder, setSortOrder] = useState("");
@@ -47,6 +42,7 @@ const JobResults = ({ filteredJob }) => {
     }
     setSortedJobs(sortedFilteredJob);
   }, [sortOrder, filteredJob]);
+  console.log(currentJobs)
   return (
     <div className="flex flex-col mb-10 lg:w-3/4 mt-9 lg:mt-0">
       <div className="flex items-center justify-between mx-4 rounded-md lg:bg-gray-100 lg:h-20">

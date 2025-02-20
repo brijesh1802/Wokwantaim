@@ -368,7 +368,7 @@
 // export default JobFilter;
 
 
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import {
   Calendar,
   Briefcase,
@@ -420,7 +420,7 @@ const JobFilter = ({ industry, jobRole, handleJobRoleChange,selectedRadio,checke
 
   const [visibleSection, setVisibleSection] = useState({});
   const [showMore, setShowMore] = useState({});
-
+  
   const toggleSection = (id) => {
     setVisibleSection((prev) => ({
       ...prev,
@@ -434,7 +434,8 @@ const JobFilter = ({ industry, jobRole, handleJobRoleChange,selectedRadio,checke
       [id]: !prev[id],
     }));
   };
-
+ 
+console.log("Chjceked Options of IT",checkedOptions["IT"])
   return (
     <div className="flex flex-col gap-2 px-5 py-5 bg-gray-100 rounded-lg mx-7 lg:w-1/3">
       {filters.map(({ id, label, icon, options, type }) => (
@@ -466,7 +467,7 @@ const JobFilter = ({ industry, jobRole, handleJobRoleChange,selectedRadio,checke
                         type={type}
                         name={id}
                         value={option}
-                        checked={type === "radio" ? selectedRadio[id] === option : (type==='checkbox'?checkedOptions[option]:false)}
+                        checked={type === "radio" ? selectedRadio[id] === option : !!checkedOptions[option]} 
                         onChange={handleJobRoleChange}
                       />
                       <span>{option}</span>

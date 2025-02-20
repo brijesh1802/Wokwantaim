@@ -578,17 +578,28 @@ const [filteredSearchJobRole,setFilteredSearchJobRole]=useState([])
   const handleClick = (jobs) => {
     navigate("/jobdetail", { state: { jobs } });
   };
+  
   const handleRefresh = () => {
-    console.log('checked options :  ',checkedOptions || {}); 
-    console.log('selected radio  :  ',selectedRadio); 
+    console.log('Before Reset:', checkedOptions, selectedRadio); // Debugging
+  
     setIsRefresh(true);
-    setSelectedRadio("");
-    setCheckedOptions({});
-    setFilteredJobRole(jobs); // Reset the job list to initial state
+    setSelectedRadio(""); 
+    setCheckedOptions({}); // Ensure everything resets
+  
+    // Force a re-render to clear selections
+    setTimeout(() => {
+      setCheckedOptions({});
+    }, 0);
+  
+    setFilteredJobRole(jobs);
     setTitle("");
     setLocation("");
     setJobType("");
+  
+    console.log('After Reset:', checkedOptions, selectedRadio); // Debugging
   };
+  
+  
 
   const handleSearchTitleChange = (e) => {
     
@@ -729,7 +740,7 @@ const [filteredSearchJobRole,setFilteredSearchJobRole]=useState([])
 console.log(currentJobRole)
 console.log("Filtered jobs",filteredJobRole)
 console.log("Filtered Seach Job role",filteredSearchJobRole)
-console.log("Location",location)
+console.log('in main', checkedOptions, selectedRadio);
 
 
   return (

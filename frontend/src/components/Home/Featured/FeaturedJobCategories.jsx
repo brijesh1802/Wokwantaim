@@ -6,7 +6,7 @@ import {BriefcaseBusiness } from 'lucide-react'
 import { AuthContext } from "../../../context/AuthContext";
 
 const FeaturedJobCategories = ({ sectionTitle}) => {
-  const {industry,handleJobRoleChange}=useContext(AuthContext)
+  const {industry,handleJobRoleChange,setcurrentJobRole,setCheckedOptions}=useContext(AuthContext)
   return (
     <section className="py-4">
       <div className="container px-4 mx-auto slike-slide">
@@ -24,7 +24,7 @@ const FeaturedJobCategories = ({ sectionTitle}) => {
               </p>
               <Link
                 to="/joblist"
-                className="text-orange-400 hover:text-orange-600"  onClick={() => handleJobRoleChange({ target: { name: "Industry", value:industry, type: "checkbox",checked:true} })}
+                className="text-orange-400 hover:text-orange-600"  onClick={() => handleJobRoleChange({ target: { name: "Industry", value:industry,type:'checkbox',checked:true} })}
               >
                 View Jobs!
               </Link>

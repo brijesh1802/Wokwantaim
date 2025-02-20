@@ -79,7 +79,8 @@ export const AuthProvider = ({ children }) => {
                 ? [...(prev[name] || []), value]
                 : (prev[name] || []).filter((v) => v !== value),
         }));
-    } else {
+    }
+    else {
         setcurrentJobRole((prev) => ({
             ...prev,
             [name]: [value],
@@ -128,6 +129,7 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         handleJobRoleChange,
+        setcurrentJobRole,
         jobs,
         currentJobRole,
         industry,

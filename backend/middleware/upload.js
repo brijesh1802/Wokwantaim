@@ -1,14 +1,12 @@
 const multer = require('multer');
 const { v2: cloudinary } = require('cloudinary');
 
-// Cloudinary configuration
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Multer configuration for file handling (Using memoryStorage so files are directly uploaded to Cloudinary)
 const storage = multer.memoryStorage();
 
 const upload = multer({
@@ -22,7 +20,6 @@ const upload = multer({
         }
     }
 })
-// }).fields([{ name: 'profilePhoto', maxCount: 1 }, { name: 'resume', maxCount: 1 }]);
 
 // Uploading files to Cloudinary
 const uploadToCloudinary = (fileBuffer, folder) => {
@@ -30,19 +27,19 @@ const uploadToCloudinary = (fileBuffer, folder) => {
         cloudinary.uploader.upload_stream(
             {
                 folder: folder,
-                resource_type: 'auto',  // Automatically detects file type (image, video, pdf, etc.)
+                resource_type: 'auto',
             },
             (error, result) => {
                 if (error) {
                     console.error('Error uploading to Cloudinary:', error);
-                    reject(error);  // Reject the promise on error
+                    reject(error); 
                 }
-                resolve({  // Resolve the promise with the result
+                resolve({ 
                     url: result.secure_url,
                     public_id: result.public_id
                 });
             }
-        ).end(fileBuffer);  // Use `.end()` with fileBuffer when uploading from memory
+        ).end(fileBuffer); 
     });
 };
 

@@ -282,9 +282,21 @@ const deleteAccount = async (req, res) => {
     try {
         const userEmail = req.user.email;
 
+        const password =  req.body.password;
+
+        if(!password) {
+            return res.status(400).json({ msg: 'Please provide password' });
+        }
+
         const candidate = await Candidate.findOne({
             email: userEmail
         });
+
+        const isMatch = await bcrypt.compare(password, candidate.password);
+
+        if (!isMatch) {
+            return res.status(400).json({ msg: 'Invalid credentials' });
+        }
 
         if (!candidate) {
             return res.status(404).json({ msg: 'Candidate not found' });

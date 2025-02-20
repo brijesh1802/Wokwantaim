@@ -17,6 +17,7 @@ import RedirectPage from "./pages/RedirectPage";
 import JobApplications from "./pages/JobApplications";
 import DeleteAccount from "./components/DeleteAccount";
 import ForgotPassword from "./components/ForgotPassword";
+import ScrollToTop from "./components/ScrollToTop";
 
 
 function App() {
@@ -26,10 +27,9 @@ function App() {
   return (
     <AuthProvider>
       <div className="flex flex-col min-h-screen">
-        {/* Conditionally render Header */}
         {!noPaths.includes(location.pathname) && <Header />}
         <main className="flex-grow">
-          <ScrollToTop/>
+        <ScrollToTop/>
           <Routes>
             <Route path="*" element={<h1>Not Found</h1>} />
             <Route path="/" element={<HomePage />} />

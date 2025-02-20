@@ -1,8 +1,11 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import { FaBars, FaTimes ,FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { useContext,useRef } from "react";
+import { Facebook, Twitter, Linkedin } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import Logo from "../assets/Logo.png";
-import { FaBars, FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import default_img from "../assets/default_image.png";
 function Header() {
   const { userType, logout } = useContext(AuthContext);
@@ -21,6 +24,9 @@ function Header() {
     setNavOpen(false);
   };
 
+  const handleClick=()=>{
+    navigate('/')
+  }
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -97,6 +103,7 @@ function Header() {
   }, [navOpen]);
   console.log(userData?.profilePhoto);
   return (
+
     <header className="fixed z-10 w-full bg-white shadow-md">
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center space-x-4">
@@ -112,6 +119,7 @@ function Header() {
             className="h-8 hover:cursor-pointer"
             onClick={() => navigate("/")}
           />
+
         </div>
         <nav className="items-center hidden space-x-6 lg:flex">
           <NavLink to="/" className="text-lg hover:text-gray-500">

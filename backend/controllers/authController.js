@@ -13,6 +13,7 @@ const findUserByEmail = async (email) => {
 };
 
 const requestPasswordReset = async (req, res) => {
+
     try {
         const { email } = req.body;
         if (!email) return res.status(400).json({ message: "Email is required!" });
@@ -20,14 +21,23 @@ const requestPasswordReset = async (req, res) => {
         const user = await findUserByEmail(email);
         if (!user) return res.status(400).json({ message: "User not found!" });
 
-        // Generate token
+        if(user.modeofLogin !== "email") {
+          return res.status(400).json({ message: "Invalid Request for the Account" });
+        }
+
+        if (user.lastResetRequest === null || (Date.now() - user.lastResetRequest) >= 900000) {
+          user.lastResetRequest = Date.now();
+        } else {
+          return res.status(400).json({ message: "Please wait 15 minutes before requesting another password reset!" });
+        }
+  
+
         const resetToken = crypto.randomBytes(20).toString("hex");
 
         user.resetToken = resetToken;
-        user.resetTokenExpiry = Date.now() + 3600000; // 1 hour expiry
+        user.resetTokenExpiry = Date.now() + 3600000;
         await user.save();
 
-        // Send reset email
         const resetURL = `${process.env.VERCEL_URL}/reset-password/${resetToken}`;
         const subject = "🔐 Password Reset Request"
 
@@ -93,6 +103,7 @@ const resetPassword = async (req, res) => {
         user.password = await bcrypt.hash(newPassword, 10);
         user.resetPasswordToken = undefined;
         user.resetPasswordExpires = undefined;
+        user.requestPasswordReset = undefined;
         await user.save();
 
         res.json({ message: "Password has been reset successfully!" });

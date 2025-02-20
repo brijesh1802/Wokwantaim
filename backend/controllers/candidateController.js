@@ -4,9 +4,8 @@ const CandidateProfile = require('../models/candidate.profile.model');
 const jwt = require('jsonwebtoken');
 const Employer  = require('../models/employer.model');
 const crypto = require('crypto');
-const { uploadToCloudinary } = require('../middleware/upload');
+const { uploadToCloudinary,deleteFromCloudinary } = require('../middleware/upload');
 const sendEmail = require("../utils/emailService");
-const { v2: cloudinary } = require('cloudinary');
 
 // SignUp route
 const signup = async (req, res) => {
@@ -278,6 +277,16 @@ const verifyEmail = async (req, res) => {
     }
 };
 
+const getPublicIdFromUrl = (url) => {
+    const regex = /upload\/v(\d+)\/(.*)\.(jpg|jpeg|png|gif|pdf)$/;
+    const matches = url.match(regex);
+    if (matches) {
+        return matches[2];  // This is the public ID
+    }
+    throw new Error('Invalid Cloudinary URL');
+};
+
+
 //Delete account route
 const deleteAccount = async (req, res) => {
     try {
@@ -297,12 +306,16 @@ const deleteAccount = async (req, res) => {
             }
         }
 
+        // Deleting profile photo if it exists
         if (candidate.profilePhoto) {
-            await cloudinary.uploader.destroy(candidate.profilePhoto);
+            const profilePhotoPublicId = getPublicIdFromUrl(candidate.profilePhoto);
+            await deleteFromCloudinary(profilePhotoPublicId);
         }
 
+        // Deleting resume if it exists
         if (candidate.resume) {
-            await cloudinary.uploader.destroy(candidate.resume);
+            const resumePublicId = getPublicIdFromUrl(candidate.resume);
+            await deleteFromCloudinary(resumePublicId);
         }
 
         await candidate.deleteOne();

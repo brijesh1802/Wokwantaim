@@ -21,6 +21,18 @@ const upload = multer({
     }
 })
 
+const deleteFromCloudinary = (public_id) => {
+    return new Promise((resolve, reject) => {
+        cloudinary.uploader.destroy(public_id, (error, result) => {
+            if (error) {
+                console.error('Error deleting from Cloudinary:', error);
+                reject(error);
+            }
+            resolve(result);
+        });
+    });
+}
+
 
 const uploadToCloudinary = (fileBuffer, folder, fileType) => {
     const transformations = [];
@@ -59,4 +71,4 @@ const uploadToCloudinary = (fileBuffer, folder, fileType) => {
     });
 };
 
-module.exports = { upload, uploadToCloudinary };
+module.exports = { upload, uploadToCloudinary, deleteFromCloudinary};

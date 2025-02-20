@@ -2,6 +2,8 @@ const passport = require('passport');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const Candidate = require('../models/candidate.model');
 const sendEmail = require('./emailService');
+const { uploadToCloudinary } = require('../middleware/upload');
+const axios = require('axios');
 
 passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_APP_ID,
@@ -16,7 +18,13 @@ passport.use(new FacebookStrategy({
         let firstName = profile.displayName.split(' ')[0];
         let lastName = profile.displayName.split(' ')[1] || null;
         
-        let profilePhoto = profile.photos[0].value;
+        const profilePhotoURL = profile.photos[0].value;
+        
+        const response = await axios.get(profilePhotoURL, { responseType: 'arraybuffer' });
+        
+        const profilePhotoBuffer = Buffer.from(response.data, 'binary');
+        
+        const profilePhotoUpload = await uploadToCloudinary(profilePhotoBuffer, 'uploads/profilePhotos', 'image');
 
         if (!candidate) {
             candidate = new Candidate({
@@ -26,7 +34,7 @@ passport.use(new FacebookStrategy({
                 },
                 email: profile.emails[0].value,
                 password: '',  
-                profilePhoto: profilePhoto,
+                profilePhoto: profilePhotoUpload.url,
                 gender: profile.gender, 
                 isVerified: true,
                 modeofLogin : 'facebook'  

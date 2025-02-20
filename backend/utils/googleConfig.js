@@ -2,6 +2,8 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const Candidate = require('../models/candidate.model');  
 const sendEmail = require('./emailService');
+const { uploadToCloudinary } = require('../middleware/upload');
+const axios = require('axios'); 
 
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
@@ -12,8 +14,15 @@ passport.use(new GoogleStrategy({
 
         let candidate = await Candidate.findOne({ email: profile.emails[0].value });
 
+        const profilePhotoURL = profile.photos[0].value;
+
+        const response = await axios.get(profilePhotoURL, { responseType: 'arraybuffer' });
+
+        const profilePhotoBuffer = Buffer.from(response.data, 'binary');
+
+        const profilePhotoUpload = await uploadToCloudinary(profilePhotoBuffer, 'uploads/profilePhotos', 'image');
+
         if (!candidate) {
-    
             candidate = new Candidate({
                 fullName: {
                     firstName: profile.name.givenName,
@@ -21,9 +30,9 @@ passport.use(new GoogleStrategy({
                 },
                 email: profile.emails[0].value,
                 password: '', 
-                profilePhoto: profile.photos[0].value,
-                gender:profile.gender, 
-                modeofLogin : 'google', 
+                profilePhoto: profilePhotoUpload.url,
+                gender: profile.gender, 
+                modeofLogin: 'google', 
                 isVerified: true,  
             });
 
@@ -33,7 +42,6 @@ passport.use(new GoogleStrategy({
         const dashboardURL = `${process.env.VERCEL_URL}/`;
 
         const subject = "🎉 Welcome to Wokwantaim – Let's Get Started!";
-
 
         const body = `
         <div style="font-family: Arial, sans-serif; padding: 40px; background-color: #f4f4f4; text-align: center;">
@@ -67,6 +75,7 @@ passport.use(new GoogleStrategy({
 
         return done(null, candidate); 
     } catch (err) {
+        console.error('Error during Google login:', err);
         return done(err, false);  
     }
 }));

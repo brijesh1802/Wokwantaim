@@ -13,7 +13,7 @@ const upload = multer({
     storage: storage,
     limits: { fileSize: 5 * 1024 * 1024 },  // Limiting file size to 5MB
     fileFilter: (req, file, cb) => {
-        if (['image/jpeg', 'image/png', 'application/pdf'].includes(file.mimetype)) {
+        if (['image/jpeg', 'image/png', 'image/webp', 'application/pdf'].includes(file.mimetype)) {
             cb(null, true);
         } else {
             cb(new Error('Invalid file type'), false);
@@ -21,20 +21,36 @@ const upload = multer({
     }
 })
 
-// Uploading files to Cloudinary
-const uploadToCloudinary = (fileBuffer, folder) => {
+
+const uploadToCloudinary = (fileBuffer, folder, fileType) => {
+    const transformations = [];
+
+    if (fileType === 'image') {
+        transformations.push({
+            quality: 'auto',
+            format : 'webp'
+        });
+    }
+
+    if (fileType === 'pdf') {
+        transformations.push({
+            resource_type: 'raw'
+        });
+    }
+
     return new Promise((resolve, reject) => {
         cloudinary.uploader.upload_stream(
             {
                 folder: folder,
-                resource_type: 'auto',
+                resource_type: fileType === 'image' ? 'image' : 'raw',
+                transformation: transformations
             },
             (error, result) => {
                 if (error) {
                     console.error('Error uploading to Cloudinary:', error);
                     reject(error); 
                 }
-                resolve({ 
+                resolve({
                     url: result.secure_url,
                     public_id: result.public_id
                 });

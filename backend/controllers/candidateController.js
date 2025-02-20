@@ -6,6 +6,7 @@ const Employer  = require('../models/employer.model');
 const crypto = require('crypto');
 const { uploadToCloudinary } = require('../middleware/upload');
 const sendEmail = require("../utils/emailService");
+const { v2: cloudinary } = require('cloudinary');
 
 // SignUp route
 const signup = async (req, res) => {
@@ -72,8 +73,8 @@ const signup = async (req, res) => {
         const resumeFile = req.files['resume'][0].buffer;
 
     
-        const profilePhotoUpload = await uploadToCloudinary(profilePhotoFile, 'uploads/profilePhotos');
-        const resumeUpload = await uploadToCloudinary(resumeFile, 'uploads/resumes');
+        const profilePhotoUpload = await uploadToCloudinary(profilePhotoFile, 'uploads/profilePhotos','image');
+        const resumeUpload = await uploadToCloudinary(resumeFile, 'uploads/resumes','pdf');
 
       
         let employer = await Employer.findOne({ email });
@@ -281,25 +282,27 @@ const verifyEmail = async (req, res) => {
 const deleteAccount = async (req, res) => {
     try {
         const userEmail = req.user.email;
+        const password = req.body.password;
 
-        const password =  req.body.password;
-
-        if(!password) {
-            return res.status(400).json({ msg: 'Please provide password' });
-        }
-
-        const candidate = await Candidate.findOne({
-            email: userEmail
-        });
-
-        const isMatch = await bcrypt.compare(password, candidate.password);
-
-        if (!isMatch) {
-            return res.status(400).json({ msg: 'Invalid credentials' });
-        }
+        const candidate = await Candidate.findOne({ email: userEmail });
 
         if (!candidate) {
             return res.status(404).json({ msg: 'Candidate not found' });
+        }
+
+        if (candidate.modeofLogin === 'email') {
+            const isMatch = await bcrypt.compare(password, candidate.password);
+            if (!isMatch) {
+                return res.status(400).json({ msg: 'Invalid credentials' });
+            }
+        }
+
+        if (candidate.profilePhoto) {
+            await cloudinary.uploader.destroy(candidate.profilePhoto);
+        }
+
+        if (candidate.resume) {
+            await cloudinary.uploader.destroy(candidate.resume);
         }
 
         await candidate.deleteOne();
@@ -309,7 +312,7 @@ const deleteAccount = async (req, res) => {
         console.error(err.message);
         res.status(500).json({ msg: 'Server error while deleting account' });
     }
-}
+};
 
 
 module.exports = { signup, login, profile, verifyEmail, deleteAccount };

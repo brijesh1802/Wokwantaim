@@ -49,19 +49,43 @@ export const AuthProvider = ({ children }) => {
     }
   }, [storedUserType]);
 
+
+  const [selectedRadio,setSelectedRadio]=useState({});
+  const [checkedOptions,setCheckedOptions]=useState({});
+
   const handleJobRoleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setcurrentJobRole((prev) => ({
-      ...prev,
-      [name]:
-        type === "checkbox" || type === "radio"
-          ? checked
-            ? [...(prev[name] || []), value]
-            : (prev[name] || []).filter((v) => v !== value)
-          : [value],
-    }));
-  };
 
+    if (type === "radio") {
+      setSelectedRadio((prev) => ({
+        ...prev,
+        [name]: value, // Store selected value per category
+      }));
+      
+        setcurrentJobRole((prev) => ({
+            ...prev,
+            [name]: [value], // Ensure only one value for radio button categories
+        }));
+    } else if (type === "checkbox") {
+        setCheckedOptions((prev) => ({
+            ...prev,
+            [value]: checked,
+        }));
+        console.log('checked options-auth : ',value);
+        
+        setcurrentJobRole((prev) => ({
+            ...prev,
+            [name]: checked
+                ? [...(prev[name] || []), value]
+                : (prev[name] || []).filter((v) => v !== value),
+        }));
+    } else {
+        setcurrentJobRole((prev) => ({
+            ...prev,
+            [name]: [value],
+        }));
+    }
+};
   useEffect(() => {
     const industryCountMap = new Map();
     jobs.forEach((job) => {
@@ -110,9 +134,19 @@ export const AuthProvider = ({ children }) => {
         showScroll,
         jobRole,
         companyRole,
+        checkedOptions,setCheckedOptions,selectedRadio,setSelectedRadio
       }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
+
+
+
+
+
+ 
+
+
+

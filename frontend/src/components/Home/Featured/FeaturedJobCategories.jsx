@@ -24,7 +24,7 @@ const FeaturedJobCategories = ({ sectionTitle}) => {
               </p>
               <Link
                 to="/joblist"
-                className="text-orange-400 hover:text-orange-600"  onClick={() => handleJobRoleChange({ target: { name: "Industry", value:industry, type: "text" } })}
+                className="text-orange-400 hover:text-orange-600"  onClick={() => handleJobRoleChange({ target: { name: "Industry", value:industry, type: "checkbox",checked:true} })}
               >
                 View Jobs!
               </Link>

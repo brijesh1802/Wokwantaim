@@ -229,4 +229,24 @@ const verifyEmail = async (req, res) => {
     }
 };
 
-module.exports = { signup, login, profile, verifyEmail};
+//Delete account route
+const deleteAccount = async (req, res) => {
+    try {
+        const userEmail = req.user.email;
+
+        const employer = await Employer.findOne({
+            email: userEmail
+        });
+
+        if (!employer) {
+            return res.status(404).json({ msg: 'Employer not found' });
+        }
+
+        await employer.deleteOne();
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ msg: 'Server error while deleting account' });
+    }
+}
+
+module.exports = { signup, login, profile, verifyEmail, deleteAccount};

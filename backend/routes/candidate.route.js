@@ -1,5 +1,5 @@
 const express = require('express');
-const { signup, login, profile, verifyEmail } = require('../controllers/candidateController');
+const { signup, login, profile, verifyEmail, deleteAccount } = require('../controllers/candidateController');
 const {upload} = require('../middleware/upload');
 const authMiddleware = require('../middleware/authMiddleware'); 
 
@@ -13,6 +13,8 @@ router.post('/login', login);
 router.get('/profile',authMiddleware, profile);
 
 router.get("/verify/:token", verifyEmail);
+
+router.delete("/deleteProfile",authMiddleware, deleteAccount);
 
 
 module.exports = router;

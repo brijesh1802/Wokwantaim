@@ -29,6 +29,7 @@ function App() {
         {/* Conditionally render Header */}
         {!noPaths.includes(location.pathname) && <Header />}
         <main className="flex-grow">
+          <ScrollToTop/>
           <Routes>
             <Route path="*" element={<h1>Not Found</h1>} />
             <Route path="/" element={<HomePage />} />

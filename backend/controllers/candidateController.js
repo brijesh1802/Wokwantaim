@@ -12,7 +12,7 @@ const signup = async (req, res) => {
     try {
         const { firstName, lastName, email, password, experienceLevel, jobType, phoneNumber } = req.body;
 
-        // Validate required fields
+       
         if (!firstName) {
             return res.status(400).json({ msg: 'First name is required' });
         }
@@ -64,7 +64,6 @@ const signup = async (req, res) => {
             return res.status(400).json({ msg: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character' });
         }
         
-        // Validate file uploads
         if (!req.files || !req.files['profilePhoto'] || !req.files['resume']) {
             return res.status(400).json({ msg: 'Profile photo and resume are required' });
         }
@@ -72,43 +71,43 @@ const signup = async (req, res) => {
         const profilePhotoFile = req.files['profilePhoto'][0].buffer;
         const resumeFile = req.files['resume'][0].buffer;
 
-        // Upload files to Cloudinary
+    
         const profilePhotoUpload = await uploadToCloudinary(profilePhotoFile, 'uploads/profilePhotos');
         const resumeUpload = await uploadToCloudinary(resumeFile, 'uploads/resumes');
 
-        // Check if candidate already exists
+      
         let employer = await Employer.findOne({ email });
         let candidate = await Candidate.findOne({ email });
         if (employer || candidate) {
             return res.status(400).json({ msg: 'Email already exists' });
         }
 
-        // Hash password
+        
         const hashedpassword = await bcrypt.hash(password, 10);
 
-        // Generate verification token
+        
         const verificationToken = crypto.randomBytes(20).toString("hex");
 
-        // Create new candidate
+        
         candidate = new Candidate({
             fullName: { firstName, lastName },
             email,
-            password: hashedpassword, // Hashed password
+            password: hashedpassword,
             experienceLevel,
             jobType,
             phoneNumber,
-            profilePhoto: profilePhotoUpload.url, // Cloudinary URL
-            resume: resumeUpload.url, // Cloudinary URL
-            verificationToken, // Store verification token
+            profilePhoto: profilePhotoUpload.url, 
+            resume: resumeUpload.url, 
+            verificationToken, 
         });
 
-        // Save the candidate to DB
+        
         const newCandidate = await candidate.save();
 
         const newProfile = new CandidateProfile({ candidateId: newCandidate._id });
         await newProfile.save();
 
-        // Send verification email
+        
         const verificationURL = `${process.env.VERCEL_URL}/verify-email/${verificationToken}`;
 
         const subject = "🔐 Confirm Your Email Address"
@@ -135,12 +134,8 @@ const signup = async (req, res) => {
         </div>
         </div>
         `
-
-              
-
         await sendEmail(email, subject, body);
         
-
         res.status(201).json({ message: "User registered! Please verify your email." });
 
     } catch (err) {
@@ -195,48 +190,87 @@ const login = async (req, res) => {
 // Profile route
 const profile = async (req, res) => {
     try {
-        // Get the logged-in user's email from the JWT
+        
         const userEmail = req.user.email;
 
-        // Find the candidate by email
+        
         const candidate = await Candidate.findOne({ email: userEmail });
 
-        // If candidate not found, return 404 error
+        
         if (!candidate) {
             return res.status(404).json({ msg: 'Candidate not found' });
         }
         res.json(candidate);
+
     } catch (err) {
         console.error(err.message);
         res.status(500).json({ msg: 'Server error while fetching profile' });
     }
 };
 
-
 const verifyEmail = async (req, res) => {
     try {
-        const { token } = req.params;  // Token from the URL
+        const { token } = req.params; 
 
-        // Find the user by the verification token
+        
         const user = await Candidate.findOne({ verificationToken: token });
 
         if (!user) {
             return res.status(400).json({ message: "Invalid token or token expired!" });
         }
 
-        // Optional: Check if token has expired
+        const email = user.email;
+
+        
         const tokenExpirationTime = user.tokenExpirationTime || Date.now() + 3600000; // Default: 1 hour
         if (Date.now() > tokenExpirationTime) {
             return res.status(400).json({ message: "Token has expired!" });
         }
 
-        // Mark the user's email as verified
+        
         user.isVerified = true;
-        user.verificationToken = undefined;  // Clear the verification token after use
-        user.tokenExpirationTime = undefined; // Clear expiration time if any
+        user.verificationToken = undefined;  
+        user.tokenExpirationTime = undefined; 
         await user.save();
 
         res.json({ message: "Email verified successfully! You can now log in." });
+
+        const dashboardURL = `${process.env.VERCEL_URL}/`;
+
+        const subject = "🎉 Welcome to Wokwantaim – Let's Get Started!";
+
+
+        const body = `
+        <div style="font-family: Arial, sans-serif; padding: 40px; background-color: #f4f4f4; text-align: center;">
+            <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <h2 style="color: #333;">Welcome to Wokwantaim 🎉</h2>
+                <p style="color: #555; font-size: 16px; line-height: 1.6;">
+                We're thrilled to have you on board! Wokwantaim is all about connecting people and creating opportunities. Here’s how you can get started:
+                </p>
+                <ul style="text-align: left; color: #555; font-size: 16px; line-height: 1.6; margin: 20px auto; display: inline-block;">
+                    <li>✅ <strong>Complete Your Profile</strong> – Let others know more about you.</li>
+                    <li>🔍 <strong>Explore Opportunities</strong> – Discover new connections and possibilities.</li>
+                    <li>💬 <strong>Engage with the Community</strong> – Stay updated and be part of discussions.</li>
+                </ul>
+                <a href="${dashboardURL}" 
+                style="display: inline-block; padding: 12px 24px; margin-top: 20px; background: #007bff; color: #ffffff; 
+                text-decoration: none; font-size: 16px; font-weight: bold; border-radius: 6px;">
+                🚀 Get Started
+                </a>
+                <p style="color: #888; font-size: 14px; margin-top: 20px;">
+                If you have any questions, feel free to reach out to our support team.
+                </p>
+                <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                <p style="color: #888; font-size: 12px;">
+                Need help? <a href="mailto:support@wokwantaim.com" style="color: #007bff; text-decoration: none;">Contact Support</a>
+                </p>
+            </div>
+        </div>
+        `;
+
+        await sendEmail(email, subject, body);
+
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: error.message });

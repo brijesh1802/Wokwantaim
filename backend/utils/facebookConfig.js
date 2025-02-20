@@ -1,6 +1,7 @@
 const passport = require('passport');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const Candidate = require('../models/candidate.model');
+const sendEmail = require('./emailService');
 
 passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_APP_ID,
@@ -9,54 +10,83 @@ passport.use(new FacebookStrategy({
     profileFields: ['id', 'displayName', 'photos', 'email', 'gender']
 }, async (accessToken, refreshToken, profile, done) => {
     try {
-        // console.log(profile);
 
-        // Ensure you are checking the email field directly in the Candidate model
         let candidate = await Candidate.findOne({ email: profile.emails[0].value });
 
-        // Split the name into first and last name
         let firstName = profile.displayName.split(' ')[0];
         let lastName = profile.displayName.split(' ')[1] || null;
         
-        // Extract profile photo from the profile object
         let profilePhoto = profile.photos[0].value;
 
         if (!candidate) {
-            // If no candidate found, create a new one
             candidate = new Candidate({
                 fullName: {
                     firstName: firstName,
                     lastName: lastName
                 },
                 email: profile.emails[0].value,
-                password: '',  // Use an empty password since you're using Facebook authentication
+                password: '',  
                 profilePhoto: profilePhoto,
                 gender: profile.gender, 
                 isVerified: true,
-                modeofLogin : 'facebook'  // You can adjust this based on your app's logic
+                modeofLogin : 'facebook'  
             });
 
-            // Save the new candidate to the database
             await candidate.save();
         }
 
-        return done(null, candidate);  // Send the candidate as the authenticated user
+        const dashboardURL = `${process.env.VERCEL_URL}/`;
+
+        const subject = "🎉 Welcome to Wokwantaim – Let's Get Started!";
+
+
+        const body = `
+        <div style="font-family: Arial, sans-serif; padding: 40px; background-color: #f4f4f4; text-align: center;">
+            <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <h2 style="color: #333;">Welcome to Wokwantaim 🎉</h2>
+                <p style="color: #555; font-size: 16px; line-height: 1.6;">
+                We're thrilled to have you on board! Wokwantaim is all about connecting people and creating opportunities. Here’s how you can get started:
+                </p>
+                <ul style="text-align: left; color: #555; font-size: 16px; line-height: 1.6; margin: 20px auto; display: inline-block;">
+                    <li>✅ <strong>Complete Your Profile</strong> – Let others know more about you.</li>
+                    <li>🔍 <strong>Explore Opportunities</strong> – Discover new connections and possibilities.</li>
+                    <li>💬 <strong>Engage with the Community</strong> – Stay updated and be part of discussions.</li>
+                </ul>
+                <a href="${dashboardURL}" 
+                style="display: inline-block; padding: 12px 24px; margin-top: 20px; background: #007bff; color: #ffffff; 
+                text-decoration: none; font-size: 16px; font-weight: bold; border-radius: 6px;">
+                🚀 Get Started
+                </a>
+                <p style="color: #888; font-size: 14px; margin-top: 20px;">
+                If you have any questions, feel free to reach out to our support team.
+                </p>
+                <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                <p style="color: #888; font-size: 12px;">
+                Need help? <a href="mailto:support@wokwantaim.com" style="color: #007bff; text-decoration: none;">Contact Support</a>
+                </p>
+            </div>
+        </div>
+        `;
+
+        await sendEmail(profile.emails[0].value, subject, body);
+
+        return done(null, candidate); 
     } catch (err) {
-        return done(err, false);  // Pass the error to the done function if any occurs
+        return done(err, false);
     }
 }));
 
-// Serializing user
+
 passport.serializeUser((user, done) => {
-    done(null, user._id);  // Store the user ID to use during session
+    done(null, user._id);  
 });
 
-// Deserializing user
+
 passport.deserializeUser(async (id, done) => {
     try {
-        const user = await Candidate.findById(id);  // Find user by ID (Mongo _id)
-        done(null, user);  // Return the user object
+        const user = await Candidate.findById(id); 
+        done(null, user);  
     } catch (err) {
-        done(err, null);  // Pass the error to done if an error occurs
+        done(err, null);  
     }
 });

@@ -1,3 +1,4 @@
+
 import React from "react";
 import default_image from "../../assets/default_image.png";
 const ProfileCard = ({ user }) => {

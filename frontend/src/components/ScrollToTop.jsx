@@ -8,7 +8,7 @@ const ScrollToTop = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowScroll(window.scrollY > 200 && (window.scrollY + window.innerHeight) < document.documentElement.scrollHeight - 390);
+      setShowScroll(window.scrollY > 200 && (window.scrollY + window.innerHeight) < document.documentElement.scrollHeight - 0);
     };
 
     window.addEventListener("scroll", handleScroll);

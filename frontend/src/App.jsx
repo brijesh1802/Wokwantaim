@@ -5,7 +5,7 @@ import HomePage from "./pages/HomePage";
 import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
 import { AuthProvider } from "./context/AuthContext";
-import JobList from "./pages/JobList";
+import JobList from './pages/JobList'
 import JobDetail from "./pages/JobDetail";
 import CompanyDetail from "./pages/CompanyDetail";
 import Profile from "./pages/Profile";

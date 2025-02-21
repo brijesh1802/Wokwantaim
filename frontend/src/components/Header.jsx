@@ -177,15 +177,14 @@ function Header() {
                 />
               </button>
             ) : (
-              <button className="px-4 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600">
-                <NavLink to="/signup" className="text-white">
-                  Sign Up
-                </NavLink>
+              <button className="relative px-4 py-2 text-white bg-orange-500 rounded-md overflow-hidden group">
+              <span className="absolute inset-0 bg-black translate-y-[-100%] transition-transform duration-300 ease-in-out group-hover:translate-y-0"></span>
+              <span className="relative z-10">
+                <Link to="/signup" className="text-white">Sign Up</Link>
                 <span className="mx-2 text-gray-400">/</span>
-                <NavLink to="/login" className="text-white">
-                  Login
-                </NavLink>
-              </button>
+                <Link to="/login" className="text-white">Login</Link>
+              </span>
+            </button>
             )}
             {dropdownOpen && (
               <div className="absolute right-0 w-48 py-2 mt-2 bg-white rounded-md shadow-lg">

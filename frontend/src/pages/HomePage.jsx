@@ -233,11 +233,12 @@ function HomePage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredSearchJob, setFilteredSearchJob] = useState("");
   const [showDropdown,setShowDropDown]=useState(false)
- 
+ const [loading, setLoading] = useState(false);
   const navigate=useNavigate();
   const handleSearch=()=>{
+ 
     navigate('/joblist')
-    setSearchTerm("")
+   
   }
   const handleSearchChange = (e) => {
     
@@ -298,11 +299,17 @@ function HomePage() {
                 onChange={handleSearchChange}
                 onFocus={()=>setShowDropDown(filteredSearchJob.length>0)}
               />
-              <button className="flex items-center max-w-xs px-4 py-2 m-1 text-white transition-colors bg-orange-500 rounded-md hover:bg-orange-600 sm:max-w"
-              onClick={handleSearch}>
-                <Search className="hidden w-5 h-5 mr-2 sm:block" />
-                <span className="hidden sm:block">Search</span>
-                <Search className="w-5 h-5 sm:hidden" />
+              <button
+                className="relative flex items-center max-w-xs px-4 py-2 m-1 text-white transition-colors bg-orange-500 rounded-md overflow-hidden group"
+                onClick={handleSearch}
+              >
+                <span className="absolute inset-0 bg-black translate-y-[-100%] transition-transform duration-300 ease-in-out group-hover:translate-y-0"></span>
+
+                <span className="relative flex items-center z-10">
+                  <Search className="hidden w-5 h-5 mr-2 sm:block" />
+                  <span className="hidden sm:block">Search</span>
+                  <Search className="w-5 h-5 sm:hidden" />
+                </span>
               </button>
                {/* Suggestions Dropdown */}
                {showDropdown && (

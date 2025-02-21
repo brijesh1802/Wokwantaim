@@ -571,7 +571,7 @@ const JobList = () => {
   const [filteredSearchJob, setFilteredSearchJob] = useState("");
   const [showDropdown, setShowDropDown] = useState(false);
 
-  const [isRefreshed, setIsRefresh] = useState(false);
+ const [loading, setLoading] = useState(false);
   const handleClick = (jobs) => {
     navigate("/jobdetail", { state: { jobs } });
   };
@@ -630,6 +630,13 @@ const JobList = () => {
 
   // Handle search input change
   const handleSearchChange = () => {
+    setLoading(true)
+      setTimeout(()=>
+      {
+        setLoading(false)
+      
+      },500)
+   
     console.log("searching for : ", { title, location, jobType });
     const filteredJobs = jobs.filter((job) => {
       const matchTitle = title
@@ -812,12 +819,12 @@ const JobList = () => {
           </div>
 
           {/* Search Button */}
-          <div className="flex justify-center mt-4 gap-3">
+          <div className="flex justify-center mt-4 gap-2">
             <button
-              className="w-full p-3 text-white transition-all bg-orange-500 rounded-md md:w-1/3 hover:bg-orange-600"
-              onClick={handleSearchChange}
+              className="relative w-full p-3 text-white bg-orange-500 rounded-md md:w-1/3 overflow-hidden before:absolute before:inset-0 before:bg-black before:scale-y-0 before:origin-top before:transition-transform before:duration-500 before:ease-in-out hover:before:scale-y-100"
+              onClick={handleSearchChange} disabled={loading}
             >
-              Find Jobs
+           <span className="relative z-10"> Find Jobs</span>
             </button>
             <button className="hover:text-orange-500" onClick={handleRefresh}>
               <RefreshCcw />{" "}
@@ -835,8 +842,9 @@ const JobList = () => {
           selectedRadio={selectedRadio}
           checkedOptions={checkedOptions}
         />
-        {/* Job Results */}
-        <JobResults filteredJob={filteredJobRole} handleClick={handleClick} />
+        {loading?<div className="w-3/4 text-center text-lg font-semibold text-gray-500 mt-7 mb-7">Searching...</div>:(
+          <JobResults filteredJob={filteredJobRole} handleClick={handleClick} loading={loading} />)}
+        
       </div>
     </div>
   );

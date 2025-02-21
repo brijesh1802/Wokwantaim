@@ -177,10 +177,17 @@ return (
 
         {/* Apply Button */}
         <div className="flex justify-center mt-8">
-          <button onClick={onHandleClick} className="flex items-center justify-center gap-2 px-8 py-3 text-white bg-orange-500 rounded-md hover:bg-orange-600 w-40 h-12" disabled={loading}>
-          {loading ? <Loader2 className="animate-spin" /> : "Apply Now"}
-          </button>
-        </div>
+  <button
+    onClick={onHandleClick}
+    className="relative flex items-center justify-center gap-2 px-8 py-3 text-white bg-orange-500 rounded-md overflow-hidden group w-40 h-12"
+    disabled={loading}
+  >
+    <span className="absolute inset-0 bg-black translate-y-[-100%] transition-transform duration-300 ease-in-out group-hover:translate-y-0"></span>
+    <span className="relative z-10 flex items-center gap-2">
+      {loading ? <Loader2 className="animate-spin" /> : "Apply Now"}
+    </span>
+  </button>
+</div>
         {isApplied && (
   <div className="mt-6 flex items-center justify-center">
     <div className="w-full max-w-md p-5 bg-green-50 border border-green-400 shadow-lg rounded-lg">

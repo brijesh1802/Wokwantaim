@@ -229,4 +229,32 @@ const verifyEmail = async (req, res) => {
     }
 };
 
-module.exports = { signup, login, profile, verifyEmail};
+//Delete account route
+const deleteAccount = async (req, res) => {
+    try {
+        const userEmail = req.user.email;
+
+        const password =  req.body.password;
+
+        const employer = await Employer.findOne({
+            email: userEmail
+        });
+
+        const isMatch = await bcrypt.compare(password, employer.password);
+        
+        if (!isMatch) {
+            return res.status(400).json({ msg: 'Invalid credentials' });
+        }
+
+        if (!employer) {
+            return res.status(404).json({ msg: 'Employer not found' });
+        }
+
+        await employer.deleteOne();
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ msg: 'Server error while deleting account' });
+    }
+}
+
+module.exports = { signup, login, profile, verifyEmail, deleteAccount};

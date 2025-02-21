@@ -14,8 +14,10 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import SafetySections from "./pages/SafetySections";
 import EmailVerifiedPage from "./pages/EmailVerifiedPage";
 import RedirectPage from "./pages/RedirectPage";
+import JobApplications from "./pages/JobApplications";
+import DeleteAccount from "./components/DeleteAccount";
+import ForgotPassword from "./components/ForgotPassword";
 import ScrollToTop from "./components/ScrollToTop";
-
 
 
 function App() {
@@ -25,10 +27,9 @@ function App() {
   return (
     <AuthProvider>
       <div className="flex flex-col min-h-screen">
-        {/* Conditionally render Header */}
         {!noPaths.includes(location.pathname) && <Header />}
         <main className="flex-grow">
-          <ScrollToTop/>
+        <ScrollToTop/>
           <Routes>
             <Route path="*" element={<h1>Not Found</h1>} />
             <Route path="/" element={<HomePage />} />
@@ -39,11 +40,19 @@ function App() {
             <Route path="/companydetail" element={<CompanyDetail />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/safety" element={<SafetySections />} />
-
+            <Route path="/forgot" element={<ForgotPassword />} />
             <Route path="/interview/:companyId" element={<InterviewPage />} />
-            <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
-            <Route path='/verify-email/:token' element={<EmailVerifiedPage />} />
+            <Route
+              path="/reset-password/:token"
+              element={<ResetPasswordPage />}
+            />
+            <Route
+              path="/verify-email/:token"
+              element={<EmailVerifiedPage />}
+            />
             <Route path="/redirect" element={<RedirectPage />} />
+            <Route path="/applications" element={<JobApplications />} />
+            <Route path="/delete-account" element={<DeleteAccount />} />
           </Routes>
         </main>
         {!noPaths.includes(location.pathname) &&

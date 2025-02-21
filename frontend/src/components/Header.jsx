@@ -244,7 +244,7 @@ function Header() {
               {userType === "candidate" && userData ? (
                 <div className="flex flex-col ml-2 text-sm">
                   <img
-                    src={userData.profilePhoto || profileimage}
+                    src={userData.profilePhoto}
                     className="object-cover w-10 h-10 rounded-full"
                   />
                   <span className="flex items-start">

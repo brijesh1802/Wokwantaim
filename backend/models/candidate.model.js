@@ -18,8 +18,8 @@ const candidateSchema = new Schema({
         unique: true
     },
     password: {
-        type: String,  // This can be an empty string for Google login users
-        required: false  // Optional for Google login
+        type: String,  
+        required: false  
     },
     experienceLevel: {
         type: String,
@@ -73,7 +73,7 @@ const candidateSchema = new Schema({
     },
     isVerified: {
         type: Boolean,
-        default: false  // Automatically verify when using Google login
+        default: false 
     },
     resetToken: { 
         type: String, 

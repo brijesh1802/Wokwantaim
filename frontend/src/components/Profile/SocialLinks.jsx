@@ -1,3 +1,5 @@
+
+
 import React from "react";
 import { LinkedinIcon, GithubIcon } from "lucide-react";
 const SocialLinks = ({ socialLinks }) => {
@@ -6,10 +8,12 @@ const SocialLinks = ({ socialLinks }) => {
       <div className="flex flex-col space-y-3 mt-4">
         {socialLinks.linkedin && (
           <div className="flex items-center space-x-3">
+
             <a
               href={socialLinks.linkedin}
               target="_blank"
               rel="noopener noreferrer"
+
               className="flex items-center hover:text-blue-800 transition-colors duration-200 "
             >
               <LinkedinIcon className="w-5 h-5 mr-2" />

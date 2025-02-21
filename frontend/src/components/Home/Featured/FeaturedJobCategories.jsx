@@ -1,22 +1,12 @@
 
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import {BriefcaseBusiness } from 'lucide-react'
 import { AuthContext } from "../../../context/AuthContext";
 
 const FeaturedJobCategories = ({ sectionTitle}) => {
-  const {industry,handleJobRoleChange,setCheckedOptions,checkedOptions}=useContext(AuthContext)
-  
-
-  const handleJobRoleIndustry = (industry) => {
-    setCheckedOptions((prev) => ({
-      ...prev,
-      [industry]: prev[industry] ? undefined : true, 
-    }));
-    
-    handleJobRoleChange({ target: { name: "Industry", value:industry, type: "text"}})
-  }
+  const {industry,handleJobRoleChange}=useContext(AuthContext)
   return (
     <section className="py-4">
       <div className="container px-4 mx-auto slike-slide">
@@ -34,8 +24,7 @@ const FeaturedJobCategories = ({ sectionTitle}) => {
               </p>
               <Link
                 to="/joblist"
-                className="text-orange-400 hover:text-orange-600"  
-                onClick={()=>handleJobRoleIndustry(industry)}
+                className="text-orange-400 hover:text-orange-600"  onClick={() => handleJobRoleChange({ target: { name: "Industry", value:industry, type: "text" } })}
               >
                 View Jobs!
               </Link>

@@ -184,14 +184,7 @@ const JobResults = ({filteredJob}) => {
   const navigate=useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 7;
-  const [jobs, setJobs] = useState([]);
-
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/jobs/getAll`)
-      .then((response) => response.json())
-      .then((data) => setJobs(data))
-      .catch((error) => console.error("Error fetching jobs:", error));
-  }, []);
+ 
 
   const [sortOrder, setSortOrder] = useState("");
   const [sortedJobs, setSortedJobs] = useState([...filteredJob]);
@@ -306,7 +299,8 @@ const JobResults = ({filteredJob}) => {
             </div>
           </div>
         )):
-        <div className="flex items-center justify-center w-full text-gray-500"><p> No Jobs Found</p></div>}
+        <div className="flex items-center justify-center w-full text-gray-500"><p> No Jobs Found</p></div>
+        }
       </div>
 
       {/* Pagination Controls */}

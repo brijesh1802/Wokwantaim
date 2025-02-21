@@ -237,6 +237,7 @@ function HomePage() {
   const navigate=useNavigate();
   const handleSearch=()=>{
     navigate('/joblist')
+    setSearchTerm("")
   }
   const handleSearchChange = (e) => {
     

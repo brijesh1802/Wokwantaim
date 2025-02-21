@@ -1,4 +1,3 @@
-
 // import React, { useState, useEffect, useContext } from "react";
 // import { useNavigate } from "react-router-dom";
 // import Banner from "../components/Banner";
@@ -11,13 +10,12 @@
 //   const {handleJobRoleChange,currentJobRole,jobs,jobRole,selectedRadio,checkedOptions,setSelectedRadio,setCheckedOptions}=useContext(AuthContext)
 //   // const jobTypes = ["Full-time", "Part-Time", "Contract"]; // Example job type data
 //   const navigate = useNavigate();
-   
 
 //   const [industry, setIndustry] = useState([]);
 //   const [jobcountry,setCountry]=useState([])
-  
+
 //   const [jobTypes,setJobTypes]=useState([]);
-  
+
 //   const [filteredJobRole, setFilteredJobRole] = useState([]);
 
 //   const [title,setTitle]=useState("");
@@ -25,14 +23,14 @@
 //   const [jobType,setJobType]=useState("");
 
 //   const [filteredSearchJob, setFilteredSearchJob] = useState("");
-//   const [showDropdown,setShowDropDown]=useState(false) 
+//   const [showDropdown,setShowDropDown]=useState(false)
 //   const [isRefreshed, setIsRefresh] = useState(false);
 //   const handleClick = (jobs) => {
 //     navigate("/jobdetail", { state: { jobs } });
 //   };
 //   const handleRefresh = () => {
-//     console.log('checked options :  ',checkedOptions || {}); 
-//     console.log('selected radio  :  ',selectedRadio); 
+//     console.log('checked options :  ',checkedOptions || {});
+//     console.log('selected radio  :  ',selectedRadio);
 //     setIsRefresh(true);
 //     setSelectedRadio("");
 //     setCheckedOptions({});
@@ -43,7 +41,7 @@
 //   };
 
 //   const handleSearchTitleChange = (e) => {
-    
+
 //     const value = e.target.value;
 //     setTitle(value);
 
@@ -72,29 +70,27 @@
 //       const matchTitle = title ? job.title.toLowerCase().includes(title.toLowerCase()) : true;
 //       const matchLocation = location ? job.location.toLowerCase().includes(location.toLowerCase()) : true;
 //       const matchJobType = jobType ? job.jobType.toLowerCase().includes(jobType.toLowerCase()) : true;
-    
+
 //       return matchTitle && matchLocation && matchJobType;
 //     });
 //     console.log('filtered jobs: ',{filteredJobs})
 //     setFilteredJobRole(filteredJobs)
 //   };
 
-
-  
 //   useEffect(() => {
 //     const industries = jobs.map((job) => job.industry);
 //     const countries = jobs.map((job) => job.location);
 //     const jobtypes = jobs.map((job) => job.jobType);
-   
+
 //     const uniqueIndustriesSet = new Set(industries);
-  
+
 //     const uniqueCountrySet = new Set(countries);
 //     const uniqueJobTypeSet = new Set(jobtypes);
 //     setIndustry(Array.from(uniqueIndustriesSet));
-   
+
 //     setCountry(Array.from(uniqueCountrySet));
 //     setJobTypes(Array.from(uniqueJobTypeSet));
-    
+
 //   }, [jobs]);
 
 //   useEffect(() => {
@@ -163,8 +159,6 @@
 //             return false;
 //           });
 
-        
-
 //         return (
 //           matchDate &&
 //           matchIndustry &&
@@ -225,8 +219,6 @@
 //             if (range === "5+ years") return job.experienceYearsMax >= 5;
 //             return false;
 //           });
-
-        
 
 //         return (
 //           matchDate &&
@@ -330,7 +322,6 @@
 
 // export default JobList;
 
-
 // import React, { useState, useEffect, useContext } from "react";
 // import { useNavigate } from "react-router-dom";
 // import Banner from "../components/Banner";
@@ -354,14 +345,13 @@
 //   const [jobType, setJobType] = useState("");
 //   const [isRefreshed, setIsRefresh] = useState(false);
 
-
 //   const handleClick = (jobs) => {
 //     navigate("/jobdetail", { state: { jobs } });
 //   };
 
 //   const handleRefresh = () => {
-//     console.log('checked options :  ',checkedOptions || {}); 
-//     console.log('selected radio  :  ',selectedRadio); 
+//     console.log('checked options :  ',checkedOptions || {});
+//     console.log('selected radio  :  ',selectedRadio);
 //     setIsRefresh(true);
 //     setSelectedRadio("");
 //     setCheckedOptions({});
@@ -521,7 +511,7 @@
 //           </div>
 //         </div>
 //       </div>
-     
+
 //       <div className="flex flex-col lg:flex-row mt-5 lg:p-3">
 //         {/* Filter Section */}
 //         <JobFilter
@@ -542,9 +532,7 @@
 
 // export default JobList;
 
-
-
-//New 
+//New
 
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
@@ -555,106 +543,124 @@ import { RefreshCcw } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 
 const JobList = () => {
-  const {handleJobRoleChange,currentJobRole,jobs,jobRole,selectedRadio,checkedOptions,setSelectedRadio,setCheckedOptions}=useContext(AuthContext)
+  const {
+    handleJobRoleChange,
+    currentJobRole,
+    jobs,
+    jobRole,
+    selectedRadio,
+    checkedOptions,
+    setSelectedRadio,
+    setCheckedOptions,
+    setcurrentJobRole,
+  } = useContext(AuthContext);
   // const jobTypes = ["Full-time", "Part-Time", "Contract"]; // Example job type data
   const navigate = useNavigate();
-   
 
   const [industry, setIndustry] = useState([]);
-  const [jobcountry,setCountry]=useState([])
-  
-  const [jobTypes,setJobTypes]=useState([]);
-  
+  const [jobcountry, setCountry] = useState([]);
+
+  const [jobTypes, setJobTypes] = useState([]);
+
   const [filteredJobRole, setFilteredJobRole] = useState([]);
-const [filteredSearchJobRole,setFilteredSearchJobRole]=useState([])
-  const [title,setTitle]=useState("");
-  const [location,setLocation]=useState("");
-  const [jobType,setJobType]=useState("");
-  
+  const [filteredSearchJobRole, setFilteredSearchJobRole] = useState([]); //filtering main search
+  const [title, setTitle] = useState("");
+  const [location, setLocation] = useState("");
+  const [jobType, setJobType] = useState("");
 
   const [filteredSearchJob, setFilteredSearchJob] = useState("");
-  const [showDropdown,setShowDropDown]=useState(false) 
+  const [showDropdown, setShowDropDown] = useState(false);
+
   const [isRefreshed, setIsRefresh] = useState(false);
   const handleClick = (jobs) => {
     navigate("/jobdetail", { state: { jobs } });
   };
-  
+
   const handleRefresh = () => {
-    console.log('Before Reset:', checkedOptions, selectedRadio); // Debugging
-  
+    console.log("Before Reset:", checkedOptions, selectedRadio); // Debugging
+
     setIsRefresh(true);
-    setSelectedRadio(""); 
+    setSelectedRadio("");
     setCheckedOptions({}); // Ensure everything resets
-  
+
     // Force a re-render to clear selections
-    setTimeout(() => {
-      setCheckedOptions({});
-    }, 0);
-  
+
+    setFilteredSearchJobRole([]);
     setFilteredJobRole(jobs);
+    setcurrentJobRole({
+      DatePosted: [],
+      Industry: [],
+      JobRoles: [],
+      Salary: [],
+      Experience: [],
+      Title: [],
+      Location: [],
+      JobType: [],
+      TitleAndCompany: [],
+    });
     setTitle("");
     setLocation("");
     setJobType("");
-  
-    console.log('After Reset:', checkedOptions, selectedRadio); // Debugging
+
+    console.log("After Reset:", checkedOptions, selectedRadio);
+    // window.location.reload(); // Debugging
   };
-  
-  
 
   const handleSearchTitleChange = (e) => {
-    
     const value = e.target.value;
     setTitle(value);
 
-    if(value.trim()==="")
-    {
-      setFilteredSearchJob([])
-      setShowDropDown(false)
-      return
+    if (value.trim() === "") {
+      setFilteredSearchJob([]);
+      setShowDropDown(false);
+      return;
     }
-    const filtered = jobRole.filter((role) => role.toLowerCase().includes(value.toLowerCase()));
+    const filtered = jobRole.filter((role) =>
+      role.toLowerCase().includes(value.toLowerCase())
+    );
     setFilteredSearchJob(filtered);
     setShowDropDown(filtered.length > 0);
   };
-  const handleDropdownSelect=(jobTitle)=>
-  {
+  const handleDropdownSelect = (jobTitle) => {
     setTitle(jobTitle);
     setFilteredSearchJob([]);
-    setShowDropDown(false)
-    console.log(searchTerm)
-  }
+    setShowDropDown(false);
+    console.log(searchTerm);
+  };
 
   // Handle search input change
   const handleSearchChange = () => {
-    console.log('searching for : ',{title,location,jobType})
+    console.log("searching for : ", { title, location, jobType });
     const filteredJobs = jobs.filter((job) => {
-      const matchTitle = title ? job.title.toLowerCase().includes(title.toLowerCase()) : true;
-      const matchLocation = location ? job.location.toLowerCase().includes(location.toLowerCase()) : true;
-      const matchJobType = jobType ? job.jobType.toLowerCase().includes(jobType.toLowerCase()) : true;
-    
+      const matchTitle = title
+        ? job.title.toLowerCase().includes(title.toLowerCase())
+        : true;
+      const matchLocation = location
+        ? job.location.toLowerCase().includes(location.toLowerCase())
+        : true;
+      const matchJobType = jobType
+        ? job.jobType.toLowerCase().includes(jobType.toLowerCase())
+        : true;
+
       return matchTitle && matchLocation && matchJobType;
     });
-    console.log('filtered jobs: ',{filteredJobs})
-    setFilteredSearchJobRole(filteredJobs)
-    
+    console.log("filtered jobs: ", { filteredJobs });
+    setFilteredSearchJobRole(filteredJobs);
   };
 
-
-  
   useEffect(() => {
     const industries = jobs.map((job) => job.industry);
     const countries = jobs.map((job) => job.location);
     const jobtypes = jobs.map((job) => job.jobType);
-   
+
     const uniqueIndustriesSet = new Set(industries);
-  
+
     const uniqueCountrySet = new Set(countries);
     const uniqueJobTypeSet = new Set(jobtypes);
     setIndustry(Array.from(uniqueIndustriesSet));
-   
+
     setCountry(Array.from(uniqueCountrySet));
     setJobTypes(Array.from(uniqueJobTypeSet));
-    
   }, [jobs]);
 
   useEffect(() => {
@@ -670,12 +676,16 @@ const [filteredSearchJobRole,setFilteredSearchJobRole]=useState([])
     };
 
     setFilteredJobRole(
-      ((location.trim() !== ""||title.trim()!==""||jobType.trim()!=="" )? filteredSearchJobRole : jobs).filter((job) => {
+      (location.trim() !== "" || title.trim() !== "" || jobType.trim() !== ""
+        ? filteredSearchJobRole
+        : jobs
+      ).filter((job) => {
         const daysAgo = getDaysDifference(job.applicationPostedDate);
 
         const matchDate =
           !currentJobRole.DatePosted.length ||
-          (currentJobRole.DatePosted.includes("Last 24 hours") && daysAgo <= 1) ||
+          (currentJobRole.DatePosted.includes("Last 24 hours") &&
+            daysAgo <= 1) ||
           (currentJobRole.DatePosted.includes("Last Week") && daysAgo <= 7) ||
           (currentJobRole.DatePosted.includes("Last Month") && daysAgo <= 30) ||
           (currentJobRole.DatePosted.includes("Older") && daysAgo > 30);
@@ -703,7 +713,7 @@ const [filteredSearchJobRole,setFilteredSearchJobRole]=useState([])
             return false;
           });
 
-          const matchTitleAndCompany =
+        const matchTitleAndCompany =
           !currentJobRole.TitleAndCompany.length ||
           currentJobRole.TitleAndCompany.some(
             (role) =>
@@ -722,8 +732,6 @@ const [filteredSearchJobRole,setFilteredSearchJobRole]=useState([])
             return false;
           });
 
-        
-
         return (
           matchDate &&
           matchIndustry &&
@@ -732,16 +740,14 @@ const [filteredSearchJobRole,setFilteredSearchJobRole]=useState([])
           matchExperience &&
           matchTitleAndCompany
         );
-      }))
-  }, [currentJobRole, jobs,filteredSearchJobRole]);
+      })
+    );
+  }, [currentJobRole, jobs, filteredSearchJobRole]);
 
-
-
-console.log(currentJobRole)
-console.log("Filtered jobs",filteredJobRole)
-console.log("Filtered Seach Job role",filteredSearchJobRole)
-console.log('in main', checkedOptions, selectedRadio);
-
+  console.log(currentJobRole);
+  console.log("Filtered jobs", filteredJobRole);
+  console.log("Filtered Seach Job role", filteredSearchJobRole);
+  console.log("in main", checkedOptions, selectedRadio);
 
   return (
     <div>
@@ -750,36 +756,40 @@ console.log('in main', checkedOptions, selectedRadio);
         <Banner />
         <div className="px-4 py-8 -mt-10 bg-gray-100 rounded-md lg:mx-8 lg:-mt-16">
           <div className=" relative flex flex-col flex-wrap w-full gap-4 text-lg md:flex-row justify-evenly">
-            <input
-              className="w-full p-3 border border-gray-300 rounded-md md:w-1/3 focus:outline-none"
-              placeholder="Search Job Title" value={title}
-              style={{ fontFamily: "Poppins, sans-serif" }}
-              onChange={handleSearchTitleChange}
-            />
-{showDropdown && (
-    <div className="absolute left-0 w-full md:w-1/3 bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto z-50 top-full mt-1">
-      {filteredSearchJob.map((jobTitle, index) => (
-        <div
-          key={index}
-          className="p-2 cursor-pointer hover:bg-gray-200"
-          onClick={() => handleDropdownSelect(jobTitle)}
-        >
-          {jobTitle}
-        </div>
-      ))}
-    </div>
-  )}
+            <div className="relative w-full md:w-1/3">
+              <input
+                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none"
+                placeholder="Search Job Title"
+                value={title}
+                style={{ fontFamily: "Poppins, sans-serif" }}
+                onChange={handleSearchTitleChange}
+              />
+              {showDropdown && (
+                <div className="absolute left-0 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto z-50 top-full mt-1">
+                  {filteredSearchJob.map((jobTitle, index) => (
+                    <div
+                      key={index}
+                      className="p-2 cursor-pointer hover:bg-gray-200"
+                      onClick={() => handleDropdownSelect(jobTitle)}
+                    >
+                      {jobTitle}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             <select
               className="flex-1 w-full p-3 border border-gray-300 rounded-md cursor-pointer md:w-1/4"
-              defaultValue="" value={location}
+              defaultValue=""
+              value={location}
               style={{ fontFamily: "Poppins, sans-serif" }}
-              onChange={(e)=>setLocation(e.target.value)}
+              onChange={(e) => setLocation(e.target.value)}
             >
               <option value="" disabled>
                 Select Country
-              </option >
+              </option>
               {jobcountry.map((country, index) => (
-                <option key={index} value={country} >
+                <option key={index} value={country}>
                   {country}
                 </option>
               ))}
@@ -788,7 +798,7 @@ console.log('in main', checkedOptions, selectedRadio);
               className="flex-1 w-full p-3 border border-gray-300 rounded-md md:w-1/4"
               defaultValue=""
               style={{ fontFamily: "Poppins, sans-serif" }}
-              onChange={(e)=>setJobType(e.target.value)}
+              onChange={(e) => setJobType(e.target.value)}
             >
               <option value="" disabled>
                 Select Job Type
@@ -803,12 +813,15 @@ console.log('in main', checkedOptions, selectedRadio);
 
           {/* Search Button */}
           <div className="flex justify-center mt-4 gap-3">
-            <button className="w-full p-3 text-white transition-all bg-orange-500 rounded-md md:w-1/3 hover:bg-orange-600"
-            onClick={handleSearchChange}>
+            <button
+              className="w-full p-3 text-white transition-all bg-orange-500 rounded-md md:w-1/3 hover:bg-orange-600"
+              onClick={handleSearchChange}
+            >
               Find Jobs
             </button>
             <button className="hover:text-orange-500" onClick={handleRefresh}>
-             <RefreshCcw />         </button>
+              <RefreshCcw />{" "}
+            </button>
           </div>
         </div>
       </div>
@@ -816,11 +829,11 @@ console.log('in main', checkedOptions, selectedRadio);
       <div className="flex flex-col lg:flex-row mt-16 lg:p-3">
         {/* Filter Section */}
         <JobFilter
-        industry={industry}
-        jobRole={jobRole}
-        handleJobRoleChange={handleJobRoleChange}
-        selectedRadio={selectedRadio}
-        checkedOptions={checkedOptions}
+          industry={industry}
+          jobRole={jobRole}
+          handleJobRoleChange={handleJobRoleChange}
+          selectedRadio={selectedRadio}
+          checkedOptions={checkedOptions}
         />
         {/* Job Results */}
         <JobResults filteredJob={filteredJobRole} handleClick={handleClick} />

@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
@@ -39,7 +39,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    navigate("/")
+    navigate("/");
+    window.location.reload();
     localStorage.clear();
   };
 
@@ -86,7 +87,7 @@ export const AuthProvider = ({ children }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
   const [jobRole, setJobRole] = useState([]);
- 
+
   const [companyRole, setCompanyRole] = useState([]);
   useEffect(() => {
     const jobRoles = jobs.map((job) => job.title);

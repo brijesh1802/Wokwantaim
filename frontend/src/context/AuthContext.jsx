@@ -1,11 +1,11 @@
-
 import { createContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [industry, setIndustry] = useState([]);
+  const [isTitleEmpty, setIsTitleEmpty] = useState(false);
   const storedUserType = localStorage.getItem("userType");
 
   const navigate = useNavigate();
@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    navigate("/")
+    navigate("/");
     localStorage.clear();
   };
 
@@ -50,9 +50,8 @@ export const AuthProvider = ({ children }) => {
     }
   }, [storedUserType]);
 
-
-  const [selectedRadio,setSelectedRadio]=useState({});
-  const [checkedOptions,setCheckedOptions]=useState({});
+  const [selectedRadio, setSelectedRadio] = useState({});
+  const [checkedOptions, setCheckedOptions] = useState({});
 
   const handleJobRoleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -62,32 +61,31 @@ export const AuthProvider = ({ children }) => {
         ...prev,
         [name]: value, // Store selected value per category
       }));
-      
-        setcurrentJobRole((prev) => ({
-            ...prev,
-            [name]: [value], // Ensure only one value for radio button categories
-        }));
+
+      setcurrentJobRole((prev) => ({
+        ...prev,
+        [name]: [value], // Ensure only one value for radio button categories
+      }));
     } else if (type === "checkbox") {
-        setCheckedOptions((prev) => ({
-            ...prev,
-            [value]: checked,
-        }));
-        console.log('checked options-auth : ',value);
-        
-        setcurrentJobRole((prev) => ({
-            ...prev,
-            [name]: checked
-                ? [...(prev[name] || []), value]
-                : (prev[name] || []).filter((v) => v !== value),
-        }));
+      setCheckedOptions((prev) => ({
+        ...prev,
+        [value]: checked,
+      }));
+      console.log("checked options-auth : ", value);
+
+      setcurrentJobRole((prev) => ({
+        ...prev,
+        [name]: checked
+          ? [...(prev[name] || []), value]
+          : (prev[name] || []).filter((v) => v !== value),
+      }));
+    } else {
+      setcurrentJobRole((prev) => ({
+        ...prev,
+        [name]: [value],
+      }));
     }
-    else {
-        setcurrentJobRole((prev) => ({
-            ...prev,
-            [name]: [value],
-        }));
-    }
-};
+  };
   useEffect(() => {
     const industryCountMap = new Map();
     jobs.forEach((job) => {
@@ -112,7 +110,7 @@ export const AuthProvider = ({ children }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
   const [jobRole, setJobRole] = useState([]);
- 
+
   const [companyRole, setCompanyRole] = useState([]);
   useEffect(() => {
     const jobRoles = jobs.map((job) => job.title);
@@ -137,10 +135,167 @@ export const AuthProvider = ({ children }) => {
         showScroll,
         jobRole,
         companyRole,
-        checkedOptions,setCheckedOptions,selectedRadio,setSelectedRadio
+        checkedOptions,
+        setCheckedOptions,
+        selectedRadio,
+        setSelectedRadio,
+        setIsTitleEmpty,
+        isTitleEmpty
       }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
+
+// import { createContext, useState, useEffect } from "react";
+// import { useNavigate } from "react-router-dom";
+
+// export const AuthContext = createContext();
+
+// export const AuthProvider = ({ children }) => {
+//   const [industry, setIndustry] = useState([]);
+//   const [isTitleEmpty, setIsTitleEmpty] = useState(false);
+//   const storedUserType = localStorage.getItem("userType");
+
+//   const navigate = useNavigate();
+//   const [currentJobRole, setcurrentJobRole] = useState({
+//     DatePosted: [],
+//     Industry: [],
+//     JobRoles: [],
+//     Salary: [],
+//     Experience: [],
+//     Title: [],
+//     Location: [],
+//     JobType: [],
+//     TitleAndCompany: [],
+//   });
+
+//   const [jobs, setJobs] = useState([]);
+//   useEffect(() => {
+//     fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/jobs/getAll`)
+//       .then((response) => response.json())
+//       .then((data) => setJobs(data))
+//       .catch((error) => console.error("Error fetching jobs:", error));
+//   }, []);
+
+//   const [userType, setUserType] = useState(
+//     storedUserType ? storedUserType : null
+//   );
+
+//   const login = (type) => {
+//     setUserType(type);
+//     localStorage.setItem("userType", type); // Store userType in localStorage
+//     console.log(type);
+//   };
+
+//   const logout = () => {
+//     navigate("/");
+//     localStorage.clear();
+//   };
+
+//   useEffect(() => {
+//     if (storedUserType) {
+//       setUserType(storedUserType);
+//     }
+//   }, [storedUserType]);
+
+//   const [selectedRadio, setSelectedRadio] = useState({});
+//   const [checkedOptions, setCheckedOptions] = useState({});
+
+//   const handleJobRoleChange = (e) => {
+//     const { name, value, type, checked } = e.target;
+
+//     if (type === "radio") {
+//       setSelectedRadio((prev) => ({
+//         ...prev,
+//         [name]: value, // Store selected value per category
+//       }));
+
+//       setcurrentJobRole((prev) => ({
+//         ...prev,
+//         [name]: [value], // Ensure only one value for radio button categories
+//       }));
+//     } else if (type === "checkbox") {
+//       setCheckedOptions((prev) => ({
+//         ...prev,
+//         [value]: checked,
+//       }));
+//       console.log("checked options-auth : ", value);
+
+//       setcurrentJobRole((prev) => ({
+//         ...prev,
+//         [name]: checked
+//           ? [...(prev[name] || []), value]
+//           : (prev[name] || []).filter((v) => v !== value),
+//       }));
+//     } else {
+//       setcurrentJobRole((prev) => ({
+//         ...prev,
+//         [name]: [value],
+//       }));
+//     }
+//   };
+//   useEffect(() => {
+//     const industryCountMap = new Map();
+//     jobs.forEach((job) => {
+//       industryCountMap.set(
+//         job.industry,
+//         (industryCountMap.get(job.industry) || 0) + 1
+//       );
+//     });
+//     const industryArray = Array.from(industryCountMap, ([industry, count]) => ({
+//       industry,
+//       count,
+//     }));
+//     setIndustry(industryArray);
+//   }, [jobs]);
+
+//   const [showScroll, setShowScroll] = useState(false);
+//   useEffect(() => {
+//     const handleScroll = () => {
+//       setShowScroll(window.scrollY > 50);
+//     };
+//     window.addEventListener("scroll", handleScroll);
+//     return () => window.removeEventListener("scroll", handleScroll);
+//   }, []);
+//   const [jobRole, setJobRole] = useState([]);
+
+//   const [companyRole, setCompanyRole] = useState([]);
+//   useEffect(() => {
+//     const jobRoles = jobs.map((job) => job.title);
+//     const companies = jobs.map((job) => job.company);
+//     const uniqueJobRolesSet = new Set(jobRoles);
+//     const uniqueCompanySet = new Set(companies);
+
+//     setJobRole(Array.from(uniqueJobRolesSet));
+//     setCompanyRole(Array.from(uniqueCompanySet));
+//   }, [jobs]);
+//   return (
+//     <AuthContext.Provider
+//       value={{
+//         userType,
+//         login,
+//         logout,
+//         handleJobRoleChange,
+//         setcurrentJobRole,
+//         jobs,
+//         currentJobRole,
+//         industry,
+//         showScroll,
+//         jobRole,
+//         companyRole,
+//         checkedOptions,
+//         setCheckedOptions,
+//         selectedRadio,
+//         setSelectedRadio,
+//         setIsTitleEmpty,
+//         isTitleEmpty
+//       }}
+//     >
+//       {children}
+//     </AuthContext.Provider>
+//   );
+// };
+
+

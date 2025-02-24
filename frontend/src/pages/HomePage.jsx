@@ -1,28 +1,65 @@
-
-
-
-// import { Link, useNavigate } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 // import {
 //   Search,
 //   Briefcase,
 //   Users,
 //   Building2,
-//   TrendingUp,
 //   BarChart2,
 // } from "lucide-react";
-// import { useContext } from "react";
+// import { useContext ,useEffect,useState} from "react";
 // import { AuthContext } from "../context/AuthContext";
+// import { useNavigate } from "react-router-dom";
 // import JobInterviews from "./JobInterviews";
 // import FeaturedJobCategories from "../components/Home/Featured/FeaturedJobCategories";
+
 // function HomePage() {
-//   const { userType,handleJobRoleChange} = useContext(AuthContext);
+//   const { userType, handleJobRoleChange, jobRole,companyRole,setIsTitleEmpty,isTitleEmpty} = useContext(AuthContext);
+//   const [searchTerm, setSearchTerm] = useState("");
+//   const [filteredSearchJob, setFilteredSearchJob] = useState("");
+//   const [showDropdown,setShowDropDown]=useState(false)
+
 //   const navigate=useNavigate();
 //   const handleSearch=()=>{
+//     setIsTitleEmpty(searchTerm.trim()==="")
 //     navigate('/joblist')
 //   }
+//   const handleSearchChange = (e) => {
 
-  
+//     const value = e.target.value;
+//     setSearchTerm(value);
+
+//     if(value.trim()==="")
+//     {
+//       setFilteredSearchJob([])
+//       setShowDropDown(false)
+//       return
+//     }
+//     const filteredJobRole = jobRole.filter((role) => role.toLowerCase().includes(value.toLowerCase()));
+//     const filteredCompanyRole=companyRole.filter((role)=>role.toLowerCase().includes(value.toLowerCase()))
+//     const combinedFilteredRole=Array.from(new Set([...filteredJobRole,...filteredCompanyRole]))
+//     console.log(combinedFilteredRole.length)
+//     setFilteredSearchJob(combinedFilteredRole);
+//     setShowDropDown(combinedFilteredRole.length > 0);
+//   };
+
+//   const handleSuggestionClick = (title) => {
+//     setSearchTerm(title);
+//     setFilteredSearchJob([]);
+//     setShowDropDown(false)
+//     console.log(searchTerm)
+
+//   };
+//   useEffect(() => {
+//     if (searchTerm) {
+//       handleJobRoleChange({ target: { name: "TitleAndCompany", value:searchTerm, type: "text" } })
+//     }
+//   }, [searchTerm]);
+//   useEffect(() => {
+//     console.log("Search Term Updated:", searchTerm);
+//     console.log("Filtered Jobs:", filteredSearchJob);
+//     console.log("Dropdown State:", showDropdown);
+//   }, [searchTerm, filteredSearchJob, showDropdown]);
 //   return (
 //     <div className="bg-gray-50">
 //       {/* Hero Section */}
@@ -35,12 +72,15 @@
 //             <p className="mb-8 text-xl">
 //               Connecting talented professionals with amazing opportunities
 //             </p>
-//             <div className="flex items-center p-1 bg-white rounded-lg">
+//             <div className=" relative flex items-center p-1 bg-white rounded-lg">
 //               <input
 //                 type="text"
-//                 placeholder="Job title, keywords, or company"
+//                 placeholder="Job title or company"
 //                 className="flex-grow px-4 py-2 text-gray-800 cus:outline-none sm:z-1"
-//                 onChange={handleJobRoleChange}
+//                 name='TitleAndCompany'
+//                 value={searchTerm}
+//                 onChange={handleSearchChange}
+//                 onFocus={()=>setShowDropDown(filteredSearchJob.length>0)}
 //               />
 //               <button className="flex items-center max-w-xs px-4 py-2 m-1 text-white transition-colors bg-orange-500 rounded-md hover:bg-orange-600 sm:max-w"
 //               onClick={handleSearch}>
@@ -48,20 +88,37 @@
 //                 <span className="hidden sm:block">Search</span>
 //                 <Search className="w-5 h-5 sm:hidden" />
 //               </button>
+//                {/* Suggestions Dropdown */}
+//                {showDropdown && (
+//                 <div className="absolute left-0 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full max-h-40 overflow-y-auto">
+
+//                     {filteredSearchJob.map((title, index) => (
+//                       <div
+//                         key={index}
+//                         className="px-4 py-2 cursor-pointer hover:bg-gray-200 text-black"
+//                         onClick={() => handleSuggestionClick(title)}
+//                       >
+//                         {title}
+//                       </div>
+//                     ))}
+
+//                 </div>
+//               )}
 //             </div>
+
 //           </div>
 //         </div>
 //       </section>
 
 //       {/* Featured Categories */}
 //       <section className="py-16">
-//         <FeaturedJobCategories
-//           sectionTitle="Featured Job Categories"
-//         />
+//         <FeaturedJobCategories sectionTitle="Featured Job Categories" />
+
 //       </section>
 
 //       <section className="py-16">
 //         {userType === "candidate" ? <JobInterviews /> : null}
+
 //       </section>
 
 //       {/* Statistics Section */}
@@ -170,44 +227,74 @@
 
 import { Link } from "react-router-dom";
 
-import {
-  Search,
-  Briefcase,
-  Users,
-  Building2,
-  BarChart2,
-} from "lucide-react";
-import { useContext ,useEffect,useState} from "react";
+import { Search, Briefcase, Users, Building2, BarChart2 } from "lucide-react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import JobInterviews from "./JobInterviews";
 import FeaturedJobCategories from "../components/Home/Featured/FeaturedJobCategories";
 
 function HomePage() {
-  const { userType, handleJobRoleChange, jobRole,companyRole} = useContext(AuthContext);
+  const AlertBox = ({ message, onClose }) => {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+        <div className="w-full max-w-sm p-5 bg-white rounded-md shadow-lg">
+          <h3 className="text-lg text-center text-orange-600">{message}</h3>
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={onClose}
+              className="px-6 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const { userType, handleJobRoleChange, jobRole, companyRole } =
+    useContext(AuthContext);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredSearchJob, setFilteredSearchJob] = useState("");
-  const [showDropdown,setShowDropDown]=useState(false)
- 
-  const navigate=useNavigate();
-  const handleSearch=()=>{
-    navigate('/joblist')
-  }
+  const [showDropdown, setShowDropDown] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    if (searchTerm.trim() === "") {
+      setShowAlert(true);
+    } else {
+      navigate("/joblist");
+    }
+  };
+  const closeAlert = () => {
+    setShowAlert(false);
+  };
+  useEffect(() => {
+    console.log("searchTerm : ", searchTerm);
+  }, [searchTerm]);
+
   const handleSearchChange = (e) => {
-    
     const value = e.target.value;
     setSearchTerm(value);
 
-    if(value.trim()==="")
-    {
-      setFilteredSearchJob([])
-      setShowDropDown(false)
-      return
+    if (value.trim() === "") {
+      setFilteredSearchJob([]);
+      setShowDropDown(false);
+      return;
     }
-    const filteredJobRole = jobRole.filter((role) => role.toLowerCase().includes(value.toLowerCase()));
-    const filteredCompanyRole=companyRole.filter((role)=>role.toLowerCase().includes(value.toLowerCase()))
-    const combinedFilteredRole=Array.from(new Set([...filteredJobRole,...filteredCompanyRole]))
-    console.log(combinedFilteredRole.length)
+    const filteredJobRole = jobRole.filter((role) =>
+      role.toLowerCase().includes(value.toLowerCase())
+    );
+    const filteredCompanyRole = companyRole.filter((role) =>
+      role.toLowerCase().includes(value.toLowerCase())
+    );
+    const combinedFilteredRole = Array.from(
+      new Set([...filteredJobRole, ...filteredCompanyRole])
+    );
+    console.log(combinedFilteredRole.length);
     setFilteredSearchJob(combinedFilteredRole);
     setShowDropDown(combinedFilteredRole.length > 0);
   };
@@ -215,21 +302,21 @@ function HomePage() {
   const handleSuggestionClick = (title) => {
     setSearchTerm(title);
     setFilteredSearchJob([]);
-    setShowDropDown(false)
-    console.log(searchTerm)
-
-   
+    setShowDropDown(false);
+    console.log(searchTerm);
   };
   useEffect(() => {
     if (searchTerm) {
-      handleJobRoleChange({ target: { name: "TitleAndCompany", value:searchTerm, type: "text" } })
+      handleJobRoleChange({
+        target: { name: "TitleAndCompany", value: searchTerm, type: "text" },
+      });
     }
   }, [searchTerm]);
   useEffect(() => {
     console.log("Search Term Updated:", searchTerm);
     console.log("Filtered Jobs:", filteredSearchJob);
     console.log("Dropdown State:", showDropdown);
-  }, [searchTerm, filteredSearchJob, showDropdown]); 
+  }, [searchTerm, filteredSearchJob, showDropdown]);
   return (
     <div className="bg-gray-50">
       {/* Hero Section */}
@@ -247,32 +334,38 @@ function HomePage() {
                 type="text"
                 placeholder="Job title or company"
                 className="flex-grow px-4 py-2 text-gray-800 cus:outline-none sm:z-1"
-                name='TitleAndCompany'
+                name="TitleAndCompany"
                 value={searchTerm}
                 onChange={handleSearchChange}
-                onFocus={()=>setShowDropDown(filteredSearchJob.length>0)}
+                onFocus={() => setShowDropDown(filteredSearchJob.length > 0)}
               />
-              <button className="flex items-center max-w-xs px-4 py-2 m-1 text-white transition-colors bg-orange-500 rounded-md hover:bg-orange-600 sm:max-w"
-              onClick={handleSearch}>
+              <button
+                className="flex items-center max-w-xs px-4 py-2 m-1 text-white transition-colors bg-orange-500 rounded-md hover:bg-orange-600 sm:max-w"
+                onClick={handleSearch}
+              >
                 <Search className="hidden w-5 h-5 mr-2 sm:block" />
                 <span className="hidden sm:block">Search</span>
                 <Search className="w-5 h-5 sm:hidden" />
               </button>
-               {/* Suggestions Dropdown */}
-               {showDropdown && (
+              {/* Suggestions Dropdown */}
+              {showDropdown && (
                 <div className="absolute left-0 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full max-h-40 overflow-y-auto">
-                  
-                    {filteredSearchJob.map((title, index) => (
-                      <div
-                        key={index}
-                        className="px-4 py-2 cursor-pointer hover:bg-gray-200 text-black"
-                        onClick={() => handleSuggestionClick(title)}
-                      >
-                        {title}
-                      </div>
-                    ))}
-                  
+                  {filteredSearchJob.map((title, index) => (
+                    <div
+                      key={index}
+                      className="px-4 py-2 cursor-pointer hover:bg-gray-200 text-black"
+                      onClick={() => handleSuggestionClick(title)}
+                    >
+                      {title}
+                    </div>
+                  ))}
                 </div>
+              )}
+              {showAlert && (
+                <AlertBox
+                  message="Job title cannot be empty. Please enter a title to search!"
+                  onClose={closeAlert}
+                />
               )}
             </div>
           </div>
@@ -282,12 +375,10 @@ function HomePage() {
       {/* Featured Categories */}
       <section className="py-16">
         <FeaturedJobCategories sectionTitle="Featured Job Categories" />
-        
       </section>
 
       <section className="py-16">
         {userType === "candidate" ? <JobInterviews /> : null}
-     
       </section>
 
       {/* Statistics Section */}

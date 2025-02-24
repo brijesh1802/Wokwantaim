@@ -286,8 +286,6 @@ const getPublicIdFromUrl = (url) => {
     throw new Error('Invalid Cloudinary URL');
 };
 
-
-
 //Delete account route
 const deleteAccount = async (req, res) => {
     try {

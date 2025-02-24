@@ -11,7 +11,8 @@ const candidateProfileSchema = new Schema({
         required: true
     },
     about : {
-        type: String
+        type: String,
+        default: 'Hello there'
 
     },
     education: [

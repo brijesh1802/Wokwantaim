@@ -1,6 +1,7 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const Candidate = require('../models/candidate.model');  
+const CandidateProfile = require('../models/candidate.profile.model');
 const sendEmail = require('./emailService');
 const { uploadToCloudinary } = require('../middleware/upload');
 const axios = require('axios'); 
@@ -36,7 +37,9 @@ passport.use(new GoogleStrategy({
                 isVerified: true,  
             });
 
-            await candidate.save();
+            const newCandidate = await candidate.save();
+            const newProfile = new CandidateProfile({ candidateId: newCandidate._id });
+            await newProfile.save()
         }
 
         const dashboardURL = `${process.env.VERCEL_URL}/`;

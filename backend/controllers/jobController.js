@@ -1,5 +1,6 @@
 
 const Job = require('../models/job.model');
+const Application  =  require('../models/application.model');
 
 const getAllJobs = async (req, res) => {    
     try{
@@ -33,5 +34,8 @@ const getLimitedJobs = async (req, res) => {
         res.status(400).json(err);
     }
 }
+
+
+
 
 module.exports = { getAllJobs, getJobById, getLimitedJobs };

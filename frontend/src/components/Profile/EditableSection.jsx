@@ -4,28 +4,80 @@ const EditableSection = ({ title, user }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState("");
 
-  // Load saved text from localStorage when the component mounts
   useEffect(() => {
-    const savedText = localStorage.getItem("aboutMe");
-    if (savedText) {
-      setText(savedText);
-    }
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/candidates/info/get`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            "Content-Type": "application/json",
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+  
+        const data = await response.json();
+  
+        if (data && data.about) {
+          setText(data.about);
+        } else {
+          setText("No about information available.");
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error.message);
+        setText("Failed to load profile information.");
+      }
+    };
+  
+    fetchData();
   }, []);
 
-  // Save text to localStorage and exit editing mode
-  const handleSave = () => {
-    localStorage.setItem("aboutMe", text);
-    setIsEditing(false);
+  const handleSave = async () => {
+  
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/api/v1/candidates/info/update`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ about: text }),
+        }
+      );
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${data.message || response.statusText}`);
+      }
+  
+      if (data) {
+        setText(data.about);
+      } else {
+        setText("Hey");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error.message);
+      setText("Failed to update profile information.");
+    } finally {
+      setIsEditing(false);
+    }
   };
+  
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-lg w-full mt-0">
-      <div className="flex justify-between items-center w-full">
+    <div className="w-full p-6 mt-0 bg-white rounded-lg shadow-lg">
+      <div className="flex items-center justify-between w-full">
         <h2 className="text-xl font-semibold">{title}</h2>
         {!isEditing && (
           <button
             onClick={() => setIsEditing(true)}
-            className="text-blue-500 border-2 border-blue-300 p-1 "
+            className="p-1 text-blue-500 border-2 border-blue-300 "
           >
             ✏️ Edit
           </button>
@@ -36,7 +88,7 @@ const EditableSection = ({ title, user }) => {
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            className="w-full mt-2 p-2 border rounded"
+            className="w-full p-2 mt-2 border-rounded"
           />
           <button
             className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
@@ -48,8 +100,8 @@ const EditableSection = ({ title, user }) => {
           </button>
         </div>
       ) : (
-        <p className="mt-2 text-gray-600 border-2 rounded-md p-2 border-blue-300">
-          {text || `Hey there! I am ${user.fullName?.firstName} `}
+        <p className="p-2 mt-2 text-gray-600 border-2 border-none">
+          {text || "No data"}
         </p>
       )}
     </div>

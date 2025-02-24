@@ -10,6 +10,11 @@ const candidateProfileSchema = new Schema({
         ref: 'candidates',
         required: true
     },
+    about : {
+        type: String,
+        default: 'Hello there'
+
+    },
     education: [
         {
             degree: {

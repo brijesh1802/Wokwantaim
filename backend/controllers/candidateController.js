@@ -278,13 +278,14 @@ const verifyEmail = async (req, res) => {
 };
 
 const getPublicIdFromUrl = (url) => {
-    const regex = /upload\/v(\d+)\/(.*)\.(jpg|jpeg|png|gif|pdf)$/;
+    const regex = /upload\/v\d+\/([^\.]+)/;  // Matches the part after "upload/v123456789/" and before the file extension
     const matches = url.match(regex);
     if (matches) {
-        return matches[2];  // This is the public ID
+        return matches[1];  
     }
     throw new Error('Invalid Cloudinary URL');
 };
+
 
 
 //Delete account route
@@ -292,6 +293,9 @@ const deleteAccount = async (req, res) => {
     try {
         const userEmail = req.user.email;
         const password = req.body.password;
+
+        console.log("Email: ", userEmail);
+        console.log("Password: ", password);
 
         const candidate = await Candidate.findOne({ email: userEmail });
 

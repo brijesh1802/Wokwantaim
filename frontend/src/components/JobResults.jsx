@@ -299,8 +299,7 @@ const JobResults = ({filteredJob}) => {
             </div>
           </div>
         )):
-        <div className="flex items-center justify-center w-full text-gray-500"><p> No Jobs Found</p></div>
-        }
+        <div className="flex items-center justify-center w-full text-gray-500"><p> No Jobs Found</p></div>}
       </div>
 
       {/* Pagination Controls */}

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import banner from "../assets/banner1.png";
 import { Link,useLocation} from "react-router-dom";

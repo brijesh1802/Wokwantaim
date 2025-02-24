@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { ChevronsUp } from 'lucide-react';
+import { ChevronsUp } from 'lucide-react'; // Import icon for the button
 
 const ScrollToTop = () => {
   const [showScroll, setShowScroll] = useState(false);
@@ -23,7 +23,7 @@ const ScrollToTop = () => {
   return (
     showScroll && (
       <button
-        className="fixed bottom-8 right-6 text-black bg-white py-1 px-2 shadow-gray-500 rounded-full shadow-md transition z-10"
+        className="fixed bottom-8 right-6 z-10 text-black bg-white py-1 px-2 shadow-gray-500 rounded-full shadow-md transition"
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       >
         <ChevronsUp size={30} />
@@ -33,4 +33,3 @@ const ScrollToTop = () => {
 };
 
 export default ScrollToTop;
-

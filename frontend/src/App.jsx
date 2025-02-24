@@ -5,7 +5,7 @@ import HomePage from "./pages/HomePage";
 import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
 import { AuthProvider } from "./context/AuthContext";
-import JobList from "./pages/JobList";
+import JobList from './pages/JobList'
 import JobDetail from "./pages/JobDetail";
 import CompanyDetail from "./pages/CompanyDetail";
 import Profile from "./pages/Profile";
@@ -24,6 +24,7 @@ function App() {
   const location = useLocation();
   const noPaths = ["/signup", "/login"];
   const noFooter = ["/profile"];
+  
   return (
     <AuthProvider>
       <div className="flex flex-col min-h-screen">
@@ -55,6 +56,7 @@ function App() {
             <Route path="/delete-account" element={<DeleteAccount />} />
           </Routes>
         </main>
+        
         {!noPaths.includes(location.pathname) &&
           !noFooter.includes(location.pathname) && <Footer />}
       </div>

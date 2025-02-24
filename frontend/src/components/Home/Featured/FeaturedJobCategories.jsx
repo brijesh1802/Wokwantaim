@@ -23,11 +23,22 @@ const FeaturedJobCategories = ({ sectionTitle}) => {
                {count} Jobs available!
               </p>
               <Link
-                to="/joblist"
-                className="text-orange-400 hover:text-orange-600"  onClick={() => handleJobRoleChange({ target: { name: "Industry", value:industry,type:'checkbox',checked:true} })}
-              >
-                View Jobs!
-              </Link>
+  to="/joblist"
+  className="text-orange-400 hover:text-orange-600"
+  onClick={() => {
+    setCheckedOptions({ [industry]: true }); // Reset previous selections
+    setcurrentJobRole((prev) => ({
+      ...prev,
+      Industry: [industry], // Ensure only one industry is selected
+    }));
+    handleJobRoleChange({
+      target: { name: "Industry", value: industry, type: "checkbox", checked: true },
+    });
+  }}
+>
+  View Jobs!
+</Link>
+
             </div>
           ))}
         </div>

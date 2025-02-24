@@ -579,7 +579,7 @@ const JobList = () => {
   const handleRefresh = () => {
     console.log("Before Reset:", checkedOptions, selectedRadio); // Debugging
 
-    setIsRefresh(true);
+   
     setSelectedRadio("");
     setCheckedOptions({}); // Ensure everything resets
 
@@ -654,6 +654,7 @@ const JobList = () => {
     console.log("filtered jobs: ", { filteredJobs });
     setFilteredSearchJobRole(filteredJobs);
   };
+  
 
   useEffect(() => {
     const industries = jobs.map((job) => job.industry);
@@ -750,8 +751,9 @@ const JobList = () => {
       })
     );
   }, [currentJobRole, jobs, filteredSearchJobRole]);
+ 
 
-  console.log(currentJobRole);
+  console.log("Current Job Role",currentJobRole);
   console.log("Filtered jobs", filteredJobRole);
   console.log("Filtered Seach Job role", filteredSearchJobRole);
   console.log("in main", checkedOptions, selectedRadio);

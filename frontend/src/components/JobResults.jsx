@@ -215,7 +215,7 @@ const JobResults = ({filteredJob}) => {
   console.log("Current jobs",currentJobs)
   return (
     <div className="flex flex-col mb-10 lg:w-3/4 mt-9 lg:mt-0">
-      <div className="flex items-center justify-between mx-4 rounded-md lg:bg-gray-100 lg:h-20">
+      <div className="flex items-center justify-between mx-4 rounded-md lg:bg-gray-100 lg:h-20 px-3">
         <p className="text-sm px-3">
           Showing {firstJobIndex}-{lastJobIndex} of {filteredJob.length} Job Results:
         </p>
@@ -231,7 +231,7 @@ const JobResults = ({filteredJob}) => {
               Select
             </option>
             <option value="ascending">A-Z</option>
-            <option value="decending">Z-A</option>
+            <option value="descending">Z-A</option>
           </select>
         </div>
       </div>

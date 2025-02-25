@@ -84,7 +84,7 @@ const EditableSection = ({ title, user }) => {
         {!isEditing && (
           <button
             onClick={() => setIsEditing(true)}
-            className="p-1 text-blue-500 border-2 border-blue-300 rounded-md hover:bg-blue-500 hover:text-white transition"
+            className="p-1 bg-gradient-to-r text-blue-500 border-2 border-blue-300  hover:from-blue-600 hover:to-blue-400 hover:text-white transition"
           >
             ✏️ Edit
           </button>
@@ -95,17 +95,17 @@ const EditableSection = ({ title, user }) => {
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            className="w-full p-2 mt-2 border-2 border-blue-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="w-full p-2 mt-2 border-2 border-orange-100 rounded-md focus:ring-2"
           />
           <div className="flex justify-end mt-3 gap-2">
             <button
-              className="px-4 py-2 font-medium text-white bg-gradient-to-r from-blue-500 to-purple-500 rounded-md shadow-md hover:from-blue-600 hover:to-purple-600 focus:ring-2 focus:ring-blue-300 transition"
+              className="px-4 py-2 font-medium text-white bg-gradient-to-r from-orange-400 to-red-500 rounded-md shadow-sm hover:from-red-500 hover:to-orange-400 focus:ring-2 focus:ring-blue-300 transition"
               onClick={handleSave}
             >
               Save
             </button>
             <button
-              className="px-4 py-2 font-medium text-gray-800 bg-gray-200 rounded-md shadow-md hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 transition"
+              className="px-4 py-2 font-medium bg-gradient-to-r text-gray-800 from-gray-200 to-gray-300 rounded-md shadow-md hover:from-gray-300 hover:to-gray-200"
               onClick={handleClose}
             >
               Cancel

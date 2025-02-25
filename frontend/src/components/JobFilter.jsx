@@ -1,4 +1,5 @@
 
+
 // import React, { useContext, useEffect, useState } from "react";
 // import {
 //   Calendar,
@@ -75,7 +76,6 @@
 //     }));
 //   };
 
-
 //   return (
 //     <div className="flex flex-col gap-2 px-5 py-5 bg-gray-100 rounded-lg mx-7 lg:w-1/3">
 //       {filters.map(({ id, label, icon, options, type }) => (
@@ -110,7 +110,7 @@
 //                         checked={ type === "radio"
 //                           ? selectedRadio?.[id] === option
 //                           : type === "checkbox"
-//                           ? Boolean(checkedOptions?.[option])
+//                           ? Boolean(!!checkedOptions?.[option])
 //                           : false}
 //                         onChange={handleJobRoleChange}
 //                       />
@@ -135,6 +135,8 @@
 
 // export default JobFilter;
 
+
+//shreya
 
 import React, { useContext, useEffect, useState } from "react";
 import {
@@ -210,8 +212,8 @@ const JobFilter = ({ industry, location,jobTypes, handleJobRoleChange,selectedRa
       [id]: !prev[id],
     }));
   };
-
-
+ 
+console.log("Chjceked Options of IT",checkedOptions["IT"])
   return (
     <div className="flex flex-col gap-2 px-5 py-5 bg-gray-100 rounded-lg mx-7 lg:w-1/3">
       {filters.map(({ id, label, icon, options, type }) => (
@@ -270,5 +272,3 @@ const JobFilter = ({ industry, location,jobTypes, handleJobRoleChange,selectedRa
 };
 
 export default JobFilter;
-
-

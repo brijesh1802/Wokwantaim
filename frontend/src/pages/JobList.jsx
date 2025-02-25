@@ -1,9 +1,230 @@
+
+// import React, { useState, useEffect, useContext } from "react";
+// import { useNavigate } from "react-router-dom";
+// import Banner from "../components/Banner";
+// import JobFilter from "../components/JobFilter";
+// import JobResults from "../components/JobResults";
+// import { AuthContext } from "../context/AuthContext";
+// import { LogIn, RefreshCcw } from "lucide-react";
+
+// const JobList = () => {
+//   const {
+//     handleJobRoleChange,
+//     currentJobRole,
+//     jobs,
+//     selectedRadio,
+//     checkedOptions,
+//     setSelectedRadio,
+//     setcurrentJobRole,
+//     setCheckedOptions,
+//   } = useContext(AuthContext);
+//   const navigate = useNavigate();
+
+//   const [industry, setIndustry] = useState([]);
+//   const [jobcountry, setCountry] = useState([]);
+//   const [jobRole, setJobRole] = useState([]);
+//   const [jobTypes, setJobTypes] = useState([]);
+
+//   const [filteredJobRole, setFilteredJobRole] = useState([]);
+//   const [searchFilteredJobRole, setSearchFilteredJobRole] = useState([]);
+//   const [title, setTitle] = useState("");
+//   const [location, setLocation] = useState("");
+//   const [jobType, setJobType] = useState("");
+//   const [isRefreshed, setIsRefresh] = useState(false);
+
+//   const handleClick = (jobs) => {
+//     navigate("/jobdetail", { state: { jobs } });
+//   };
+//    useEffect(()=>{
+//     console.log('title ',title);
+
+//    },[title])
+
+//   const handleRefresh = () => {
+//     console.log("checked options :  ", checkedOptions || {});
+//     console.log("selected radio  :  ", selectedRadio);
+//     setIsRefresh(true);
+//     setSelectedRadio("");
+//     setCheckedOptions({});
+//     setcurrentJobRole({
+//       DatePosted: [],
+//       Industry: [],
+//       JobRoles: [],
+//       Salary: [],
+//       Experience: [],
+//       Title: [],
+//       Location: [],
+//       JobType: [],
+//       TitleAndCompany: [],
+//     });
+//     setFilteredJobRole(jobs);
+//     setTitle("");
+//   };
+
+//   const handleSearchChange = () => {
+//     const filteredJobsForSearch = jobs.filter((job) => {
+//       const matchTitle = title
+//         ? job.title.toLowerCase().includes(title.toLowerCase())
+//         : true;
+//       return matchTitle;
+//     });
+//     setSearchFilteredJobRole(filteredJobsForSearch);
+//   };
+
+//   useEffect(() => {
+//     const industries = jobs.map((job) => job.industry);
+//     const countries = jobs.map((job) => job.location);
+//     const jobtypes = jobs.map((job) => job.jobType);
+//     const jobRoles = jobs.map((job) => job.title);
+//     const uniqueIndustriesSet = new Set(industries);
+//     const uniqueJobRolesSet = new Set(jobRoles);
+//     const uniqueCountrySet = new Set(countries);
+//     const uniqueJobTypeSet = new Set(jobtypes);
+//     setIndustry(Array.from(uniqueIndustriesSet));
+//     setJobRole(Array.from(uniqueJobRolesSet));
+//     setCountry(Array.from(uniqueCountrySet));
+//     setJobTypes(Array.from(uniqueJobTypeSet));
+//   }, [jobs]);
+
+// useEffect(() => {
+//   const getDaysDifference = (jobDate) => {
+//     const currentDate = new Date();
+//     const jobDateObj = new Date(jobDate);
+//     const diffTime = currentDate - jobDateObj;
+//     return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+//   };
+
+//   setFilteredJobRole(
+//     (title.trim() !== "" ? searchFilteredJobRole : jobs).filter((job) => {
+//       const daysAgo = getDaysDifference(job.applicationPostedDate);
+
+//       const matchDate =
+//         !currentJobRole.DatePosted.length ||
+//         (currentJobRole.DatePosted.includes("Last 24 hours") &&
+//           daysAgo <= 1) ||
+//         (currentJobRole.DatePosted.includes("Last Week") && daysAgo <= 7) ||
+//         (currentJobRole.DatePosted.includes("Last Month") && daysAgo <= 30) ||
+//         (currentJobRole.DatePosted.includes("Older") && daysAgo > 30);
+
+//         const matchJobType =
+// !currentJobRole.JobTypes?.length ||
+// currentJobRole.JobTypes.includes(job.jobType);
+
+//       const matchTitleAndCompany =
+//         !currentJobRole.TitleAndCompany.length ||
+//         currentJobRole.TitleAndCompany.some(
+//           (role) =>
+//             role.toLowerCase().includes(job.title.toLowerCase()) ||
+//             role.toLowerCase().includes(job.company.toLowerCase())
+//         );
+
+//         const matchLocation =
+//         !currentJobRole.Location.length ||
+//         currentJobRole.Location.some((location) =>
+//           job.location.toLowerCase().includes(location.toLowerCase())
+//         );
+
+//         const matchSalary =
+//         !currentJobRole.Salary.length ||
+//         currentJobRole.Salary.some((range) => {
+//           if (range === "₹10,000 - ₹20,000")
+//             return job.salary >= 10000 && job.salary < 20000;
+//           if (range === "₹20,000 - ₹30,000")
+//             return job.salary >= 20000 && job.salary < 30000;
+//           if (range === "₹30,000 - ₹50,000")
+//             return job.salary >= 30000 && job.salary <= 50000;
+//           if (range === "Above ₹50,000") return job.salary > 20000;
+//           return false;
+//         });
+
+//       const matchIndustry =
+//         !currentJobRole.Industry.length ||
+//         currentJobRole.Industry.includes(job.industry);
+
+//       const matchExperience =
+//         !currentJobRole.Experience.length ||
+//         currentJobRole.Experience.some((range) => {
+//           if (range === "0-2 years")
+//             return job.experienceYearsMin >= 0 && job.experienceYearsMax <= 2;
+//           if (range === "3-5 years")
+//             return job.experienceYearsMin >= 2 && job.experienceYearsMax <= 5;
+//           if (range === "5+ years") return job.experienceYearsMax >= 5;
+//           return false;
+//         });
+
+//       return (
+//         matchDate &&
+//         matchIndustry &&
+//         matchJobType &&
+//         matchSalary &&
+//         matchExperience &&
+//         matchTitleAndCompany &&
+//         matchLocation
+//       );
+//     })
+//   );
+// }, [currentJobRole, jobs, searchFilteredJobRole]);
+
+//   return (
+//     <div>
+//       <div className="gap-4">
+//         {/* Banner Section */}
+//         <Banner />
+//         <div className="px-4 py-8 -mt-10 bg-gray-100 rounded-md lg:mx-8 lg:-mt-16">
+//             <input
+//               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none"
+//               placeholder="Search Job Title"
+//               style={{ fontFamily: "Poppins, sans-serif" }}
+//               value={title}
+//               onChange={(e) => setTitle(e.target.value)}
+//             />
+
+//           {/* Search Button */}
+//           <div className="flex justify-center items-center gap-3 mt-4 ">
+//             <button
+//               className="p-3 w-full text-white transition-all bg-orange-500 rounded-md hover:bg-orange-600"
+//               onClick={handleSearchChange}
+//             >
+//               Find Jobs
+//             </button>
+//             <button className="hover:text-orange-500" onClick={handleRefresh}>
+//               <RefreshCcw />
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+
+//       <div className="flex flex-col lg:flex-row mt-5 lg:p-3">
+//         {/* Filter Section */}
+//         <JobFilter
+//           industry={industry}
+//           location={jobcountry}
+//           jobTypes={jobTypes}
+//           handleJobRoleChange={handleJobRoleChange}
+//           selectedRadio={selectedRadio}
+//           checkedOptions={checkedOptions}
+//         />
+//         {
+//           /* Job Results */
+//           console.log("AuthContext values:", { checkedOptions, selectedRadio })
+//         }
+//         <JobResults filteredJob={filteredJobRole} handleClick={handleClick} />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default JobList;
+
+//shreya
+
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Banner from "../components/Banner";
 import JobFilter from "../components/JobFilter";
 import JobResults from "../components/JobResults";
 import { RefreshCcw } from "lucide-react";
+
 import { AuthContext } from "../context/AuthContext";
 
 const JobList = () => {
@@ -36,6 +257,7 @@ const JobList = () => {
 
   const [filteredSearchJob, setFilteredSearchJob] = useState("");
   const [showDropdown, setShowDropDown] = useState(false);
+
 
   const handleClick = (jobs) => {
     navigate("/jobdetail", { state: { jobs } });

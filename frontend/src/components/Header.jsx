@@ -167,8 +167,29 @@ function Header() {
               />
             </div>
             <nav className="items-center hidden space-x-6 md:flex">
-              <NavLink to="/" className="text-lg hover:text-gray-500">
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  `text-xl ml-4 ${
+                    isActive
+                      ? "text-orange-500 font-semibold"
+                      : "text-gray-600 hover:text-orange-500"
+                  }`
+                }
+              >
                 Home
+              </NavLink>
+              <NavLink
+                to="/aboutus"
+                className={({ isActive }) =>
+                  `text-xl ml-4 ${
+                    isActive
+                      ? "text-orange-500 font-semibold"
+                      : "text-gray-600 hover:text-orange-500"
+                  }`
+                }
+              >
+                About Us
               </NavLink>
               {userType === "candidate" || userType === null ? (
                 <NavLink
@@ -373,6 +394,13 @@ function Header() {
                       Add Jobs
                     </NavLink>
                   )}
+                  <NavLink
+                    to="/aboutus"
+                    className="py-2 text-lg hover:text-orange-500"
+                    onClick={() => setNavOpen(false)}
+                  >
+                    About Us
+                  </NavLink>
                   <hr className="w-full my-2 border-gray-300" />
 
                   <button

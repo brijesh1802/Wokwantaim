@@ -167,7 +167,13 @@ function Header() {
               />
             </div>
             <nav className="items-center hidden space-x-6 md:flex">
-              <NavLink to="/" className="text-lg hover:text-gray-500">
+              <NavLink to="/"className={({ isActive }) =>
+                    `text-xl ml-4 ${
+                      isActive
+                        ? "text-orange-500 font-semibold"
+                        : "text-gray-600 hover:text-orange-500"
+                    }`
+                  }>
                 Home
               </NavLink>
               {userType === "candidate" || userType === null ? (

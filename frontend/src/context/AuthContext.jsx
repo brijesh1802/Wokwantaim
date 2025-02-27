@@ -40,8 +40,9 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     navigate("/");
-    window.location.reload();
+    setUserData(null);
     localStorage.clear();
+    window.location.reload();
   };
 
   useEffect(() => {

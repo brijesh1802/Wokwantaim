@@ -1,11 +1,14 @@
 import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { isTokenExpired } from "./auth";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [industry, setIndustry] = useState([]);
   const storedUserType = localStorage.getItem("userType");
+
+
 
   const navigate = useNavigate();
   const [currentJobRole, setcurrentJobRole] = useState({
@@ -22,6 +25,14 @@ export const AuthProvider = ({ children }) => {
 
   const [jobs, setJobs] = useState([]);
   useEffect(() => {
+     if(isTokenExpired()){
+      console.log("Token Expired, Logging out");
+      localStorage.clear();
+      navigate("/login");
+     }else{
+      console.log("Token is valid");
+     }
+
     fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/jobs/getAll`)
       .then((response) => response.json())
       .then((data) => setJobs(data))

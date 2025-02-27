@@ -10,46 +10,46 @@ const signup =  async (req, res) => {
     const { name, phone, email, password, website, joinType } = req.body;
 
     if (!name) {
-        return res.status(400).json({ msg: 'Name is required' });
+        return res.status(400).json({ message: 'Name is required' });
     }
     if (!phone) {
-        return res.status(400).json({ msg: 'Phone is required' });
+        return res.status(400).json({ message: 'Phone is required' });
     }
     if (!email) {
-        return res.status(400).json({ msg: 'Email is required' });
+        return res.status(400).json({ message: 'Email is required' });
     }
     if (!password) {
-        return res.status(400).json({ msg: 'Password is required' });
+        return res.status(400).json({ message: 'Password is required' });
     }
     if (!joinType) {
-        return res.status(400).json({ msg: 'Join type is required' });
+        return res.status(400).json({ message: 'Join type is required' });
     }
     if (!website) {
-        return res.status(400).json({ msg: 'Website is required' });
+        return res.status(400).json({ message: 'Website is required' });
     }
 
     if (name.length < 4) {
-        return res.status(400).json({ msg: 'Name must be at least 4 characters' });
+        return res.status(400).json({ message: 'Name must be at least 4 characters' });
     }
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.(com|net|org|edu)$/;
     if (!emailPattern.test(email)) {
-        return res.status(400).json({ msg: 'Invalid email format' });
+        return res.status(400).json({ message: 'Invalid email format' });
     }
 
     if (phone.length !== 10) {
-        return res.status(400).json({ msg: 'Phone number must be exactly 10 digits' });
+        return res.status(400).json({ message: 'Phone number must be exactly 10 digits' });
     }
     if (phone.startsWith('0')) {
-        return res.status(400).json({ msg: 'Phone number should not start with 0' });
+        return res.status(400).json({ message: 'Phone number should not start with 0' });
     }
     const phonePattern = /^[1-9]\d{9}$/;
     if (!phonePattern.test(phone)) {
-        return res.status(400).json({ msg: 'Invalid phone number format' });
+        return res.status(400).json({ message: 'Invalid phone number format' });
     }
 
     if (password.length < 8) {
-        return res.status(400).json({ msg: 'Password must be at least 6 characters' });
+        return res.status(400).json({ message: 'Password must be at least 6 characters' });
     }
 
     const urlPattern = new RegExp('^(https?:\\/\\/)?(www\\.)?' + // protocol and www
@@ -57,7 +57,7 @@ const signup =  async (req, res) => {
     );
 
     if (!urlPattern.test(website)) {
-        return res.status(400).json({ msg: 'Invalid website URL' });
+        return res.status(400).json({ message: 'Invalid website URL' });
     }
     
 
@@ -65,7 +65,7 @@ const signup =  async (req, res) => {
         let employer = await Employer.findOne({ email });
         let candidate = await Candidate.findOne({ email });
         if (employer || candidate) {
-            return res.status(400).json({ msg: 'Email already exists' });
+            return res.status(400).json({ message: 'Email already exists' });
         }
 
         const hashedpassword = await bcrypt.hash(password, 10);
@@ -138,7 +138,7 @@ const signup =  async (req, res) => {
 
 
     } catch (err) {
-        res.status(500).json({ msg: err.message });
+        res.status(500).json({ message: err.message });
     }
 };
 
@@ -147,22 +147,22 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        return res.status(400).json({ msg: 'Please provide email and password' });
+        return res.status(400).json({ message: 'Please provide email and password' });
     }
 
     try {
         let employer = await Employer.findOne({ email });
         if (!employer) {
-            return res.status(400).json({ msg: 'User Not found' });
+            return res.status(400).json({ message: 'User Not found' });
         }
 
         const isMatch = await bcrypt.compare(password, employer.password);
         if (!isMatch) {
-            return res.status(400).json({ msg: 'Invalid credentials' });
+            return res.status(400).json({ message: 'Invalid credentials' });
         }
 
         if(!employer.isVerified) {
-            return res.status(400).json({ msg: 'Please verify your email to login' });
+            return res.status(400).json({ message: 'Please verify your email to login' });
         }
 
         const token = jwt.sign(
@@ -175,7 +175,7 @@ const login = async (req, res) => {
                 
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ msg: 'Server error' });
+        res.status(500).json({ message: 'Server error' });
     }
 };
 
@@ -190,12 +190,12 @@ const profile =  async (req, res) => {
 
         // If candidate not found, return 404 error
         if (!employer) {
-            return res.status(404).json({ msg: 'Candidate not found' });
+            return res.status(404).json({ message: 'Candidate not found' });
         }
         res.json(employer);
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ msg: 'Server error while updating profile' });
+        res.status(500).json({ message: 'Server error while updating profile' });
     }
 }
 
@@ -243,17 +243,17 @@ const deleteAccount = async (req, res) => {
         const isMatch = await bcrypt.compare(password, employer.password);
         
         if (!isMatch) {
-            return res.status(400).json({ msg: 'Invalid credentials' });
+            return res.status(400).json({ message: 'Invalid credentials' });
         }
 
         if (!employer) {
-            return res.status(404).json({ msg: 'Employer not found' });
+            return res.status(404).json({ message: 'Employer not found' });
         }
 
         await employer.deleteOne();
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ msg: 'Server error while deleting account' });
+        res.status(500).json({ message: 'Server error while deleting account' });
     }
 }
 

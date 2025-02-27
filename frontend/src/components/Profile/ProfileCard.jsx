@@ -93,13 +93,15 @@
 
 // export default ProfileCard;
 
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import default_image from "../../assets/default_image.png";
+import { AuthContext } from "../../context/AuthContext";
 import { SquarePen } from "lucide-react";
 import Popup from "./Popup";
 import { Eye, EyeOff, User, Lock, Phone, Briefcase } from "lucide-react";
 
 const ProfileCard = ({ user }) => {
+  const { userType } = useContext(AuthContext);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [formData, setFormData] = useState({
     firstName: user.fullName?.firstName || "",
@@ -112,15 +114,82 @@ const ProfileCard = ({ user }) => {
     profilePhoto: user.profilePhoto || default_image,
     resume: user.resume || "",
   });
-  const isSaveDisabled=
- 
-    (!formData.firstName?.trim() ||
-      !formData.lastName?.trim() ||
-      !formData.password?.trim() ||
-      !formData.confirmPassword?.trim() ||
-      !formData.phoneNumber?.trim() ||
-      !formData.experienceLevel?.trim() ||
-      !formData.jobType?.trim())
+  const [tempFormData, setTempFormData] = useState({ ...formData });
+
+  const handleChange = (e, field) => {
+    if (field === "profilePhoto") {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setTempFormData((prevData) => ({
+            ...prevData,
+            profilePhoto: reader.result,
+          }));
+        };
+        reader.readAsDataURL(file);
+      }
+    } else if (field === "resume") {
+      const file = e.target.files[0];
+      if (file) {
+        setTempFormData((prevData) => ({
+          ...prevData,
+          resume: file,
+        }));
+      }
+    } else {
+      setTempFormData((prevData) => ({
+        ...prevData,
+        [field]: e.target.value,
+      }));
+    }
+  };
+
+  const isSaveDisabled =
+    !tempFormData.firstName?.trim() ||
+    !tempFormData.lastName?.trim() ||
+    !tempFormData.password?.trim() ||
+    !tempFormData.confirmPassword?.trim() ||
+    !tempFormData.phoneNumber?.trim() ||
+    !tempFormData.experienceLevel?.trim() ||
+    !tempFormData.jobType?.trim();
+
+  const handleSave = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+
+      if (!token) {
+        console.error("Token is missing! Please log in again.");
+        return;
+      }
+      console.log(token);
+      const url =
+        userType === "candidate"
+          ? `${import.meta.env.VITE_BASE_URL}/api/v1/candidates/info/update`
+          : `${import.meta.env.VITE_BASE_URL}/api/v1/employers/info/update`;
+
+      const response = await fetch(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(tempFormData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update profile");
+      }
+
+      const updatedProfile = await response.json();
+      console.log("Profile updated successfully:", updatedProfile);
+
+      setFormData(tempFormData);
+      handleClosePopup();
+    } catch (error) {
+      console.error("Error updating profile:", error.message);
+    }
+  };
 
   const handleEditClick = () => {
     setIsPopupOpen(true);
@@ -139,6 +208,7 @@ const ProfileCard = ({ user }) => {
       [field]: !prevState[field],
     }));
   };
+
 
   return (
     <>
@@ -169,169 +239,170 @@ const ProfileCard = ({ user }) => {
         //   togglePopup={handleClosePopup}
         // />
         <div className="popup-overlay fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
-      <div className="popup-content bg-white p-6 rounded-md shadow-lg w-[32rem]">
-        <h3 className="text-xl font-semibold mb-4">Profile Update Details</h3>
+          <div className="popup-content bg-white p-6 rounded-md shadow-lg w-[32rem]">
+            <h3 className="text-xl font-semibold mb-4">
+              Profile Update Details
+            </h3>
 
-        <div className="max-h-96 overflow-y-auto  p-5">
-            <label className="block mb-2">First Name:</label>
-            <div className="relative">
-              <input
-                id="firstName"
-                name="firstName"
-                value={formData.firstName}
-                onChange={(e) => handleChange(e, "firstName")}
-                placeholder="John Doe"
-                className="w-full py-2 pl-10 pr-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                required
-              />
-              <User className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2" />
-            </div>
-            <label className="block mb-2">Last Name:</label>
-            <div className="relative">
-              <input
-                type="text"
-                value={formData.lastName}
-                onChange={(e) => handleChange(e, "lastName")}
-                className="w-full py-2 pl-10 pr-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-              <User className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2"></User>
-            </div>
+            <div className="max-h-96 overflow-y-auto  p-5">
+              <label className="block mb-2">First Name:</label>
+              <div className="relative">
+                <input
+                  id="firstName"
+                  name="firstName"
+                  value={tempFormData.firstName}
+                  onChange={(e) => handleChange(e, "firstName")}
+                  placeholder="John Doe"
+                  className="w-full py-2 pl-10 pr-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  required
+                />
+                <User className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2" />
+              </div>
+              <label className="block mb-2">Last Name:</label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={tempFormData.lastName}
+                  onChange={(e) => handleChange(e, "lastName")}
+                  className="w-full py-2 pl-10 pr-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
+                <User className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2"></User>
+              </div>
 
-            <label className="block mb-2" htmlFor="password">
-              Password:
-            </label>
-            <div className="relative">
+              <label className="block mb-2" htmlFor="password">
+                Password:
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword.password ? "text" : "password"}
+                  value={tempFormData.password}
+                  onChange={(e) => handleChange(e, "password")}
+                  className="w-full py-2 pl-10 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  required
+                />
+                <Lock className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2" />
+                <button
+                  type="button"
+                  onClick={() => togglePasswordVisibility("password")}
+                  className="absolute text-gray-500 -translate-y-1/2 right-3 top-1/2 hover:text-gray-700"
+                >
+                  {showPassword.password ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+
+              <label className="block mb-2" htmlFor="confirmPassword">
+                Confirm Password:
+              </label>
+              <div className="relative">
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type={showPassword.confirmPassword ? "text" : "password"}
+                  value={tempFormData.confirmPassword}
+                  onChange={(e) => handleChange(e, "confirmPassword")}
+                  className="w-full py-2 pl-10 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  required
+                />
+                <Lock className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2" />
+                <button
+                  type="button"
+                  onClick={() => togglePasswordVisibility("confirmPassword")}
+                  className="absolute text-gray-500 -translate-y-1/2 right-3 top-1/2 hover:text-gray-700"
+                >
+                  {showPassword.confirmPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+
+              <label className="block mb-2">Phone Number:</label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={tempFormData.phoneNumber}
+                  onChange={(e) => handleChange(e, "phoneNumber")}
+                  className="w-full py-2 pl-10 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
+                <Phone className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2" />
+              </div>
+              <label className="block mb-2">Experience Level:</label>
+              <div className="relative">
+                <select
+                  id="experienceLevel"
+                  name="experienceLevel"
+                  value={tempFormData.experienceLevel}
+                  onChange={(e) => handleChange(e, "experienceLevel")}
+                  className="w-full py-2 pl-10 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                >
+                  <option value="">Select experience level</option>
+                  <option value="Fresher">Fresher</option>
+                  <option value="Entry-Level">Entry Level</option>
+                  <option value="Mid-Level">Mid Level</option>
+                  <option value="Senior-Level">Senior Level</option>
+                </select>
+                <Briefcase className="absolute w-5 h-5  -translate-y-1/2  top-1/2 left-3 text-gray-300"></Briefcase>
+              </div>
+              <label className="block mb-2">Job Type:</label>
+              <div className="relative">
+                <select
+                  id="jobType"
+                  name="jobType"
+                  value={tempFormData.jobType}
+                  onChange={(e) => handleChange(e, "jobType")}
+                  className="w-full py-2 pl-10 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                >
+                  <option value="">Select job type</option>
+                  <option value="Full-time">Full Time</option>
+                  <option value="Part-time">Part Time</option>
+                  <option value="Internship">Internship</option>
+                  <option value="Contract">Contract</option>
+                </select>
+                <Briefcase className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2" />
+              </div>
+              <label className="block mb-2">Profile Photo:</label>
               <input
-                id="password"
-                name="password"
-                type={showPassword.password ? "text" : "password"}
-                value={formData.password}
-                onChange={(e) => handleChange(e, "password")}
-                className="w-full py-2 pl-10 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                required
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleChange(e, "profilePhoto")}
+                className="w-full p-2 border border-gray-300 rounded mb-4"
               />
-              <Lock className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2" />
+              <label className="block mb-2">Upload CV:</label>
+              <input
+                type="file"
+                accept="application/pdf"
+                onChange={(e) => handleChange(e, "resume")}
+                className="w-full p-2 border border-gray-300 rounded mb-4"
+              />
+            </div>
+            <div className="flex justify-between mt-4">
               <button
-                type="button"
-                onClick={() => togglePasswordVisibility("password")}
-                className="absolute text-gray-500 -translate-y-1/2 right-3 top-1/2 hover:text-gray-700"
+                onClick={handleClosePopup}
+                className="px-4 py-2 bg-gray-500 text-white rounded"
               >
-                {showPassword.password ? (
-                  <EyeOff className="w-4 h-4" />
-                ) : (
-                  <Eye className="w-4 h-4" />
-                )}
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={isSaveDisabled}
+                className={`px-4 py-2 rounded ${
+                  isSaveDisabled
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-blue-500 text-white"
+                }`}
+              >
+                Save
               </button>
             </div>
-
-            <label className="block mb-2" htmlFor="confirmPassword">
-              Confirm Password:
-            </label>
-            <div className="relative">
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type={showPassword.confirmPassword ? "text" : "password"}
-                value={formData.confirmPassword}
-                onChange={(e) => handleChange(e, "confirmPassword")}
-                className="w-full py-2 pl-10 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                required
-              />
-              <Lock className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2" />
-              <button
-                type="button"
-                onClick={() => togglePasswordVisibility("confirmPassword")}
-                className="absolute text-gray-500 -translate-y-1/2 right-3 top-1/2 hover:text-gray-700"
-              >
-                {showPassword.confirmPassword ? (
-                  <EyeOff className="w-4 h-4" />
-                ) : (
-                  <Eye className="w-4 h-4" />
-                )}
-              </button>
-            </div>
-
-            <label className="block mb-2">Phone Number:</label>
-            <div className="relative">
-              <input
-                type="text"
-                value={formData.phoneNumber}
-                onChange={(e) => handleChange(e, "phoneNumber")}
-                className="w-full py-2 pl-10 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-              <Phone className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2" />
-            </div>
-            <label className="block mb-2">Experience Level:</label>
-            <div className="relative">
-              <select
-                id="experienceLevel"
-                name="experienceLevel"
-                value={formData.experienceLevel}
-                onChange={(e) => handleChange(e, "experienceLevel")}
-                className="w-full py-2 pl-10 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-              >
-                <option value="">Select experience level</option>
-                <option value="Fresher">Fresher</option>
-                <option value="Entry-Level">Entry Level</option>
-                <option value="Mid-Level">Mid Level</option>
-                <option value="Senior-Level">Senior Level</option>
-              </select>
-              <Briefcase className="absolute w-5 h-5  -translate-y-1/2  top-1/2 left-3 text-gray-300"></Briefcase>
-            </div>
-            <label className="block mb-2">Job Type:</label>
-            <div className="relative">
-              <select
-                id="jobType"
-                name="jobType"
-                value={formData.jobType}
-                onChange={(e) => handleChange(e, "jobType")}
-                className="w-full py-2 pl-10 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-         
-              >
-                <option value="">Select job type</option>
-                <option value="Full-time">Full Time</option>
-                <option value="Part-time">Part Time</option>
-                <option value="Internship">Internship</option>
-                <option value="Contract">Contract</option>
-              </select>
-              <Briefcase className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2" />
-            </div>
-            <label className="block mb-2">Profile Photo:</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => handleChange(e, "profilePhoto")}
-              className="w-full p-2 border border-gray-300 rounded mb-4"
-            />
-            <label className="block mb-2">Upload CV:</label>
-            <input
-              type="file"
-              accept="application/pdf"
-              onChange={(e) => handleChange(e, "resume")}
-              className="w-full p-2 border border-gray-300 rounded mb-4"
-            />
           </div>
-          <div className="flex justify-between mt-4">
-          <button
-            onClick={handleClosePopup}
-            className="px-4 py-2 bg-gray-500 text-white rounded"
-          >
-            Cancel
-          </button>
-          <button
-            // onClick={handleSave}
-            disabled={isSaveDisabled}
-            className={`px-4 py-2 rounded ${
-              isSaveDisabled
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-blue-500 text-white"
-            }`}
-          >
-            Save
-          </button>
         </div>
-        </div>
-      </div>
       )}
     </>
   );

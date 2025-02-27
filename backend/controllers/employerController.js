@@ -86,28 +86,6 @@ const signup =  async (req, res) => {
 
         // Send verification email
         const verificationURL = `${process.env.VERCEL_URL}/verify-email/${verificationToken}`;
-        
-        // const body =   `
-        // <h2 style="color:#333;">Welcome to Our Platform! 🎉</h2>
-        // <p style="font-size:16px;color:#555;">
-        //   Thank you for signing up! To get started, please verify your email address by clicking the button below:
-        // </p>
-        // <p>
-        //   <a href="${verificationURL}" 
-        //      style="display:inline-block;padding:12px 20px;margin:10px 0;font-size:16px;
-        //      color:#fff;background-color:#ff6600;border-radius:5px;text-decoration:none;">
-        //      ✅ Verify My Email
-        //   </a>
-        // </p>
-        // <p style="font-size:14px;color:#777;">
-        //   If you didn't sign up for this account, you can safely ignore this email. If you have any questions, feel free to reach out. 
-        // </p>
-        // <p style="font-size:14px;color:#777;">
-        //   Best Regards, <br> 
-        //   The Support Team 💼
-        // </p>
-        // `
-        // const subject =   "✨ Verify Your Email - Action Required! ✨"
         const subject = "🔐 Confirm Your Email Address"
 
         const body = `
@@ -130,6 +108,9 @@ const signup =  async (req, res) => {
               Need help? <a href="mailto:support@wokwantaim.com" style="color: #007bff; text-decoration: none;">Contact Support</a>
             </p>
           </div>
+          <div>
+            <p>If you no longer wish to receive these emails, <a href="${dashboardURL}/unsubscribe">Unsubscribe here</a>.</p>
+            </div>
         </div>
         `
         await sendEmail(email, subject, body);
@@ -201,28 +182,70 @@ const profile =  async (req, res) => {
 
 const verifyEmail = async (req, res) => {
     try {
-        const { token } = req.params;  // Token from the URL
+        const { token } = req.params; 
 
-        // Find the user by the verification token
+        
         const user = await Employer.findOne({ verificationToken: token });
 
         if (!user) {
             return res.status(400).json({ message: "Invalid token or token expired!" });
         }
 
-        // Optional: Check if token has expired
+        const email = user.email;
+
+        
         const tokenExpirationTime = user.tokenExpirationTime || Date.now() + 3600000; // Default: 1 hour
         if (Date.now() > tokenExpirationTime) {
             return res.status(400).json({ message: "Token has expired!" });
         }
 
-        // Mark the user's email as verified
+        
         user.isVerified = true;
-        user.verificationToken = undefined;  // Clear the verification token after use
-        user.tokenExpirationTime = undefined; // Clear expiration time if any
+        user.verificationToken = undefined;  
+        user.tokenExpirationTime = undefined; 
         await user.save();
 
         res.json({ message: "Email verified successfully! You can now log in." });
+
+        const dashboardURL = `${process.env.VERCEL_URL}/login`;
+
+        const subject = "🎉 Welcome to Wokwantaim – Let's Get Started!";
+
+
+        const body = `
+        <div style="font-family: Arial, sans-serif; padding: 40px; background-color: #f4f4f4; text-align: center;">
+            <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <h2 style="color: #333;">Welcome to Wokwantaim 🎉</h2>
+                <p style="color: #555; font-size: 16px; line-height: 1.6;">
+                We're thrilled to have you on board! Wokwantaim is all about connecting people and creating opportunities. Here’s how you can get started:
+                </p>
+                <ul style="text-align: left; color: #555; font-size: 16px; line-height: 1.6; margin: 20px auto; display: inline-block;">
+                    <li>✅ <strong>Complete Your Profile</strong> – Let others know more about you.</li>
+                    <li>🔍 <strong>Explore Opportunities</strong> – Discover new connections and possibilities.</li>
+                    <li>💬 <strong>Engage with the Community</strong> – Stay updated and be part of discussions.</li>
+                </ul>
+                <a href="${dashboardURL}" 
+                style="display: inline-block; padding: 12px 24px; margin-top: 20px; background: #007bff; color: #ffffff; 
+                text-decoration: none; font-size: 16px; font-weight: bold; border-radius: 6px;">
+                🚀 Get Started
+                </a>
+                <p style="color: #888; font-size: 14px; margin-top: 20px;">
+                If you have any questions, feel free to reach out to our support team.
+                </p>
+                <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                <p style="color: #888; font-size: 12px;">
+                Need help? <a href="mailto:support@wokwantaim.com" style="color: #007bff; text-decoration: none;">Contact Support</a>
+                </p>
+            </div>
+            <div>
+            <p>If you no longer wish to receive these emails, <a href="${dashboardURL}/unsubscribe">Unsubscribe here</a>.</p>
+            </div>
+        </div>
+        `;
+
+        await sendEmail(email, subject, body);
+
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: error.message });

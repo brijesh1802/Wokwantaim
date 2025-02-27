@@ -132,6 +132,9 @@ const signup = async (req, res) => {
             Need help? <a href="mailto:support@wokwantaim.com" style="color: #007bff; text-decoration: none;">Contact Support</a>
             </p>
         </div>
+        <div>
+        <p>If you no longer wish to receive these emails, <a href="${dashboardURL}/unsubscribe">Unsubscribe here</a>.</p>
+        </div>
         </div>
         `
         await sendEmail(email, subject, body);
@@ -235,7 +238,7 @@ const verifyEmail = async (req, res) => {
 
         res.json({ message: "Email verified successfully! You can now log in." });
 
-        const dashboardURL = `${process.env.VERCEL_URL}/`;
+        const dashboardURL = `${process.env.VERCEL_URL}/login`;
 
         const subject = "🎉 Welcome to Wokwantaim – Let's Get Started!";
 
@@ -264,6 +267,9 @@ const verifyEmail = async (req, res) => {
                 <p style="color: #888; font-size: 12px;">
                 Need help? <a href="mailto:support@wokwantaim.com" style="color: #007bff; text-decoration: none;">Contact Support</a>
                 </p>
+            </div>
+            <div>
+            <p>If you no longer wish to receive these emails, <a href="${dashboardURL}/unsubscribe">Unsubscribe here</a>.</p>
             </div>
         </div>
         `;

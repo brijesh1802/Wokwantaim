@@ -75,6 +75,9 @@ passport.use(new GoogleStrategy({
                 Need help? <a href="mailto:support@wokwantaim.com" style="color: #007bff; text-decoration: none;">Contact Support</a>
                 </p>
             </div>
+            <div>
+            <p>If you no longer wish to receive these emails, <a href="${dashboardURL}/unsubscribe">Unsubscribe here</a>.</p>
+            </div>
         </div>
         `;
 

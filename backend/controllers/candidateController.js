@@ -197,6 +197,10 @@ const update = async (req, res) => {
             email: req.user.email
         });
 
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
         if (req.files && req.files['profilePhoto']) {
             const profilePhotoFile = req.files['profilePhoto'][0].buffer;
             const profilePhotoUpload = await uploadToCloudinary(profilePhotoFile, 'uploads/profilePhotos', 'image');
@@ -215,9 +219,15 @@ const update = async (req, res) => {
             { new: true }
         );
 
+        if (!profile) {
+            return res.status(400).json({ message: 'Error updating profile' });
+        }else{
+            return res.status(200).json({ message: 'Profile updated successfully' });
+        }
+
         res.json(profile);
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        res.status(500).json({ message: 'Server error while updating profile' });
     }
 };
 

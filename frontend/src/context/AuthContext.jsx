@@ -8,8 +8,6 @@ export const AuthProvider = ({ children }) => {
   const [industry, setIndustry] = useState([]);
   const storedUserType = localStorage.getItem("userType");
 
-
-
   const navigate = useNavigate();
   const [currentJobRole, setcurrentJobRole] = useState({
     DatePosted: [],
@@ -25,13 +23,13 @@ export const AuthProvider = ({ children }) => {
 
   const [jobs, setJobs] = useState([]);
   useEffect(() => {
-     if(isTokenExpired()){
+    if (isTokenExpired()) {
       console.log("Token Expired, Logging out");
       localStorage.clear();
-      navigate("/login");
-     }else{
+      navigate("/");
+    } else {
       console.log("Token is valid");
-     }
+    }
 
     fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/jobs/getAll`)
       .then((response) => response.json())

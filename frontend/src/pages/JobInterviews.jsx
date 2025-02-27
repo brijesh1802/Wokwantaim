@@ -16,12 +16,12 @@ const JobInterviews = () => {
         </p>
 
         {/* Desktop View */}
-        <div className="hidden lg:block">
+        <div className="hidden md:block">
         <CompanyGrid companies={companies} />
         </div>
 
         {/* Mobile View */}
-        <div className="block lg:hidden">
+        <div className="block md:hidden">
         <CompanySlider companies={companies} />
         </div>
       </div>

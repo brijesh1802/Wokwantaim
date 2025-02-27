@@ -36,6 +36,10 @@ passport.use(new FacebookStrategy({
                 email: profile.emails[0].value,
                 password: '',  
                 profilePhoto: profilePhotoUpload.url,
+                experienceLevel: 'Entry Level',
+                jobType: 'Full-time',
+                phoneNumber:'',
+                resume:'',
                 gender: profile.gender, 
                 isVerified: true,
                 modeofLogin : 'facebook'  

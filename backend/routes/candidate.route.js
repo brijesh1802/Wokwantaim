@@ -1,5 +1,5 @@
 const express = require('express');
-const { signup, login, profile, verifyEmail, deleteAccount } = require('../controllers/candidateController');
+const { signup, login, profile, verifyEmail, deleteAccount, update } = require('../controllers/candidateController');
 const {upload} = require('../middleware/upload');
 const authMiddleware = require('../middleware/authMiddleware'); 
 
@@ -11,6 +11,8 @@ router.post('/signup', upload.fields([{ name: 'profilePhoto', maxCount: 1 }, { n
 router.post('/login', login);  
 
 router.get('/profile',authMiddleware, profile);
+
+router.patch('/update',authMiddleware, upload.fields([{ name: 'profilePhoto', maxCount: 1 }, { name: 'resume', maxCount: 1 }]), update);
 
 router.get("/verify/:token", verifyEmail);
 

@@ -13,10 +13,11 @@ const transporter = nodemailer.createTransport({
 
 const sendEmail = async (to, subject, text) => {
     const mailOptions = {
-        from: "⛏️ Wokwantaim Support Team ⛏️ <<brijesh@wokwantaim.com>>",
+        from: "⛏️ Wokwantaim Support Team ⛏️ <<brijeshpujari333@gmail.com>>",
         to: to,
         subject: subject,
         html: text,
+        replyTo : "brijeshpujari333@gmail.com"
     };
 
     try {

@@ -31,7 +31,7 @@ passport.use(new GoogleStrategy({
                 },
                 email: profile.emails[0].value,
                 password: '', 
-                experienceLevel: 'Entry Level',
+                experienceLevel: 'Entry-Level',
                 jobType: 'Full-time',
                 phoneNumber:'',
                 profilePhoto: profilePhotoUpload.url,

@@ -18,6 +18,7 @@ import JobApplications from "./pages/JobApplications";
 import DeleteAccount from "./components/DeleteAccount";
 import ForgotPassword from "./components/ForgotPassword";
 import ScrollToTop from "./components/ScrollToTop";
+import AboutUs from "./components/Home/About/AboutUs";
 
 
 function App() {
@@ -53,6 +54,7 @@ function App() {
             <Route path="/redirect" element={<RedirectPage />} />
             <Route path="/applications" element={<JobApplications />} />
             <Route path="/delete-account" element={<DeleteAccount />} />
+            <Route path="aboutus" element={<AboutUs/> }/>
           </Routes>
         </main>
         {!noPaths.includes(location.pathname) &&

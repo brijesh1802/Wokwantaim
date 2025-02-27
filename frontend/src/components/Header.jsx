@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate, Link, NavLink } from "react-router-dom";
 import { FaBars, FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { AuthContext } from "../context/AuthContext";
-import Logo from "../assets/Logo.png";
+// import Logo from "../assets/Logo.png";
 import default_img from "../assets/default_image.png";
 import LogoutConfirmation from "./LogoutConfirmation";
 import ChangePasswordConfirmation from "./ChangePasswordConfirmation";
@@ -159,12 +159,23 @@ function Header() {
               >
                 <FaBars size={25} />
               </button>
-              <img
+              {/* <img
                 src={Logo}
                 alt="Logo"
                 className="h-8 hover:cursor-pointer"
                 onClick={() => navigate("/")}
-              />
+              /> */}
+              <p>
+              <Link 
+              to="/" 
+              className="text-2xl sm:text-3xl lg:text-4xl font-semibold 
+                        text-transparent bg-clip-text 
+                        bg-gradient-to-r from-orange-500 to-red-500"
+            >
+              Wokwantaim
+            </Link>
+
+              </p>
             </div>
             <nav className="items-center hidden space-x-6 md:flex">
               <NavLink
@@ -242,9 +253,9 @@ function Header() {
                   </button>
                 )}
                 {dropdownOpen && (
-                  <div className="absolute right-0 min-w-max py-2 mt-2 bg-white rounded-md shadow-lg">
+                  <div className="absolute right-0 py-2 mt-2 bg-white rounded-md shadow-lg min-w-max">
                     <button
-                      className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 flex justify-between items-center"
+                      className="flex items-center justify-between w-full px-4 py-2 text-left text-gray-800 hover:bg-gray-100"
                       onClick={() => setManageProfileOpen(!manageProfileOpen)}
                     >
                       Profile{" "}
@@ -333,7 +344,7 @@ function Header() {
                   {userType && userData ? (
                     <>
                       <div
-                        className="flex flex-col ml-2 mt-4 text-sm hover:cursor-pointer"
+                        className="flex flex-col mt-4 ml-2 text-sm hover:cursor-pointer"
                         onClick={() => {
                           navigate("/profile");
                           setNavOpen(false);
@@ -444,7 +455,7 @@ function Header() {
                       {manageProfileOpen && (
                         <div className="w-48 pl-2">
                           <button
-                            className="block py-2 text-lg hover:text-orange-500 w-full text-left"
+                            className="block w-full py-2 text-lg text-left hover:text-orange-500"
                             onClick={() => {
                               setDeleteAccountConfirmOpen(true);
                               setNavOpen(false);

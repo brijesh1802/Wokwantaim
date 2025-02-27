@@ -153,7 +153,7 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        return res.status(400).json({ message: 'Please provide email and password' });
+        return res.status(400).json({ message: 'Please provide both email and password' });
     }
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.(com|net|org|edu)$/;
@@ -164,31 +164,30 @@ const login = async (req, res) => {
     try {
         let candidate = await Candidate.findOne({ email });
         if (!candidate) {
-            return res.status(400).json({ message: 'User not found' });
+            return res.status(400).json({ message: 'User not found with the provided email' });
         }
 
         const isMatch = await bcrypt.compare(password, candidate.password);
 
         if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials' });
+            return res.status(400).json({ message: 'Incorrect password' });
         }
 
-        if(!candidate.isVerified) {
+        if (!candidate.isVerified) {
             return res.status(400).json({ message: 'Please verify your email to login' });
         }
-        
 
         const token = jwt.sign(
             { email: candidate.email },
             process.env.JWT_SECRET,
             { expiresIn: "7d", algorithm: "HS256" }
-        );  
-        
+        );
+
         res.json({ message: "Login successful!", token });
 
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error while logging in' });
     }
 };
 
@@ -241,21 +240,17 @@ const update = async (req, res) => {
     }
 };
 
-
 // Profile route
 const profile = async (req, res) => {
     try {
-        
         const userEmail = req.user.email;
 
-        
         const candidate = await Candidate.findOne({ email: userEmail });
 
-        
         if (!candidate) {
             return res.status(404).json({ message: 'Candidate not found' });
         }
-        res.json(candidate);
+        res.status(200).json({ message: 'Profile fetched successfully', candidate });
 
     } catch (err) {
         console.error(err.message);

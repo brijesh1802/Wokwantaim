@@ -49,7 +49,7 @@ passport.use(new FacebookStrategy({
             await newProfile.save()
         }
 
-        const dashboardURL = `${process.env.VERCEL_URL}/`;
+        const dashboardURL = `${process.env.VERCEL_URL}`;
 
         const subject = "🎉 Welcome to Wokwantaim – Let's Get Started!";
 

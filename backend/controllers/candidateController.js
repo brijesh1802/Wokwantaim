@@ -110,6 +110,8 @@ const signup = async (req, res) => {
         
         const verificationURL = `${process.env.VERCEL_URL}/verify-email/${verificationToken}`;
 
+        const dashboardURL = `${process.env.VERCEL_URL}`;
+
         const subject = "🔐 Confirm Your Email Address"
 
         const body = `

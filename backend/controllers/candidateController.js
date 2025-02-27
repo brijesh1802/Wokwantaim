@@ -190,6 +190,37 @@ const login = async (req, res) => {
     }
 };
 
+const update = async (req, res) => {
+    try {
+        const updates = req.body;
+        const user = await Candidate.findOne({
+            email: req.user.email
+        });
+
+        if (req.files && req.files['profilePhoto']) {
+            const profilePhotoFile = req.files['profilePhoto'][0].buffer;
+            const profilePhotoUpload = await uploadToCloudinary(profilePhotoFile, 'uploads/profilePhotos', 'image');
+            updates.profilePhoto = profilePhotoUpload.url;
+        }
+
+        if (req.files && req.files['resume']) {
+            const resumeFile = req.files['resume'][0].buffer;
+            const resumeUpload = await uploadToCloudinary(resumeFile, 'uploads/resumes', 'pdf');
+            updates.resume = resumeUpload.url;
+        }
+
+        const profile = await Candidate.findOneAndUpdate(
+            { _id: user._id },
+            { $set: updates },
+            { new: true }
+        );
+
+        res.json(profile);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
+
 // Profile route
 const profile = async (req, res) => {
     try {
@@ -336,4 +367,4 @@ const deleteAccount = async (req, res) => {
 };
 
 
-module.exports = { signup, login, profile, verifyEmail, deleteAccount };
+module.exports = { signup, login, profile, verifyEmail, deleteAccount, update };

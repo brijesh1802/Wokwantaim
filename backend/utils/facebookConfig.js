@@ -36,6 +36,10 @@ passport.use(new FacebookStrategy({
                 email: profile.emails[0].value,
                 password: '',  
                 profilePhoto: profilePhotoUpload.url,
+                experienceLevel: 'Entry Level',
+                jobType: 'Full-time',
+                phoneNumber:'',
+                resume:'',
                 gender: profile.gender, 
                 isVerified: true,
                 modeofLogin : 'facebook'  
@@ -74,6 +78,9 @@ passport.use(new FacebookStrategy({
                 <p style="color: #888; font-size: 12px;">
                 Need help? <a href="mailto:support@wokwantaim.com" style="color: #007bff; text-decoration: none;">Contact Support</a>
                 </p>
+            </div>
+            <div>
+            <p>If you no longer wish to receive these emails, <a href="${dashboardURL}/unsubscribe">Unsubscribe here</a>.</p>
             </div>
         </div>
         `;

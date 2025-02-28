@@ -1,62 +1,59 @@
-import React from "react";
+import React, { useState } from "react";
 
-const SkillSection = ({
-  skills,
-  setSkills,
-  togglePopup,
-  setPopupType,
-  setPopupData,
-}) => {
-  // Edit a specific skill entry
-  const handleEdit = (index) => {
-    setPopupType("Skills");
-    setPopupData({
-      skill: skills[index].skill,
-      proficiency: skills[index].proficiency,
-      index, // Store index for updating
-    });
-    togglePopup();
-  };
+const SkillSection = ({ skills, setSkills }) => {
+  const [error, setError] = useState(null);
+  const token = localStorage.getItem("authToken");
 
   // Delete a specific skill entry
-  const handleDelete = (index) => {
+  const handleDelete = async (index) => {
     const updatedSkills = skills.filter((_, i) => i !== index);
-    localStorage.setItem("skills", JSON.stringify(updatedSkills));
-    setSkills(updatedSkills);
+
+    try {
+      const url = `${
+        import.meta.env.VITE_BASE_URL
+      }/api/v1/candidates/info/update`;
+
+      const response = await fetch(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ skills: updatedSkills }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete skill");
+      }
+
+      console.log("Skill deleted successfully");
+      // Update the skills state to reflect the change
+      setSkills(updatedSkills);
+    } catch (error) {
+      console.error("Error deleting skill:", error);
+      setError(error.message);
+    }
   };
 
-  // Check if skills have been loaded
-  if (!skills) {
-    return <div>Loading...</div>; // Show loading indicator while skills are being fetched
+  if (error) {
+    return <div>Error: {error}</div>;
   }
 
   return (
-    <div className="mt-10">
+    <div className="mt-5 flex flex-wrap gap-2">
       {skills.length > 0 ? (
         skills.map((skill, index) => (
-          <div key={index} className="flex justify-between border-b pb-2 mb-2">
-            <div>
-              <p>
-                <strong>Skill:</strong> {skill.skill}
-              </p>
-              <p>
-                <strong>Proficiency:</strong> {skill.proficiency}
-              </p>
-            </div>
-            <div className="flex space-x-2">
-              <button
-                className="text-blue-500 hover:underline"
-                onClick={() => handleEdit(index)}
-              >
-                Edit
-              </button>
-              <button
-                className="text-red-500 hover:underline"
-                onClick={() => handleDelete(index)}
-              >
-                Delete
-              </button>
-            </div>
+          <div
+            key={index}
+            className="flex items-center gap-3 border border-gray-700 px-3 py-1 rounded-full"
+          >
+            <span className="text-gray-700 font-medium">{skill}</span>
+            <button
+              className="text-red-500 hover:text-red-700 font-extrabold"
+              onClick={() => handleDelete(index)}
+            >
+              ✕
+            </button>
           </div>
         ))
       ) : (

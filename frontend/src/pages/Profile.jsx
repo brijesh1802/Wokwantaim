@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import ProfileCard from "../components/Profile/ProfileCard";
+import { useNavigate } from "react-router-dom";
 import EditableSection from "../components/Profile/EditableSection";
 import ProfileSection from "../components/Profile/ProfileSection";
 import Certifications from "../components/Profile/Certifications";
@@ -11,51 +12,27 @@ import SocialLinks from "../components/Profile/SocialLinks";
 import EducationSection from "../components/Profile/EducationSection";
 import SkillSection from "../components/Profile/SkillSection";
 import ExperienceSection from "../components/Profile/ExperienceSection";
-
-// Utility functions for local storage handling
-const updateLocalStorage = (key, value) => {
-  localStorage.setItem(key, JSON.stringify(value));
-};
-
-const getFromLocalStorage = (key, defaultValue) => {
-  try {
-    const value = localStorage.getItem(key);
-    return value ? JSON.parse(value) : defaultValue;
-  } catch (error) {
-    console.error(
-      `Error parsing data from localStorage for key: ${key}`,
-      error
-    );
-    return defaultValue;
-  }
-};
+import DeleteAccount from "../components/DeleteAccount";
+import LogoutConfirmation from "../components/LogoutConfirmation";
+import PersonalProjects from "../components/Profile/PersonalProjects";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
+  const [deletemodal, setDeleteModal] = useState(false);
+  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [socialLinks, setSocialLinks] = useState({
-    linkedin: getFromLocalStorage("linkedin", ""),
-    github: getFromLocalStorage("github", ""),
-  });
-  const [certifications, setCertifications] = useState(
-    getFromLocalStorage("certifications", [])
-  );
-  const [educations, setEducations] = useState(
-    getFromLocalStorage("educations", [])
-  );
-  const [skills, setSkills] = useState(getFromLocalStorage("skills", []));
-  const [experiences, setExperiences] = useState(
-    getFromLocalStorage("experiences", [])
-  );
-  
-  const [linkedinUrl, setLinkedinUrl] = useState(socialLinks.linkedin);
-  const [githubUrl, setGithubUrl] = useState(socialLinks.github);
-
+  const [personalProjects, setPersonalProjects] = useState([]);
+  const [socialLinks, setSocialLinks] = useState([]);
+  const [certifications, setCertifications] = useState([]);
+  const [educations, setEducations] = useState([]);
+  const [skills, setSkills] = useState([]);
+  const [experiences, setExperiences] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [popupType, setPopupType] = useState("");
   const [popupData, setPopupData] = useState({
-    linkedin: linkedinUrl,
-    github: githubUrl,
+    linkedin: "",
+    github: "",
+    portfolio: "",
     name: "",
     link: "",
     issuedDate: "",
@@ -63,24 +40,51 @@ const Profile = () => {
     fromDate: "",
     toDate: "",
     skill: "",
-    proficiency: "",
     company: "",
     role: "",
     industry: "",
+    title: "",
+    description: "",
+    technologiesUsed: "",
+    projectUrl: "",
+    githubRepo: "",
     index: null,
   });
+  const navigate = useNavigate();
 
-  const { userType } = useContext(AuthContext);
+  const { userType, logout } = useContext(AuthContext);
   const token = localStorage.getItem("authToken");
-
-  const [aboutMe, setAboutMe] = useState(getFromLocalStorage("aboutMe", ""));
   const [experienceContentExists, setExperienceContentExists] = useState(false);
-  const [skillsContentExists, setSkillsContentExists] = useState(false);
   const [educationContentExists, setEducationContentExists] = useState(false);
+
+  const handleLogout = () => {
+    logout();
+    setUser(null);
+  };
+
+  const handleLogoutClick = () => {
+    setLogoutConfirmOpen(true);
+  };
+
+  const handleLogoutConfirm = () => {
+    setLoading(true);
+    setLogoutConfirmOpen(false);
+    console.log("Logging out...");
+    setTimeout(() => {
+      handleLogout();
+      setLoading(false);
+    }, 3000);
+  };
+
+  const handleLogoutCancel = () => {
+    setLogoutConfirmOpen(false);
+  };
 
   useEffect(() => {
     if (!token) {
       console.error("No authentication token found.");
+      localStorage.clear();
+      navigate("/");
       setLoading(false);
       return;
     }
@@ -103,12 +107,7 @@ const Profile = () => {
         if (!response.ok) throw new Error("Failed to fetch user data");
 
         const data = await response.json();
-        setUser(data);
-
-        // Set content existence flags based on the data
-        setExperienceContentExists(!!data.experience);
-        setEducationContentExists(!!data.education);
-        setSkillsContentExists(!!data.skills);
+        setUser(data.candidate || data.employer);
       } catch (error) {
         console.error("Error fetching user profile:", error);
       } finally {
@@ -119,204 +118,27 @@ const Profile = () => {
     if (userType) fetchUserProfile();
   }, [userType, token]);
 
-  // Update educationContentExists whenever educations state changes
   useEffect(() => {
-    setEducationContentExists(educations.length > 0);
-  }, [educations]);
+    const fetchUserData = async () => {
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/api/v1/candidates/info/get`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
+      const data = await response.json();
 
-  // Update skillsContentExists whenever skills state changes
-  useEffect(() => {
-    setSkillsContentExists(skills.length > 0);
-  }, [skills]);
-
-  // Update experienceContentExists whenever experiences state changes
-  useEffect(() => {
-    setExperienceContentExists(experiences.length > 0);
-  }, [experiences]);
-
-  // Generalized save functions
-  const handleSaveAbout = () => {
-    updateLocalStorage("aboutMe", aboutMe);
-    setUser((prevUser) => ({ ...prevUser, about: aboutMe }));
-  };
-
-  const handleSaveSocialLinks = () => {
-    const updatedLinks = {
-      linkedin: popupData.linkedin,
-      github: popupData.github,
+      setSkills(data.skills || []);
+      setPersonalProjects(data.personalProjects || []);
+      setSocialLinks(data.socialLinks || []);
     };
-    setSocialLinks(updatedLinks);
-    updateLocalStorage("linkedin", popupData.linkedin);
-    updateLocalStorage("github", popupData.github);
-    setShowPopup(false);
-  };
 
-  const handleSaveCertification = () => {
-    if (popupData.index !== null) {
-      // Editing an existing certification
-      const updatedCertifications = [...certifications];
-      updatedCertifications[popupData.index] = {
-        name: popupData.name,
-        link: popupData.link,
-        issuedDate: popupData.issuedDate,
-      };
-      setCertifications(updatedCertifications);
-      updateLocalStorage("certifications", updatedCertifications);
-    } else {
-      // Adding a new certification
-      const updatedCertifications = [
-        ...certifications,
-        {
-          name: popupData.name,
-          link: popupData.link,
-          issuedDate: popupData.issuedDate,
-        },
-      ];
-      setCertifications(updatedCertifications);
-      updateLocalStorage("certifications", updatedCertifications);
-    }
-
-    setShowPopup(false);
-  };
-
-  const handleSaveEducation = () => {
-    // Log popupData to ensure it's correctly populated
-    console.log(popupData);
-
-    // Validate the date fields
-    if (new Date(popupData.fromDate) > new Date(popupData.toDate)) {
-      alert("From date cannot be later than To date");
-      return; // Prevent saving if the dates are invalid
-    }
-
-    let updatedEducations;
-    if (popupData.index !== null && popupData.index !== undefined) {
-      // Editing an existing education entry
-      updatedEducations = [...educations];
-      updatedEducations[popupData.index] = {
-        name: popupData.name,
-        grade: popupData.grade,
-        fromDate: popupData.fromDate,
-        toDate: popupData.toDate,
-      };
-    } else {
-      // Adding a new education entry
-      updatedEducations = [
-        ...educations,
-        {
-          name: popupData.name,
-          grade: popupData.grade,
-          fromDate: popupData.fromDate,
-          toDate: popupData.toDate,
-        },
-      ];
-    }
-
-    // Update the educations state and localStorage
-    setEducations(updatedEducations);
-    updateLocalStorage("educations", updatedEducations);
-
-    // Close the popup
-    setShowPopup(false);
-  };
-
-  const handleSaveExperience = () => {
-    // Log popupData to ensure it's correctly populated
-    console.log(popupData);
-
-    // Validate the date fields
-    if (new Date(popupData.fromDate) > new Date(popupData.toDate)) {
-      alert("From date cannot be later than To date");
-      return; // Prevent saving if the dates are invalid
-    }
-
-    let updatedExperiences;
-    if (popupData.index !== null && popupData.index !== undefined) {
-      // Editing an existing experience entry
-      updatedExperiences = [...experiences];
-      updatedExperiences[popupData.index] = {
-        company: popupData.company,
-        role: popupData.role,
-        industry: popupData.industry,
-        fromDate: popupData.fromDate,
-        toDate: popupData.toDate,
-      };
-    } else {
-      // Adding a new experience entry
-      updatedExperiences = [
-        ...experiences,
-        {
-          company: popupData.company,
-          role: popupData.role,
-          industry: popupData.industry,
-          fromDate: popupData.fromDate,
-          toDate: popupData.toDate,
-        },
-      ];
-    }
-
-    // Update the experiences state and localStorage
-    setExperiences(updatedExperiences);
-    updateLocalStorage("experiences", updatedExperiences);
-
-    // Close the popup
-    setShowPopup(false);
-  };
-
-  useEffect(() => {
-    const storedEducations =
-      JSON.parse(localStorage.getItem("educations")) || [];
-    setEducations(storedEducations);
+    fetchUserData();
   }, []);
-
-  useEffect(() => {
-    const storedExperiences =
-      JSON.parse(localStorage.getItem("experiences")) || [];
-    setExperiences(storedExperiences);
-  }, []);
-
-  useEffect(() => {
-    const storedSkills = JSON.parse(localStorage.getItem("skills")) || [];
-    setSkills(storedSkills);
-  }, []);
-
-  useEffect(() => {
-    console.log("Educations state updated:", educations);
-  }, [educations]);
-
-  useEffect(() => {
-    console.log("Experiences state updated:", experiences);
-  }, [experiences]);
-
-  useEffect(() => {
-    console.log("Skills state updated:", skills);
-  }, [skills]);
-
-  const handleSaveSkills = () => {
-    if (popupData.index !== null) {
-      // Editing an existing skills entry
-      const updatedSkills = [...skills];
-      updatedSkills[popupData.index] = {
-        skill: popupData.skill,
-        proficiency: popupData.proficiency,
-      };
-      setSkills(updatedSkills);
-      updateLocalStorage("skills", updatedSkills);
-    } else {
-      // Adding a new skills entry
-      const updatedSkills = [
-        ...skills,
-        {
-          skill: popupData.skill,
-          proficiency: popupData.proficiency,
-        },
-      ];
-      setSkills(updatedSkills);
-      updateLocalStorage("skills", updatedSkills);
-    }
-
-    setShowPopup(false);
-  };
 
   const togglePopup = () => {
     setShowPopup(!showPopup);
@@ -347,10 +169,10 @@ const Profile = () => {
     togglePopup();
   };
 
-  const handleAddSkills = () => {
-    setPopupType("Skills");
-    setPopupData({ skill: "", proficiency: "", index: null });
-    togglePopup();
+  const updateParentState = (updatedData) => {
+    setSkills(updatedData.skills || []);
+    setPersonalProjects(updatedData.personalProjects || []);
+    setSocialLinks(updatedData.socialLinks || []);
   };
 
   if (loading) {
@@ -362,20 +184,13 @@ const Profile = () => {
   }
 
   return (
-    <div className="mx-auto mt-12 px-4 flex flex-col lg:flex-row h-full w-full mb-10 sm:ml-4">
+    <div className="mx-auto mt-12 px-4 flex flex-col lg:flex-row h-full w-full mb-2 sm:ml-4">
       <div className="flex flex-col items-center xl:items-start xl:ml-2 xl:px-5 lg:w-max xl:w-1/3 mt-10 xl:mt-5">
         <ProfileCard user={user} className="xl:ml-2 xl:mr-2" />
       </div>
 
       <div className="flex flex-col w-full lg:py-8 xl:w-2/3 mt-1 xl:mt-0 xl:mr-5 space-y-4">
-        <EditableSection
-          user={user}
-          title="About Me"
-          content={aboutMe}
-          onSave={handleSaveAbout}
-          setContent={setAboutMe}
-        />
-
+        <EditableSection user={user} title="About Me" />
         <ProfileSection
           title="Experience"
           onAdd={handleAddExperience}
@@ -418,22 +233,37 @@ const Profile = () => {
 
         <ProfileSection
           title="Skills"
-          onAdd={handleAddSkills}
-          contentExists={skillsContentExists}
+          contentExists={skills.length > 0}
+          onAdd={() => {
+            setPopupType("Skills");
+            setPopupData({ skill: "" });
+            togglePopup();
+            /* Open popup */
+          }}
         >
-          {skillsContentExists ? (
-            <SkillSection
-              skills={skills}
-              setSkills={setSkills}
-              togglePopup={togglePopup}
-              setPopupType={setPopupType}
-              setPopupData={setPopupData}
-            />
-          ) : (
-            <p className="text-gray-500">
-              No skills details available. Add your skills here.
-            </p>
-          )}
+          <SkillSection skills={skills} setSkills={setSkills} />
+        </ProfileSection>
+
+        <ProfileSection
+          title="Personal Projects"
+          onAdd={() => {
+            setPopupType("personalProjects");
+            setPopupData({
+              title: "",
+              description: "",
+              technologiesUsed: "",
+              projectUrl: "",
+              githubRepo: "",
+              index: null,
+            });
+            togglePopup();
+          }}
+          contentExists={personalProjects.length > 0}
+        >
+          <PersonalProjects
+            personalProjects={personalProjects}
+            setPersonalProjects={setPersonalProjects}
+          />
         </ProfileSection>
 
         <ProfileSection
@@ -462,26 +292,39 @@ const Profile = () => {
         <ProfileSection
           title="Social Links"
           onAdd={() => {
-            setPopupType("Social Links");
+            setPopupType("socialLinks");
             setPopupData({
-              linkedin: socialLinks.linkedin,
-              github: socialLinks.github,
-              name: "",
-              link: "",
-              issuedDate: "",
+              linkedin: "",
+              github: "",
+              portfolio: "",
             });
             togglePopup();
-          }}
-          contentExists={socialLinks.linkedin || socialLinks.github}
+          }
+          }
+          contentExists={socialLinks.length > 0}
         >
-          <div className="mt-4">
-            {socialLinks.linkedin || socialLinks.github ? (
-              <SocialLinks socialLinks={socialLinks} />
-            ) : (
-              <p className="text-gray-500">Add your social profiles here</p>
-            )}
-          </div>
+          <SocialLinks
+            socialLinks={socialLinks}
+            setSocialLinks={setSocialLinks}
+          />
         </ProfileSection>
+
+        <div className="p-4 flex flex-col bg-white rounded-lg shadow-lg w-full mt-5 items-center space-y-3">
+          <button
+            className="text-zinc-700 text-xl font-semibold hover:text-zinc-900 transition"
+            onClick={() => setDeleteModal(true)}
+          >
+            Delete Account
+          </button>
+          <div className="w-full border-t border-gray-200"></div>{" "}
+          {/* Separator */}
+          <button
+            className="text-white bg-red-500 px-5 py-2 text-lg rounded-lg font-semibold shadow-md hover:bg-red-600 transition"
+            onClick={handleLogoutConfirm}
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       {showPopup && (
@@ -489,18 +332,17 @@ const Profile = () => {
           type={popupType}
           data={popupData}
           setData={setPopupData}
-          handleSave={
-            popupType === "Social Links"
-              ? handleSaveSocialLinks
-              : popupType === "Education"
-              ? handleSaveEducation
-              : popupType === "Skills"
-              ? handleSaveSkills
-              : popupType === "Experience"
-              ? handleSaveExperience
-              : handleSaveCertification
-          }
           togglePopup={togglePopup}
+          updateParentState={updateParentState}
+        />
+      )}
+
+      {deletemodal && <DeleteAccount onClose={() => setDeleteModal(false)} />}
+
+      {logoutConfirmOpen && (
+        <LogoutConfirmation
+          onConfirm={handleLogoutConfirm}
+          onCancel={handleLogoutCancel}
         />
       )}
     </div>

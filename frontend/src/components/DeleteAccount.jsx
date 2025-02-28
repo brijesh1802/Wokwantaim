@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { Trash2, AlertTriangle } from "lucide-react";
+import { Trash2, AlertTriangle, Lock } from "lucide-react";
 import Loading from "./Loading";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -34,7 +34,8 @@ const DeleteAccount = () => {
         if (!response.ok) throw new Error("Failed to fetch user data");
 
         const data = await response.json();
-        setUser(data);
+        setUser(data.candidate || data.employer);
+        console.log("User Profile:", data.candidate.modeofLogin);
       } catch (error) {
         console.error("Error fetching user profile:", error);
       }
@@ -146,15 +147,20 @@ const DeleteAccount = () => {
                   transition={{ duration: 0.3 }}
                 >
                   <div className="text-center">
-                    <h2 className="text-2xl font-bold text-gray-800">Confirm Deletion</h2>
-                    <p className="mt-3 text-gray-600">Are you sure you want to delete your account?</p>
+                    <h2 className="text-2xl font-bold text-gray-800">
+                      Confirm Deletion
+                    </h2>
+                    <p className="mt-3 text-gray-600">
+                      Are you sure you want to delete your account?
+                    </p>
                   </div>
 
                   <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-5 rounded-md flex items-start space-x-3">
                     <AlertTriangle className="text-yellow-400 w-6 h-6" />
                     <div>
                       <p className="text-sm text-yellow-700">
-                        This action is <strong>permanent</strong> and cannot be undone.
+                        This action is <strong>permanent</strong> and cannot be
+                        undone.
                       </p>
                     </div>
                   </div>
@@ -186,14 +192,19 @@ const DeleteAccount = () => {
                   transition={{ duration: 0.3 }}
                 >
                   <div className="text-center">
-                    <h2 className="text-2xl font-bold text-gray-800">Confirm Deletion</h2>
+                    <h2 className="text-2xl font-bold text-gray-800">
+                      Confirm Deletion
+                    </h2>
                   </div>
 
                   {user?.modeofLogin === "email" ? (
                     <div className="mt-5">
                       <p className="text-sm text-yellow-700 bg-yellow-50 p-3 rounded-md flex items-center space-x-2">
                         <Lock className="text-yellow-500 w-4 h-4" />
-                        <span>For security reasons, please confirm your identity by entering your password.</span>
+                        <span>
+                          For security reasons, please confirm your identity by
+                          entering your password.
+                        </span>
                       </p>
                       <input
                         type="password"
@@ -206,7 +217,10 @@ const DeleteAccount = () => {
                   ) : (
                     <p className="mt-5 text-sm text-yellow-700 bg-yellow-50 p-3 rounded-md flex items-center space-x-2">
                       <AlertTriangle className="text-yellow-500 w-4 h-4" />
-                      <span>Confirm your action by clicking <strong>Yes, Confirm Delete</strong>.</span>
+                      <span>
+                        Confirm your action by clicking{" "}
+                        <strong>Yes, Confirm Delete</strong>.
+                      </span>
                     </p>
                   )}
 

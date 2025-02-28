@@ -139,10 +139,10 @@ function HomePage() {
             onFocus={() => setShowDropDown(filteredSearchJob.length > 0)}
           />
           <button 
-            className="flex items-center px-4 py-3 font-medium text-orange-500 transition-all duration-300 bg-white rounded-full hover:bg-orange-50 hover:shadow-lg"
+            className="flex items-center px-5 py-3 font-medium text-orange-500 mr-1 transition-all duration-300 bg-white rounded-full hover:bg-orange-50 hover:shadow-lg"
             onClick={handleSearch}
           >
-            <Search className="w-5 h-5 mr-2" />
+            <Search className="w-5 h-5 mr-1 stroke-[3]" />
           </button>
         </div>
 

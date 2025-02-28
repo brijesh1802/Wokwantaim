@@ -170,6 +170,7 @@ function HomePage() {
             className="flex-grow px-4 py-3 text-white bg-transparent rounded-full focus:outline-none placeholder-white placeholder-opacity-70"
             name='TitleAndCompany'
             value={searchTerm}
+            autoComplete="false"
             onChange={handleSearchChange}
             onFocus={() => setShowDropDown(filteredSearchJob.length > 0)}
           />

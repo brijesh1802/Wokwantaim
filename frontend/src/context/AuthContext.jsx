@@ -1,11 +1,13 @@
 
 // import { createContext, useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom"; 
+// import { useNavigate } from "react-router-dom";
+// import { isTokenExpired } from "./auth";
 
 // export const AuthContext = createContext();
 
 // export const AuthProvider = ({ children }) => {
 //   const [industry, setIndustry] = useState([]);
+//   const [isTitleEmpty, setIsTitleEmpty] = useState(false);
 //   const storedUserType = localStorage.getItem("userType");
 
 //   const navigate = useNavigate();
@@ -23,6 +25,14 @@
 
 //   const [jobs, setJobs] = useState([]);
 //   useEffect(() => {
+//     if (isTokenExpired()) {
+//       console.log("Token Expired, Logging out");
+//       localStorage.clear();
+//       navigate("/");
+//     } else {
+//       console.log("Token is valid");
+//     }
+
 //     fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/jobs/getAll`)
 //       .then((response) => response.json())
 //       .then((data) => setJobs(data))
@@ -40,8 +50,10 @@
 //   };
 
 //   const logout = () => {
-//     navigate("/")
+//     navigate("/");
+//     // setUserData(null);
 //     localStorage.clear();
+//     window.location.reload();
 //   };
 
 //   useEffect(() => {
@@ -50,8 +62,11 @@
 //     }
 //   }, [storedUserType]);
 
-//   const [selectedRadio,setSelectedRadio]=useState({});
-//   const [checkedOptions,setCheckedOptions]=useState({});
+//   const [selectedRadio, setSelectedRadio] = useState({});
+//   const [checkedOptions, setCheckedOptions] = useState({});
+
+
+
 
 //   const handleJobRoleChange = (e) => {
 //     const { name, value, type, checked } = e.target;
@@ -61,36 +76,31 @@
 //         ...prev,
 //         [name]: value, // Store selected value per category
 //       }));
-      
-//         setcurrentJobRole((prev) => ({
-//             ...prev,
-//             [name]: [value], // Ensure only one value for radio button categories
-//         }));
+
+//       setcurrentJobRole((prev) => ({
+//         ...prev,
+//         [name]: [value], // Ensure only one value for radio button categories
+//       }));
 //     } else if (type === "checkbox") {
-//         setCheckedOptions((prev) => ({
-//             ...prev,
-//             [value]: checked,
-//         }));
-//         console.log('checked options-auth : ',value);
-        
-//         setcurrentJobRole((prev) => ({
-//             ...prev,
-//             [name]: checked
-//                 ? [...(prev[name] || []), value]
-//                 : (prev[name] || []).filter((v) => v !== value),
-//         }));
-//     }
-//     else {
 //       setCheckedOptions((prev) => ({
 //         ...prev,
-//         [value]: !prev[value],
-//     }));
-//         setcurrentJobRole((prev) => ({
-//             ...prev,
-//             [name]: [value],
-//         }));
+//         [value]: checked,
+//       }));
+//       console.log("checked options-auth : ", value);
+
+//       setcurrentJobRole((prev) => ({
+//         ...prev,
+//         [name]: checked
+//           ? [...(prev[name] || []), value]
+//           : (prev[name] || []).filter((v) => v !== value),
+//       }));
+//     } else {
+//       setcurrentJobRole((prev) => ({
+//         ...prev,
+//         [name]: [value],
+//       }));
 //     }
-// };
+//   };
 //   useEffect(() => {
 //     const industryCountMap = new Map();
 //     jobs.forEach((job) => {
@@ -115,7 +125,7 @@
 //     return () => window.removeEventListener("scroll", handleScroll);
 //   }, []);
 //   const [jobRole, setJobRole] = useState([]);
- 
+
 //   const [companyRole, setCompanyRole] = useState([]);
 //   useEffect(() => {
 //     const jobRoles = jobs.map((job) => job.title);
@@ -140,13 +150,19 @@
 //         showScroll,
 //         jobRole,
 //         companyRole,
-//         checkedOptions,setCheckedOptions,selectedRadio,setSelectedRadio
+//         checkedOptions,
+//         setCheckedOptions,
+//         selectedRadio,
+//         setSelectedRadio,
+//         setIsTitleEmpty,
+//         isTitleEmpty
 //       }}
 //     >
 //       {children}
 //     </AuthContext.Provider>
 //   );
 // };
+
 
 import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";

@@ -368,7 +368,7 @@ const JobDetail = () => {
   const location = useLocation();
   const { userType } = useContext(AuthContext);
 
-  const jobId = location.state?.jobs;
+  const jobId = location.state?.jobId;
   const [message, setMessage] = useState("");
   const [showMessage, setShowMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);

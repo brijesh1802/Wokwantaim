@@ -27,9 +27,14 @@ const ProfileSection = ({ title, children, onAdd, contentExists }) => {
         </div>
         <button
           onClick={onAdd}
-          className="text-blue-500 border-2 border-blue-300 p-1"
+          className="text-blue-500 border-none p-1"
+          disabled={contentExists && title === "Social Links"}
         >
-          {contentExists ? "✏️Edit" : "+Add"}
+          {contentExists && title === "Social Links"
+            ? ""
+            : contentExists
+            ? "Add More"
+            : "+Add"}
         </button>
       </div>
 

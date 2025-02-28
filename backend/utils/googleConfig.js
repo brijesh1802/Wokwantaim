@@ -130,7 +130,7 @@ passport.use(new GoogleStrategy({
                 },
                 email: profile.emails[0].value,
                 password: '', 
-                experienceLevel: 'Entry Level',
+                experienceLevel: 'Entry-Level',
                 jobType: 'Full-time',
                 phoneNumber:'',
                 profilePhoto: profilePhotoUpload.url,
@@ -148,7 +148,7 @@ passport.use(new GoogleStrategy({
             await newProfile.save()
         }
 
-        const dashboardURL = `${process.env.VERCEL_URL}/`;
+        const dashboardURL = `${process.env.VERCEL_URL}`;
 
         const subject = "🎉 Welcome to Wokwantaim – Let's Get Started!";
 

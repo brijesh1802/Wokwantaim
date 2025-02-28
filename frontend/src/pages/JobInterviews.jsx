@@ -5,7 +5,7 @@ import CompanySlider from "../components/Home/Interview/CompanySlider";
 
 const JobInterviews = () => {
   return (
-    <section className="py-16 bg-gray-100">
+    <section className="py-16 ">
       <div className="container px-6 mx-auto">
         <h2 className="text-3xl font-bold text-center">
           🚀 Interview Questions By Company

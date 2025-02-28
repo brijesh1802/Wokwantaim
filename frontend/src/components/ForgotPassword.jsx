@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { X } from "lucide-react";
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Mail } from 'lucide-react';
 
 const ForgotPassword = ({ closeModal }) => {
   const [email, setEmail] = useState("");
@@ -66,67 +67,89 @@ const ForgotPassword = ({ closeModal }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-      <div className="relative max-w-full p-8 bg-white rounded-lg shadow-lg sm:w-96">
-        {/* Close Button */}
-        <X
-          className="absolute p-1 text-gray-900 rounded-full top-4 right-4 hover:cursor-pointer hover:bg-gray-200"
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        transition={{ duration: 0.3 }}
+        className="relative w-full max-w-md p-8 bg-white rounded-xl shadow-2xl"
+      >
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          className="absolute top-4 right-4 p-1 text-gray-500 rounded-full hover:bg-gray-100"
           onClick={closeModal}
-        />
+        >
+          <X className="w-6 h-6" />
+        </motion.button>
 
-        {/* Modal Title */}
-        <h2 className="mb-6 text-2xl font-semibold text-gray-800">
-          Forgot Password
-        </h2>
+        <h2 className="mb-6 text-3xl font-bold text-gray-800">Reset Password</h2>
 
-        {/* Input Field */}
-        <div className="relative mb-4">
+        <div className="relative mb-6">
+          <Mail className="absolute top-3 left-3 w-6 h-6 text-gray-400" />
           <input
             type="email"
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full py-2 pl-4 pr-12 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full py-3 pl-12 pr-4 text-gray-700 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             required
           />
         </div>
 
-    
-
-        {/* Submit Button */}
-        <button
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={handleSubmit}
-          className={`w-full py-2 text-white bg-orange-500 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 ${
-            !email ? "opacity-50 cursor-not-allowed" : "hover:bg-orange-600"
+          disabled={!email || loading}
+          className={`w-full py-3 text-white bg-orange-500 rounded-lg transition-colors ${
+            !email || loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-orange-600'
           }`}
-          disabled={!email}
         >
-          {loading ? "Sending..." : "Send Reset Link"}
-        </button>
+          {loading ? (
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+              className="w-6 h-6 border-t-2 border-white rounded-full"
+            />
+          ) : (
+            'Send Reset Link'
+          )}
+        </motion.button>
 
-        {/* Back to Login */}
-        <p className="mt-4 text-sm text-gray-500">
-          Remember your password?{" "}
-          <span
-            className="text-blue-500 cursor-pointer hover:underline"
+        <p className="mt-6 text-sm text-center text-gray-600">
+          Remember your password?{' '}
+          <motion.span
+            whileHover={{ color: '#f97316' }}
+            className="font-medium text-orange-500 cursor-pointer"
             onClick={closeModal}
           >
             Back to Login
-          </span>
+          </motion.span>
         </p>
-      </div>
+      </motion.div>
 
-      {/* Popup Message */}
-      {popup.visible && (
-        <div
-          className={`fixed top-0 left-1/2 transform -translate-x-1/2 mt-10 px-4 py-2 rounded-lg shadow-lg text-white ${
-            popup.isError ? "bg-red-500" : "bg-green-500"
-          }`}
-        >
-          {popup.message}
-        </div>
-      )}
-    </div>
+      <AnimatePresence>
+        {popup.visible && (
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className={`fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-white ${
+              popup.isError ? 'bg-red-500' : 'bg-green-500'
+            }`}
+          >
+            {popup.message}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 };
 

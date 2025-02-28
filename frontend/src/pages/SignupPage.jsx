@@ -10,7 +10,7 @@ function SignupPage() {
 
   return (
     <div className="container max-w-2xl px-4 py-12 mx-auto relative">
-      <h1 className="mb-8 text-3xl font-semibold text-center text-orange-600">
+      <h1 className="mb-8 text-3xl font-semibold text-center ">
         Create An Account
       </h1>
 

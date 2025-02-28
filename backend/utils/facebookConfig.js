@@ -36,7 +36,7 @@ passport.use(new FacebookStrategy({
                 email: profile.emails[0].value,
                 password: '',  
                 profilePhoto: profilePhotoUpload.url,
-                experienceLevel: 'Entry Level',
+                experienceLevel: 'Entry-Level',
                 jobType: 'Full-time',
                 phoneNumber:'',
                 resume:'',
@@ -49,7 +49,7 @@ passport.use(new FacebookStrategy({
             await newProfile.save()
         }
 
-        const dashboardURL = `${process.env.VERCEL_URL}/`;
+        const dashboardURL = `${process.env.VERCEL_URL}`;
 
         const subject = "🎉 Welcome to Wokwantaim – Let's Get Started!";
 

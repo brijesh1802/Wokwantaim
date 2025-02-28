@@ -80,113 +80,91 @@ function ResetPasswordPage() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-      <div className="relative max-w-full p-8 bg-white rounded-lg shadow-lg sm:w-96">
-        {/* Close Button */}
-        <X
-          className="absolute p-1 text-gray-900 rounded-full top-4 right-4 hover:cursor-pointer hover:bg-gray-200"
-          onClick={() => navigate("/login")}
-        />
+  <div className="relative w-full max-w-md p-8 bg-white rounded-xl shadow-2xl">
+    {/* Close Button */}
+    <button
+      className="absolute top-4 right-4 p-1 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors duration-200"
+      onClick={() => navigate("/login")}
+    >
+      <X size={20} />
+    </button>
 
-        {/* Modal Title */}
-        <h2 className="mb-6 text-2xl font-semibold text-gray-800">
-          Reset Password
-        </h2>
+    {/* Modal Title */}
+    <h2 className="mb-6 text-3xl font-bold text-gray-800 text-center">
+      Reset Password
+    </h2>
 
-        {/* Popup Message */}
-        {popup.visible && (
-          <div
-            className={`mb-4 px-4 py-2 rounded-lg shadow-lg text-white ${
-              popup.isError ? "bg-red-500" : "bg-green-500"
-            }`}
-          >
-            {popup.message}
-          </div>
-        )}
-
-        {/* Password Field */}
-        <div className="mt-5">
-          <div className="relative">
-            <input
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type={showPassword ? "text" : "password"}
-              required
-              className="w-full py-2 pl-10 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-              placeholder="Enter your password"
-            />
-            <Lock className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2" />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute text-gray-500 -translate-y-1/2 right-3 top-1/2 hover:text-gray-700"
-            >
-              {showPassword ? (
-                <EyeOff className="w-4 h-4" />
-              ) : (
-                <Eye className="w-4 h-4" />
-              )}
-            </button>
-          </div>
-        </div>
-
-        {/* Confirm Password Field */}
-        <div className="mt-5">
-          <div className="relative">
-            <input
-              id="confirmPassword"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              type={showConfirmPassword ? "text" : "password"}
-              required
-              className="w-full py-2 pl-10 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-              placeholder="Confirm your password"
-            />
-            <Lock className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2" />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute text-gray-500 -translate-y-1/2 right-3 top-1/2 hover:text-gray-700"
-            >
-              {showConfirmPassword ? (
-                <EyeOff className="w-4 h-4" />
-              ) : (
-                <Eye className="w-4 h-4" />
-              )}
-            </button>
-          </div>
-        </div>
-
-        {/* Submit Button */}
-
-        <button
-          onClick={handleSubmit}
-          className={`mt-5 w-full py-2 text-white bg-orange-500 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 ${
-            !password || !confirmPassword
-              ? "opacity-50 cursor-not-allowed"
-              : "hover:bg-orange-600"
-          }`}
-          disabled={!password || !confirmPassword || loading || redirecting}
-        >
-          {!redirecting && !loading ? (
-            "Reset Password"
-          ) : redirecting ? (
-            <div className="flex items-center justify-center">
-              <span className="mr-2">
-                <div className="spinner mr-1"> </div>
-              </span>
-              Redirecting...
-            </div>
-          ) : (
-            <div className="flex items-center justify-center">
-              <span className="mr-2">
-                <div className="spinner mr-1"> </div>
-              </span>
-            </div>
-          )}
-        </button>
+    {/* Popup Message */}
+    {popup.visible && (
+      <div
+        className={`mb-6 px-4 py-3 rounded-lg shadow-md text-white text-center ${
+          popup.isError ? "bg-red-500" : "bg-green-500"
+        }`}
+      >
+        {popup.message}
       </div>
-    </div>
+    )}
+
+    {/* Password Fields */}
+    {["password", "confirmPassword"].map((field, index) => (
+      <div key={field} className={`mt-${index === 0 ? '6' : '4'}`}>
+        <div className="relative">
+          <input
+            id={field}
+            value={field === "password" ? password : confirmPassword}
+            onChange={(e) => field === "password" ? setPassword(e.target.value) : setConfirmPassword(e.target.value)}
+            type={field === "password" ? (showPassword ? "text" : "password") : (showConfirmPassword ? "text" : "password")}
+            required
+            className="w-full py-3 pl-12 pr-10 text-gray-700 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all duration-200"
+            placeholder={field === "password" ? "Enter your password" : "Confirm your password"}
+          />
+          <Lock className="absolute w-5 h-5 text-gray-400 transform -translate-y-1/2 left-4 top-1/2" />
+          <button
+            type="button"
+            onClick={() => field === "password" ? setShowPassword(!showPassword) : setShowConfirmPassword(!showConfirmPassword)}
+            className="absolute text-gray-500 transform -translate-y-1/2 right-3 top-1/2 hover:text-gray-700 focus:outline-none"
+          >
+            {(field === "password" ? showPassword : showConfirmPassword) ? (
+              <EyeOff className="w-5 h-5" />
+            ) : (
+              <Eye className="w-5 h-5" />
+            )}
+          </button>
+        </div>
+      </div>
+    ))}
+
+    {/* Submit Button */}
+    <button
+      onClick={handleSubmit}
+      className={`mt-8 w-full py-3 text-white bg-orange-500 rounded-lg transition-all duration-200 ${
+        !password || !confirmPassword || loading || redirecting
+          ? "opacity-50 cursor-not-allowed"
+          : "hover:bg-orange-600 hover:shadow-lg"
+      }`}
+      disabled={!password || !confirmPassword || loading || redirecting}
+    >
+      {!redirecting && !loading ? (
+        "Reset Password"
+      ) : redirecting ? (
+        <div className="flex items-center justify-center">
+          <span className="mr-2">
+            <div className="spinner mr-1"> </div>
+          </span>
+          Redirecting...
+        </div>
+      ) : (
+        <div className="flex items-center justify-center">
+          <span className="mr-2">
+            <div className="spinner mr-1"> </div>
+          </span>
+          Resetting...
+        </div>
+      )}
+    </button>
+  </div>
+</div>
+
   );
 }
 

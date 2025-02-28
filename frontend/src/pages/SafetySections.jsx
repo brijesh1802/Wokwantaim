@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import {
   FaUserEdit,
   FaUserShield,
@@ -21,7 +22,7 @@ import {
 
 // Static content data
 const safetyContent = {
-  title: "🔐Safety & Security Guidelines",
+  title: "🔐 Safety & Security Guidelines",
   introduction:
     "At WorkWomtaim, your safety and security are paramount. We've created comprehensive guidelines to ensure both job seekers and employers can use our platform with confidence. Please review these important safety measures before proceeding.",
   quickTips:
@@ -154,66 +155,89 @@ const safetyContent = {
 
 // Safety Item Component
 const SafetyItem = ({ icon, title, description }) => (
-  <div className="flex flex-col items-start space-y-2 p-4 bg-gray-50 rounded-md shadow-sm sm:flex-row sm:space-y-0 sm:space-x-4">
+  <motion.div
+    className="flex flex-col items-start space-y-3 p-5 bg-gray-50 rounded-md shadow-sm sm:flex-row sm:space-y-0 sm:space-x-5"
+    whileHover={{ backgroundColor: "#f8fafc" }}
+    transition={{ duration: 0.2 }}
+  >
     <div className="text-gray-700 text-3xl">{icon}</div>
     <div>
-      <h4 className="text-lg font-medium text-gray-900">{title}</h4>
+      <h4 className="text-lg font-semibold text-gray-900">{title}</h4>
       <p className="text-gray-600 text-sm">{description}</p>
     </div>
-  </div>
+  </motion.div>
 );
 
 // Section Component
 const Section = ({ title, items }) => (
-  <div className="p-8 rounded-lg shadow bg-white">
-    <h3 className="text-2xl font-semibold text-gray-900 mb-6 border-b pb-2">
+  <motion.div
+    className="p-6 rounded-lg shadow bg-white"
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.3, delayChildren: 0.2, staggerChildren: 0.1 }}
+  >
+    <h3 className="text-2xl font-semibold text-gray-900 mb-4 pb-2 border-b">
       {title}
     </h3>
-    <div className="space-y-6">
+    <div className="space-y-4">
       {items.map((item, idx) => (
         <SafetyItem key={idx} {...item} />
       ))}
     </div>
-  </div>
+  </motion.div>
 );
 
 // Main Safety Page Component
 const SafetySections = () => {
   return (
-    <section className="max-w-7xl mx-auto px-8 py-14 mt-14">
+    <motion.section
+      className="max-w-7xl mx-auto px-6 py-12 mt-14"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       {/* Header */}
-      <div className="flex justify-center">
-        <h2 className="text-2xl sm:text-3xl md:text-5xl font-semibold text-orange-900 text-center mb-10">
+      <motion.div
+        className="flex justify-center"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-orange-900 text-center mb-8">
           {safetyContent.title}
         </h2>
-      </div>
+      </motion.div>
 
       {/* Introduction */}
-      <div className="text-center max-w-full sm:max-w-3xl md:max-w-5xl lg:max-w-7xl mx-auto mb-8">
-        <p className="text-gray-600 text-justify sm:text-left">
+      <motion.div
+        className="text-center max-w-full sm:max-w-3xl md:max-w-5xl lg:max-w-7xl mx-auto mb-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+      >
+        <p className="text-gray-700 leading-relaxed text-justify sm:text-left">
           {safetyContent.introduction}
         </p>
-      </div>
+      </motion.div>
 
       {/* Quick Tips Banner */}
-      <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-12">
-        <div className="flex">
-          <div className="flex-shrink-0">
-            <FaExclamationTriangle className="h-5 w-5 text-yellow-400" />
-          </div>
-          <div className="ml-3">
-            <p className="text-sm text-yellow-700">{safetyContent.quickTips}</p>
-          </div>
-        </div>
-      </div>
+      <motion.div
+        className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-10 flex items-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
+      >
+        <FaExclamationTriangle className="h-5 w-5 text-yellow-400 mr-3" />
+        <p className="text-sm text-yellow-700">{safetyContent.quickTips}</p>
+      </motion.div>
 
       {/* Content Sections */}
-      <div className="space-y-14">
+      <div className="space-y-8">
         {safetyContent.sections.map((section, index) => (
           <Section key={index} {...section} />
         ))}
       </div>
-    </section>
+    </motion.section>
   );
 };
 

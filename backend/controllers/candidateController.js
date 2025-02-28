@@ -110,6 +110,8 @@ const signup = async (req, res) => {
         
         const verificationURL = `${process.env.VERCEL_URL}/verify-email/${verificationToken}`;
 
+        const dashboardURL = `${process.env.VERCEL_URL}`;
+
         const subject = "🔐 Confirm Your Email Address"
 
         const body = `
@@ -151,7 +153,7 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        return res.status(400).json({ message: 'Please provide email and password' });
+        return res.status(400).json({ message: 'Please provide both email and password' });
     }
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.(com|net|org|edu)$/;
@@ -162,58 +164,65 @@ const login = async (req, res) => {
     try {
         let candidate = await Candidate.findOne({ email });
         if (!candidate) {
-            return res.status(400).json({ message: 'User not found' });
+            return res.status(400).json({ message: 'User not found with the provided email' });
         }
 
         const isMatch = await bcrypt.compare(password, candidate.password);
 
         if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials' });
+            return res.status(400).json({ message: 'Incorrect password' });
         }
 
-        if(!candidate.isVerified) {
+        if (!candidate.isVerified) {
             return res.status(400).json({ message: 'Please verify your email to login' });
         }
-        
 
         const token = jwt.sign(
             { email: candidate.email },
             process.env.JWT_SECRET,
             { expiresIn: "7d", algorithm: "HS256" }
-        );  
-        
+        );
+
         res.json({ message: "Login successful!", token });
 
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error while logging in' });
     }
 };
 
 const update = async (req, res) => {
     try {
-        console.log(req.files);
-        const updates = req.body;
-        const user = await Candidate.findOne({
-            email: req.user.email
-        });
+        const updates = { ...req.body }; // Ensure updates is an object
+        const user = await Candidate.findOne({ email: req.user.email });
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        if (req.files && req.files['profilePhoto']) {
-            const profilePhotoFile = req.files['profilePhoto'][0].buffer;
-            const profilePhotoUpload = await uploadToCloudinary(profilePhotoFile, 'uploads/profilePhotos', 'image');
-            updates.profilePhoto = profilePhotoUpload.url;
+        // Handle Profile Photo Upload
+        if (req.files?.profilePhoto?.length > 0) {
+            try {
+                const profilePhotoFile = req.files.profilePhoto[0].buffer;
+                const profilePhotoUpload = await uploadToCloudinary(profilePhotoFile, 'uploads/profilePhotos', 'image');
+                updates.profilePhoto = profilePhotoUpload.url;
+            } catch (error) {
+                return res.status(500).json({ message: 'Error uploading profile photo' });
+            }
         }
 
-        if (req.files && req.files['resume']) {
-            const resumeFile = req.files['resume'][0].buffer;
-            const resumeUpload = await uploadToCloudinary(resumeFile, 'uploads/resumes', 'pdf');
-            updates.resume = resumeUpload.url;
+        // Handle Resume Upload
+        if (req.files?.resume?.length > 0) {
+            try {
+                const resumeFile = req.files.resume[0].buffer;
+                const resumeUpload = await uploadToCloudinary(resumeFile, 'uploads/resumes', 'pdf');
+                updates.resume = resumeUpload.url;
+            } catch (error) {
+                return res.status(500).json({ message: 'Error uploading resume' });
+            }
         }
 
+        // Update the Profile
         const profile = await Candidate.findOneAndUpdate(
             { _id: user._id },
             { $set: updates },
@@ -222,30 +231,26 @@ const update = async (req, res) => {
 
         if (!profile) {
             return res.status(400).json({ message: 'Error updating profile' });
-        }else{
-            return res.status(200).json({ message: 'Profile updated successfully' });
         }
 
-        res.json(profile);
+        return res.status(200).json({ message: 'Profile updated successfully', profile });
+
     } catch (err) {
-        res.status(500).json({ message: 'Server error while updating profile' });
+        return res.status(500).json({ message: 'Server error while updating profile', error: err.message });
     }
 };
 
 // Profile route
 const profile = async (req, res) => {
     try {
-        
         const userEmail = req.user.email;
 
-        
         const candidate = await Candidate.findOne({ email: userEmail });
 
-        
         if (!candidate) {
             return res.status(404).json({ message: 'Candidate not found' });
         }
-        res.json(candidate);
+        res.status(200).json({ message: 'Profile fetched successfully', candidate });
 
     } catch (err) {
         console.error(err.message);

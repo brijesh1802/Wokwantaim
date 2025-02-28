@@ -1,315 +1,133 @@
-// import React from "react";
-// import { useState, useEffect } from "react";
-// import companyLogo from "../assets/comlogo-1.png";
-// import {
-//     MapPin,
-//   } from "lucide-react";
-// import { useNavigate } from "react-router-dom";
-
-// const JobResults = ({filteredJob}) => {
-//   const navigate=useNavigate();
-//   const [currentPage, setCurrentPage] = useState(1);
-//   const jobsPerPage = 7;
- 
-
-//   const [sortOrder, setSortOrder] = useState("");
-//   const [sortedJobs, setSortedJobs] = useState([...filteredJob]);
-//   const indexOfLastJob = currentPage * jobsPerPage;
-//   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
-//   const currentJobs = sortedJobs.slice(indexOfFirstJob, indexOfLastJob);
-
-//   const totalPages = Math.ceil(filteredJob.length / jobsPerPage);
-
-//   const firstJobIndex = indexOfFirstJob + 1; // Adding 1 to make it 1-based index
-//   const lastJobIndex =
-//     indexOfLastJob > filteredJob.length ? filteredJob.length : indexOfLastJob;
-
-  
-
-//   const handleClick=(jobs)=>{
-//     navigate("/jobdetail",{state:{jobs}})
-//   }
-//   useEffect(() => {
-//     let sortedFilteredJob = [...filteredJob];
-//     if (sortOrder === "ascending") {
-//       sortedFilteredJob.sort((a, b) => a.company.localeCompare(b.company));
-//     } else if (sortOrder === "descending") {
-//       sortedFilteredJob.sort((a, b) => b.company.localeCompare(a.company));
-//     }
-//     setSortedJobs(sortedFilteredJob);
-//   }, [sortOrder, filteredJob]);
-//   console.log("Current jobs",currentJobs)
-//   return (
-//     <div className="flex flex-col mb-10 lg:w-3/4 mt-9 lg:mt-0">
-//       <div className="flex items-center justify-between mx-4 rounded-md lg:bg-gray-100 lg:h-20">
-//         <p className="text-sm px-3">
-//           Showing {firstJobIndex}-{lastJobIndex} of {filteredJob.length} Job Results:
-//         </p>
-
-//         <div>
-//           <span className="text-sm">Sort By : </span>
-//           <select className="text-gray-400 bg-transparent"
-//           value={sortOrder}
-//           onChange={(e)=>{
-//             setSortOrder(e.target.value)
-//           }}>
-//             <option value="" disabled>
-//               Select
-//             </option>
-//             <option value="ascending">A-Z</option>
-//             <option value="decending">Z-A</option>
-//           </select>
-//         </div>
-//       </div>
-
-//       <div className=" flex flex-col items-start justify-start h-full gap-3 py-5 mx-5 mt-3 rounded">
-//         {
-//         currentJobs.length>0?currentJobs.map((job, index) => (
-//           <div
-//             key={index}
-//             className="flex items-start justify-between w-full max-w-3xl p-4 mx-4 my-3 transition bg-white shadow-md hover:shadow-lg"
-//             onClick={() => handleClick(job._id)}
-//           >
-//             {/* Job details */}
-//             <div
-//               className="flex-shrink-0 rounded-lg bg-slate-400 "
-//               style={{
-//                 backgroundImage: `url(${job.companyLogo || companyLogo})`,
-//                 backgroundPosition: "center",
-//                 backgroundSize: "cover",
-//                 height: "60px",
-//                 width: "60px",
-//               }}
-//             ></div>
-
-//             <div className="flex-1 ml-4">
-//               {/* Company and Title */}
-//               <div className="flex items-center justify-between">
-//                 <p className="text-lg font-bold text-gray-800 cursor-pointer hover:text-orange-500">
-//                   {job.company}
-//                 </p>
-//                 <p className="text-sm font-medium text-green-600">
-//                   ₹{job.salary.toLocaleString()} PM
-//                 </p>
-//               </div>
-//               <p className="mt-1 text-base font-medium text-gray-700">
-//                 {job.title}
-//               </p>
-
-//               {/* Location, Experience, Job Type */}
-//               <div className="flex flex-wrap items-center gap-2 mt-2 text-sm text-gray-600">
-//                 <p className="flex items-center">
-//                   <MapPin className="text-orange-500" />
-//                   <span className="ml-1">{job.location}</span>
-//                 </p>
-//                 <p className="text-gray-600">| {job.experienceLevel}</p>
-//                 <p className="text-gray-600">| {job.jobType}</p>
-//               </div>
-
-//               {/* Skills */}
-//               <div className="flex flex-wrap gap-1 mt-2">
-//                 {job.skills.slice(0, 3).map((skill, index) => (
-//                   <span
-//                     key={index}
-//                     className="px-2 py-1 text-xs text-orange-700 bg-orange-100 rounded-full"
-//                   >
-//                     {skill}
-//                   </span>
-//                 ))}
-//                 {job.skills.length > 3 && (
-//                   <span className="px-2 py-1 text-xs text-gray-700 bg-gray-200 rounded-full">
-//                     +{job.skills.length - 3} more
-//                   </span>
-//                 )}
-//               </div>
-//             </div>
-//           </div>
-//         )):
-//         <div className="flex items-center justify-center w-full text-gray-500"><p> No Jobs Found</p></div>}
-//       </div>
-
-//       {/* Pagination Controls */}
-//       <div className="flex justify-center mt-5">
-//         <button
-//           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-//           className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-l-md"
-//           disabled={currentPage === 1}
-//         >
-//           Prev
-//         </button>
-//         <span className="px-4 py-2 bg-gray-100">
-//           {currentPage} of {totalPages}
-//         </span>
-//         <button
-//           onClick={() =>
-//             setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-//           }
-//           className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-r-md"
-//           disabled={currentPage === totalPages}
-//         >
-//           Next
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default JobResults;
-
-//shreya
-
-import React from "react";
-import { useState, useEffect } from "react";
-import companyLogo from "../assets/comlogo-1.png";
-import {
-    MapPin,
-  } from "lucide-react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { MapPin, ChevronLeft, ChevronRight } from "lucide-react";
+import companyLogo from "../assets/comlogo-1.png";
 
-const JobResults = ({filteredJob}) => {
-  const navigate=useNavigate();
+const JobResults = ({ filteredJob }) => {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const jobsPerPage = 7;
- 
-
   const [sortOrder, setSortOrder] = useState("");
-  const [sortedJobs, setSortedJobs] = useState([...filteredJob]);
+  const [sortedJobs, setSortedJobs] = useState([]);
+
+  const jobsPerPage = 7;
   const indexOfLastJob = currentPage * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
   const currentJobs = sortedJobs.slice(indexOfFirstJob, indexOfLastJob);
+  const totalPages = Math.ceil(sortedJobs.length / jobsPerPage);
 
-  const totalPages = Math.ceil(filteredJob.length / jobsPerPage);
-
-  const firstJobIndex = indexOfFirstJob + 1; // Adding 1 to make it 1-based index
-  const lastJobIndex =
-    indexOfLastJob > filteredJob.length ? filteredJob.length : indexOfLastJob;
-
-  
-
-  const handleClick=(jobs)=>{
-    navigate("/jobdetail",{state:{jobs}})
-  }
   useEffect(() => {
-    let sortedFilteredJob = [...filteredJob];
+    let sorted = [...filteredJob];
     if (sortOrder === "ascending") {
-      sortedFilteredJob.sort((a, b) => a.company.localeCompare(b.company));
+      sorted.sort((a, b) => a.company.localeCompare(b.company));
     } else if (sortOrder === "descending") {
-      sortedFilteredJob.sort((a, b) => b.company.localeCompare(a.company));
+      sorted.sort((a, b) => b.company.localeCompare(a.company));
     }
-    setSortedJobs(sortedFilteredJob);
+    setSortedJobs(sorted);
+    setCurrentPage(1);  
   }, [sortOrder, filteredJob]);
-  console.log("Current jobs",currentJobs)
-  return (
-    <div className="flex flex-col mb-10 lg:w-3/4 mt-9 lg:mt-0">
-      <div className="flex items-center justify-between mx-4 rounded-md lg:bg-gray-100 lg:h-20 px-3">
-        <p className="text-sm px-3">
-          Showing {firstJobIndex}-{lastJobIndex} of {filteredJob.length} Job Results:
-        </p>
 
-        <div>
-          <span className="text-sm">Sort By : </span>
-          <select className="text-gray-400 bg-transparent"
-          value={sortOrder}
-          onChange={(e)=>{
-            setSortOrder(e.target.value)
-          }}>
-            <option value="" disabled>
-              Select
-            </option>
+  const handleJobClick = (jobId) => {
+    navigate("/jobdetail", { state: { jobId } });
+  };
+
+  const JobCard = ({ job }) => (
+    <motion.div
+      className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer"
+      whileHover={{ scale: 1.02 }}
+      onClick={() => handleJobClick(job._id)}
+    >
+      <div className="flex items-start space-x-4">
+        <div
+          className="w-16 h-16 rounded-lg bg-slate-200 flex-shrink-0"
+          style={{
+            backgroundImage: `url(${job.companyLogo || companyLogo})`,
+            backgroundPosition: "center",
+            backgroundSize: "cover",
+          }}
+        />
+        <div className="flex-grow">
+          <div className="flex justify-between items-start">
+            <h3 className="text-lg font-bold text-gray-800 hover:text-orange-500 transition-colors">
+              {job.company}
+            </h3>
+            <span className="text-sm font-semibold text-green-600">
+              ₹{job.salary.toLocaleString()} PM
+            </span>
+          </div>
+          <p className="mt-1 text-base font-medium text-gray-700">{job.title}</p>
+          <div className="flex flex-wrap items-center gap-2 mt-2 text-sm text-gray-600">
+            <span className="flex items-center">
+              <MapPin size={16} className="text-orange-500 mr-1" />
+              {job.location}
+            </span>
+            <span>| {job.experienceLevel}</span>
+            <span>| {job.jobType}</span>
+          </div>
+          <div className="flex flex-wrap gap-1 mt-2">
+            {job.skills.slice(0, 3).map((skill, index) => (
+              <span key={index} className="px-2 py-1 text-xs text-orange-700 bg-orange-100 rounded-full">
+                {skill}
+              </span>
+            ))}
+            {job.skills.length > 3 && (
+              <span className="px-2 py-1 text-xs text-gray-700 bg-gray-200 rounded-full">
+                +{job.skills.length - 3} more
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+
+  return (
+    <div className="flex flex-col space-y-6 lg:w-3/4 mt-9 lg:mt-0">
+      <div className="flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-100 rounded-lg">
+        <p className="text-sm text-gray-600 mb-2 sm:mb-0">
+          Showing <span className="font-semibold">{indexOfFirstJob + 1}-{Math.min(indexOfLastJob, sortedJobs.length)}</span> of <span className="font-semibold">{sortedJobs.length}</span> Job Results
+        </p>
+        {/* <div className="flex items-center space-x-2">
+          <span className="text-sm text-gray-600">Sort By:</span>
+          <select
+            className="p-2 text-sm text-gray-700 bg-white rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+          >
+            <option value="">Default</option>
             <option value="ascending">A-Z</option>
             <option value="descending">Z-A</option>
           </select>
-        </div>
+        </div> */}
       </div>
 
-      <div className=" flex flex-col items-start justify-start h-full gap-3 py-5 mx-5 mt-3 rounded">
-        {
-        currentJobs.length>0?currentJobs.map((job, index) => (
-          <div
-            key={index}
-            className="flex items-start justify-between w-full max-w-3xl p-4 mx-4 my-3 transition bg-white shadow-md hover:shadow-lg"
-            onClick={() => handleClick(job._id)}
+      <div className="space-y-4">
+        {currentJobs.map((job, index) => (
+          <JobCard key={index} job={job} />
+        ))}
+      </div>
+
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center space-x-2">
+          <button
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            className="p-2 bg-orange-100 text-orange-600 rounded-full disabled:opacity-50"
+            disabled={currentPage === 1}
           >
-            {/* Job details */}
-            <div
-              className="flex-shrink-0 rounded-lg bg-slate-400 "
-              style={{
-                backgroundImage: `url(${job.companyLogo || companyLogo})`,
-                backgroundPosition: "center",
-                backgroundSize: "cover",
-                height: "60px",
-                width: "60px",
-              }}
-            ></div>
-
-            <div className="flex-1 ml-4">
-              {/* Company and Title */}
-              <div className="flex items-center justify-between">
-                <p className="text-lg font-bold text-gray-800 cursor-pointer hover:text-orange-500">
-                  {job.company}
-                </p>
-                <p className="text-sm font-medium text-green-600">
-                  ₹{job.salary.toLocaleString()} PM
-                </p>
-              </div>
-              <p className="mt-1 text-base font-medium text-gray-700">
-                {job.title}
-              </p>
-
-              {/* Location, Experience, Job Type */}
-              <div className="flex flex-wrap items-center gap-2 mt-2 text-sm text-gray-600">
-                <p className="flex items-center">
-                  <MapPin className="text-orange-500" />
-                  <span className="ml-1">{job.location}</span>
-                </p>
-                <p className="text-gray-600">| {job.experienceLevel}</p>
-                <p className="text-gray-600">| {job.jobType}</p>
-              </div>
-
-              {/* Skills */}
-              <div className="flex flex-wrap gap-1 mt-2">
-                {job.skills.slice(0, 3).map((skill, index) => (
-                  <span
-                    key={index}
-                    className="px-2 py-1 text-xs text-orange-700 bg-orange-100 rounded-full"
-                  >
-                    {skill}
-                  </span>
-                ))}
-                {job.skills.length > 3 && (
-                  <span className="px-2 py-1 text-xs text-gray-700 bg-gray-200 rounded-full">
-                    +{job.skills.length - 3} more
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-        )):
-        <div className="flex items-center justify-center w-full text-gray-500"><p> No Jobs Found</p></div>}
-      </div>
-
-      {/* Pagination Controls */}
-      <div className="flex justify-center mt-5">
-        <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-l-md"
-          disabled={currentPage === 1}
-        >
-          Prev
-        </button>
-        <span className="px-4 py-2 bg-gray-100">
-          {currentPage} of {totalPages}
-        </span>
-        <button
-          onClick={() =>
-            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-          }
-          className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-r-md"
-          disabled={currentPage === totalPages}
-        >
-          Next
-        </button>
-      </div>
+            <ChevronLeft size={20} />
+          </button>
+          <span className="text-sm font-medium text-gray-700">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+            className="p-2 bg-orange-100 text-orange-600 rounded-full disabled:opacity-50"
+            disabled={currentPage === totalPages}
+          >
+            <ChevronRight size={20} />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

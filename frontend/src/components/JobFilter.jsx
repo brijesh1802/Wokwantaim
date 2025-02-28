@@ -1,144 +1,5 @@
-
-
-// import React, { useContext, useEffect, useState } from "react";
-// import {
-//   Calendar,
-//   Briefcase,
-//   HandCoins,
-//   Building2,
-//   PersonStanding,
-//   ChevronUp,
-//   ChevronDown,
-// } from "lucide-react";
-// import { AuthContext } from "../context/AuthContext";
-
-// const JobFilter = ({ industry, location,jobTypes, handleJobRoleChange,selectedRadio,checkedOptions={}}) => {
-//   const filters = [
-//     {
-//       id: "DatePosted",
-//       label: "Date Posted",
-//       icon: <Calendar color="orange" size={30} />,
-//       options: ["Last 24 hours", "Last Week", "Last Month", "Older"],
-//       type: "radio",
-//     },
-//     {
-//       id: "JobTypes",
-//       label: "Job Types",
-//       icon: <Briefcase color="orange" size={30} />,
-//       options: jobTypes,
-//       type: "checkbox",
-//     },
-//     {
-//       id: "Location",
-//       label: "Location",
-//       icon: <Briefcase color="orange" size={30} />,
-//       options: location,
-//       type: "checkbox",
-//     },
-//     {
-//       id: "Salary",
-//       label: "Salary",
-//       icon: <HandCoins color="orange" size={30} />,
-//       options: ["₹10,000 - ₹20,000", "₹20,000 - ₹30,000", "₹30,000 - ₹50,000","Above ₹50,000"],
-//       type: "radio",
-//     },
-//     {
-//       id: "Industry",
-//       label: "Industry",
-//       icon: <Building2 color="orange" size={30} />,
-//       options: industry,
-//       type: "checkbox",
-//     },
-//     {
-//       id: "Experience",
-//       label: "Experience",
-//       icon: <PersonStanding color="orange" size={30} />,
-//       options: ["0-2 years", "3-5 years", "5+ years"],
-//       type: "checkbox",
-//     },
-//   ];
-
-//   const [visibleSection, setVisibleSection] = useState({});
-//   const [showMore, setShowMore] = useState({});
-//   const {selectedIndustry}=useContext(AuthContext)
-
-//   const toggleSection = (id) => {
-//     setVisibleSection((prev) => ({
-//       ...prev,
-//       [id]: !prev[id],
-//     }));
-//   };
-
-//   const toggleShowMore = (id) => {
-//     setShowMore((prev) => ({
-//       ...prev,
-//       [id]: !prev[id],
-//     }));
-//   };
-
-//   return (
-//     <div className="flex flex-col gap-2 px-5 py-5 bg-gray-100 rounded-lg mx-7 lg:w-1/3">
-//       {filters.map(({ id, label, icon, options, type }) => (
-//         <div key={id}>
-//           {/* Section Header */}
-//           <div
-//             onClick={() => toggleSection(id)}
-//             className="flex items-center justify-between w-full h-16 px-10 mb-5 bg-white border-l-4 border-orange-400 shadow-md cursor-pointer"
-//           >
-//             <div className="flex items-center w-full gap-2">
-//               {icon}
-//               <p className="font-mono font-bold">{label}</p>
-//             </div>
-//             <div>{visibleSection[id] ? <ChevronUp /> : <ChevronDown />}</div>
-//           </div>
-
-//           {/* Section Content */}
-//           <div
-//             className={`w-full flex flex-col justify-center items-left px-14 gap-2 ${
-//               visibleSection[id] ? "block" : "hidden"
-//             }`}
-//           >
-//             {Array.isArray(options)
-//               ? options
-//                   .slice(0, showMore[id] ? options.length : 4)
-//                   .map((option, index) => (
-//                     <label key={index} className="flex gap-4 text-lg text-gray-400">
-//                       <input
-//                         type={type}
-//                         name={id}
-//                         value={option}
-//                         checked={ type === "radio"
-//                           ? selectedRadio?.[id] === option
-//                           : type === "checkbox"
-//                           ? Boolean(!!checkedOptions?.[option])
-//                           : false}
-//                         onChange={handleJobRoleChange}
-//                       />
-//                       <span>{option}</span>
-//                     </label>
-//                   ))
-//               : console.error("Expected options to be an array, got:", options)}
-//             {options.length > 4 && (
-//               <button
-//                 className="pt-2 pl-5 text-blue-700 w-fit hover:text-orange-400"
-//                 onClick={() => toggleShowMore(id)}
-//               >
-//                 {showMore[id] ? "View less" : "View more"}
-//               </button>
-//             )}
-//           </div>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default JobFilter;
-
-
-//shreya
-
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar,
   Briefcase,
@@ -148,124 +9,118 @@ import {
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
-import { AuthContext } from "../context/AuthContext";
+
+const FilterSection = ({ id, label, icon, options, type, handleJobRoleChange }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [showAll, setShowAll] = useState(false);
+
+  const toggleSection = () => setIsOpen(!isOpen);
+  const toggleShowAll = () => setShowAll(!showAll);
+
+  const visibleOptions = showAll ? options : options.slice(0, 4);
+
+  return (
+    <div className="mb-4 bg-white rounded-lg shadow-md overflow-hidden">
+      <motion.button
+        className="flex items-center justify-between w-full p-4 text-left focus:outline-none"
+        onClick={toggleSection}
+      >
+        <div className="flex items-center space-x-3">
+          {React.cloneElement(icon, { className: "text-orange-500" })}
+          <span className="font-semibold text-gray-700">{label}</span>
+        </div>
+        <motion.div
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <ChevronDown className="text-gray-500" />
+        </motion.div>
+      </motion.button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="px-4 pb-4"
+          >
+            {visibleOptions.map((option, index) => (
+              <label key={index} className="flex items-center space-x-3 py-2">
+                <input
+                  type={type}
+                  name={id}
+                  value={option}
+                  onChange={handleJobRoleChange}
+                  className="form-checkbox text-orange-500 rounded focus:ring-orange-500"
+                />
+                <span className="text-gray-700">{option}</span>
+              </label>
+            ))}
+            {options.length > 4 && (
+              <button
+                className="mt-2 text-sm text-orange-500 hover:text-orange-600 focus:outline-none"
+                onClick={toggleShowAll}
+              >
+                {showAll ? "Show less" : "Show more"}
+              </button>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 const JobFilter = ({ industry, location,jobTypes, handleJobRoleChange,selectedRadio,checkedOptions={},setVisibleSection,visibleSection}) => {
   const filters = [
     {
       id: "DatePosted",
       label: "Date Posted",
-      icon: <Calendar color="orange" size={30} />,
+      icon: <Calendar />,
       options: ["Last 24 hours", "Last Week", "Last Month", "Older"],
       type: "radio",
     },
     {
-      id: "JobTypes",
-      label: "Job Types",
-      icon: <Briefcase color="orange" size={30} />,
-      options: jobTypes,
-      type: "checkbox",
-    },
-    {
-      id: "Location",
-      label: "Location",
-      icon: <Briefcase color="orange" size={30} />,
-      options: location,
+      id: "JobRoles",
+      label: "Job Role",
+      icon: <Briefcase />,
+      options: jobRole,
       type: "checkbox",
     },
     {
       id: "Salary",
       label: "Salary",
-      icon: <HandCoins color="orange" size={30} />,
-      options: ["₹10,000 - ₹20,000", "₹20,000 - ₹30,000", "₹30,000 - ₹50,000","Above ₹50,000"],
+      icon: <HandCoins />,
+      options: ["₹10,000 - ₹20,000", "₹20,000 - ₹30,000", "₹30,000 - ₹50,000", "Above ₹50,000"],
       type: "radio",
     },
     {
       id: "Industry",
       label: "Industry",
-      icon: <Building2 color="orange" size={30} />,
+      icon: <Building2 />,
       options: industry,
       type: "checkbox",
     },
     {
       id: "Experience",
       label: "Experience",
-      icon: <PersonStanding color="orange" size={30} />,
+      icon: <PersonStanding />,
       options: ["0-2 years", "3-5 years", "5+ years"],
       type: "checkbox",
     },
   ];
 
-  const [showMore, setShowMore] = useState({});
-  const {selectedIndustry}=useContext(AuthContext)
-
-  const toggleSection = (id) => {
-    setVisibleSection((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
-
-  const toggleShowMore = (id) => {
-    setShowMore((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
- 
-console.log("Chjceked Options of IT",checkedOptions["IT"])
   return (
-    <div className="flex flex-col gap-2 px-5 py-5 bg-gray-100 rounded-lg mx-7 lg:w-1/3">
-      {filters.map(({ id, label, icon, options, type }) => (
-        <div key={id}>
-          {/* Section Header */}
-          <div
-            onClick={() => toggleSection(id)}
-            className="flex items-center justify-between w-full h-16 px-10 mb-5 bg-white border-l-4 border-orange-400 shadow-md cursor-pointer"
-          >
-            <div className="flex items-center w-full gap-2">
-              {icon}
-              <p className="font-mono font-bold">{label}</p>
-            </div>
-            <div>{visibleSection[id] ? <ChevronUp /> : <ChevronDown />}</div>
-          </div>
-
-          {/* Section Content */}
-          <div
-            className={`w-full flex flex-col justify-center items-left px-14 gap-2 ${
-              visibleSection[id] ? "block" : "hidden"
-            }`}
-          >
-            {Array.isArray(options)
-              ? options
-                  .slice(0, showMore[id] ? options.length : 4)
-                  .map((option, index) => (
-                    <label key={index} className="flex gap-4 text-lg text-gray-400">
-                      <input
-                        type={type}
-                        name={id}
-                        value={option}
-                        checked={ type === "radio"
-                          ? selectedRadio?.[id] === option
-                          : type === "checkbox"
-                          ? Boolean(checkedOptions?.[option])
-                          : false}
-                        onChange={handleJobRoleChange}
-                      />
-                      <span>{option}</span>
-                    </label>
-                  ))
-              : console.error("Expected options to be an array, got:", options)}
-            {options.length > 4 && (
-              <button
-                className="pt-2 pl-5 text-blue-700 w-fit hover:text-orange-400"
-                onClick={() => toggleShowMore(id)}
-              >
-                {showMore[id] ? "View less" : "View more"}
-              </button>
-            )}
-          </div>
-        </div>
+    <div className="bg-gray-100 p-6 rounded-lg lg:w-1/3">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">Filters</h2>
+      {filters.map((filter) => (
+        <FilterSection
+          key={filter.id}
+          {...filter}
+          handleJobRoleChange={handleJobRoleChange}
+        />
       ))}
     </div>
   );

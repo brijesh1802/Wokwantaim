@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { User, Building2 } from 'lucide-react'
+import { motion } from 'framer-motion'
 import LoginForm from '../components/LoginForm'
 import SocialAuthButtons from '../components/SocialAuthButtons'
 import BacktoHome from '../components/BacktoHome'
@@ -12,29 +13,37 @@ function LoginPage() {
     <div className="container max-w-md px-4 py-12 mx-auto">
       <h1 className="mb-8 text-2xl font-semibold text-center">Login to Your Account</h1>
       
-      <div className="grid grid-cols-2 gap-4 mb-8">
-        <button
-          onClick={() => setUserType('candidate')}
-          className={`flex items-center justify-center gap-2 p-3 border rounded-lg transition-colors ${
-            userType === 'candidate'
-              ? 'border-orange-500 bg-orange-50 text-orange-600'
-              : 'border-gray-200 hover:border-gray-300'
-          }`}
-        >
-          <User className="w-5 h-5" />
-          <span>Candidate</span>
-        </button>
-        <button
-          onClick={() => setUserType('employer')}
-          className={`flex items-center justify-center gap-2 p-3 border rounded-lg transition-colors ${
-            userType === 'employer'
-              ? 'border-orange-500 bg-orange-50 text-orange-600'
-              : 'border-gray-200 hover:border-gray-300'
-          }`}
-        >
-          <Building2 className="w-5 h-5" />
-          <span>Employer</span>
-        </button>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+  <motion.button
+    onClick={() => setUserType('candidate')}
+    className={`flex items-center justify-center gap-3 p-4 border-2 rounded-xl transition-all duration-300 ${
+      userType === 'candidate'
+        ? 'border-orange-500 bg-orange-50 text-orange-600 shadow-md'
+        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+    }`}
+    whileHover={{ scale: 1.03 }}
+    whileTap={{ scale: 0.98 }}
+  >
+    <div className={`p-2 rounded-full ${userType === 'candidate' ? 'bg-orange-100' : 'bg-gray-100'}`}>
+      <User className="w-6 h-6" />
+    </div>
+    <span className="font-semibold text-lg">Candidate</span>
+  </motion.button>
+  <motion.button
+    onClick={() => setUserType('employer')}
+    className={`flex items-center justify-center gap-3 p-4 border-2 rounded-xl transition-all duration-300 ${
+      userType === 'employer'
+        ? 'border-orange-500 bg-orange-50 text-orange-600 shadow-md'
+        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+    }`}
+    whileHover={{ scale: 1.03 }}
+    whileTap={{ scale: 0.98 }}
+  >
+    <div className={`p-2 rounded-full ${userType === 'employer' ? 'bg-orange-100' : 'bg-gray-100'}`}>
+      <Building2 className="w-6 h-6" />
+    </div>
+    <span className="font-semibold text-lg">Employer</span>
+  </motion.button>
       </div>
 
       <LoginForm userType={userType} />

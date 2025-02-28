@@ -1,225 +1,7 @@
-
-// import React, { useState, useEffect, useContext } from "react";
-// import { useNavigate } from "react-router-dom";
-// import Banner from "../components/Banner";
-// import JobFilter from "../components/JobFilter";
-// import JobResults from "../components/JobResults";
-// import { AuthContext } from "../context/AuthContext";
-// import { LogIn, RefreshCcw } from "lucide-react";
-
-// const JobList = () => {
-//   const {
-//     handleJobRoleChange,
-//     currentJobRole,
-//     jobs,
-//     selectedRadio,
-//     checkedOptions,
-//     setSelectedRadio,
-//     setcurrentJobRole,
-//     setCheckedOptions,
-//   } = useContext(AuthContext);
-//   const navigate = useNavigate();
-
-//   const [industry, setIndustry] = useState([]);
-//   const [jobcountry, setCountry] = useState([]);
-//   const [jobRole, setJobRole] = useState([]);
-//   const [jobTypes, setJobTypes] = useState([]);
-
-//   const [filteredJobRole, setFilteredJobRole] = useState([]);
-//   const [searchFilteredJobRole, setSearchFilteredJobRole] = useState([]);
-//   const [title, setTitle] = useState("");
-//   const [location, setLocation] = useState("");
-//   const [jobType, setJobType] = useState("");
-//   const [isRefreshed, setIsRefresh] = useState(false);
-
-//   const handleClick = (jobs) => {
-//     navigate("/jobdetail", { state: { jobs } });
-//   };
-//    useEffect(()=>{
-//     console.log('title ',title);
-
-//    },[title])
-
-//   const handleRefresh = () => {
-//     console.log("checked options :  ", checkedOptions || {});
-//     console.log("selected radio  :  ", selectedRadio);
-//     setIsRefresh(true);
-//     setSelectedRadio("");
-//     setCheckedOptions({});
-//     setcurrentJobRole({
-//       DatePosted: [],
-//       Industry: [],
-//       JobRoles: [],
-//       Salary: [],
-//       Experience: [],
-//       Title: [],
-//       Location: [],
-//       JobType: [],
-//       TitleAndCompany: [],
-//     });
-//     setFilteredJobRole(jobs);
-//     setTitle("");
-//   };
-
-//   const handleSearchChange = () => {
-//     const filteredJobsForSearch = jobs.filter((job) => {
-//       const matchTitle = title
-//         ? job.title.toLowerCase().includes(title.toLowerCase())
-//         : true;
-//       return matchTitle;
-//     });
-//     setSearchFilteredJobRole(filteredJobsForSearch);
-//   };
-
-//   useEffect(() => {
-//     const industries = jobs.map((job) => job.industry);
-//     const countries = jobs.map((job) => job.location);
-//     const jobtypes = jobs.map((job) => job.jobType);
-//     const jobRoles = jobs.map((job) => job.title);
-//     const uniqueIndustriesSet = new Set(industries);
-//     const uniqueJobRolesSet = new Set(jobRoles);
-//     const uniqueCountrySet = new Set(countries);
-//     const uniqueJobTypeSet = new Set(jobtypes);
-//     setIndustry(Array.from(uniqueIndustriesSet));
-//     setJobRole(Array.from(uniqueJobRolesSet));
-//     setCountry(Array.from(uniqueCountrySet));
-//     setJobTypes(Array.from(uniqueJobTypeSet));
-//   }, [jobs]);
-
-// useEffect(() => {
-//   const getDaysDifference = (jobDate) => {
-//     const currentDate = new Date();
-//     const jobDateObj = new Date(jobDate);
-//     const diffTime = currentDate - jobDateObj;
-//     return Math.floor(diffTime / (1000 * 60 * 60 * 24));
-//   };
-
-//   setFilteredJobRole(
-//     (title.trim() !== "" ? searchFilteredJobRole : jobs).filter((job) => {
-//       const daysAgo = getDaysDifference(job.applicationPostedDate);
-
-//       const matchDate =
-//         !currentJobRole.DatePosted.length ||
-//         (currentJobRole.DatePosted.includes("Last 24 hours") &&
-//           daysAgo <= 1) ||
-//         (currentJobRole.DatePosted.includes("Last Week") && daysAgo <= 7) ||
-//         (currentJobRole.DatePosted.includes("Last Month") && daysAgo <= 30) ||
-//         (currentJobRole.DatePosted.includes("Older") && daysAgo > 30);
-
-//         const matchJobType =
-// !currentJobRole.JobTypes?.length ||
-// currentJobRole.JobTypes.includes(job.jobType);
-
-//       const matchTitleAndCompany =
-//         !currentJobRole.TitleAndCompany.length ||
-//         currentJobRole.TitleAndCompany.some(
-//           (role) =>
-//             role.toLowerCase().includes(job.title.toLowerCase()) ||
-//             role.toLowerCase().includes(job.company.toLowerCase())
-//         );
-
-//         const matchLocation =
-//         !currentJobRole.Location.length ||
-//         currentJobRole.Location.some((location) =>
-//           job.location.toLowerCase().includes(location.toLowerCase())
-//         );
-
-//         const matchSalary =
-//         !currentJobRole.Salary.length ||
-//         currentJobRole.Salary.some((range) => {
-//           if (range === "₹10,000 - ₹20,000")
-//             return job.salary >= 10000 && job.salary < 20000;
-//           if (range === "₹20,000 - ₹30,000")
-//             return job.salary >= 20000 && job.salary < 30000;
-//           if (range === "₹30,000 - ₹50,000")
-//             return job.salary >= 30000 && job.salary <= 50000;
-//           if (range === "Above ₹50,000") return job.salary > 20000;
-//           return false;
-//         });
-
-//       const matchIndustry =
-//         !currentJobRole.Industry.length ||
-//         currentJobRole.Industry.includes(job.industry);
-
-//       const matchExperience =
-//         !currentJobRole.Experience.length ||
-//         currentJobRole.Experience.some((range) => {
-//           if (range === "0-2 years")
-//             return job.experienceYearsMin >= 0 && job.experienceYearsMax <= 2;
-//           if (range === "3-5 years")
-//             return job.experienceYearsMin >= 2 && job.experienceYearsMax <= 5;
-//           if (range === "5+ years") return job.experienceYearsMax >= 5;
-//           return false;
-//         });
-
-//       return (
-//         matchDate &&
-//         matchIndustry &&
-//         matchJobType &&
-//         matchSalary &&
-//         matchExperience &&
-//         matchTitleAndCompany &&
-//         matchLocation
-//       );
-//     })
-//   );
-// }, [currentJobRole, jobs, searchFilteredJobRole]);
-
-//   return (
-//     <div>
-//       <div className="gap-4">
-//         {/* Banner Section */}
-//         <Banner />
-//         <div className="px-4 py-8 -mt-10 bg-gray-100 rounded-md lg:mx-8 lg:-mt-16">
-//             <input
-//               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none"
-//               placeholder="Search Job Title"
-//               style={{ fontFamily: "Poppins, sans-serif" }}
-//               value={title}
-//               onChange={(e) => setTitle(e.target.value)}
-//             />
-
-//           {/* Search Button */}
-//           <div className="flex justify-center items-center gap-3 mt-4 ">
-//             <button
-//               className="p-3 w-full text-white transition-all bg-orange-500 rounded-md hover:bg-orange-600"
-//               onClick={handleSearchChange}
-//             >
-//               Find Jobs
-//             </button>
-//             <button className="hover:text-orange-500" onClick={handleRefresh}>
-//               <RefreshCcw />
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-
-//       <div className="flex flex-col lg:flex-row mt-5 lg:p-3">
-//         {/* Filter Section */}
-//         <JobFilter
-//           industry={industry}
-//           location={jobcountry}
-//           jobTypes={jobTypes}
-//           handleJobRoleChange={handleJobRoleChange}
-//           selectedRadio={selectedRadio}
-//           checkedOptions={checkedOptions}
-//         />
-//         {
-//           /* Job Results */
-//           console.log("AuthContext values:", { checkedOptions, selectedRadio })
-//         }
-//         <JobResults filteredJob={filteredJobRole} handleClick={handleClick} />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default JobList;
-
-//shreya
-
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaMapMarkerAlt, FaSearch } from "react-icons/fa"; // For Icons
 import Banner from "../components/Banner";
 import JobFilter from "../components/JobFilter";
 import JobResults from "../components/JobResults";
@@ -242,6 +24,7 @@ const JobList = () => {
     handleJobRoleChange,
   } = useContext(AuthContext);
 
+  const { handleJobRoleChange, currentJobRole, jobs, jobRole } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [industry, setIndustry] = useState([]);
@@ -251,16 +34,34 @@ const JobList = () => {
   const [visibleSection, setVisibleSection] = useState({});
   const [loading, setLoading] = useState(false);
 
+  const [jobcountry, setCountry] = useState([]);
+  const [jobTypes, setJobTypes] = useState([]);
   const [filteredJobRole, setFilteredJobRole] = useState([]);
   const [filteredSearchJobRole, setFilteredSearchJobRole] = useState([]); //filtering main search
   const [title, setTitle] = useState("");
 
+  const [title, setTitle] = useState("");
+  const [location, setLocation] = useState("");
+  const [jobType, setJobType] = useState("");
   const [filteredSearchJob, setFilteredSearchJob] = useState("");
-  const [showDropdown, setShowDropDown] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
+  const dropdownRef = useRef(null); // Ref for click outside
 
-  const handleClick = (jobs) => {
-    navigate("/jobdetail", { state: { jobs } });
+  // Click outside dropdown hook
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleJobClick = (jobId) => {
+    navigate("/jobdetail", { state: { jobId } });
   };
 
   // useEffect(() => {
@@ -293,61 +94,57 @@ const JobList = () => {
     console.log("After Reset:", checkedOptions, selectedRadio); // Debugging
   };
 
+
   const handleSearchTitleChange = (e) => {
     const value = e.target.value;
     setTitle(value);
 
     if (value.trim() === "") {
       setFilteredSearchJob([]);
-      setShowDropDown(false);
+      setShowDropdown(false);
       return;
     }
     const filtered = jobRole.filter((role) =>
       role.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredSearchJob(filtered);
-    setShowDropDown(filtered.length > 0);
+    setShowDropdown(filtered.length > 0);
   };
+
   const handleDropdownSelect = (jobTitle) => {
     setTitle(jobTitle);
     setFilteredSearchJob([]);
-    setShowDropDown(false);
-    console.log(searchTerm);
+    setShowDropdown(false);
+    console.log(title);
   };
 
-  // Handle search input change
   const handleSearchChange = () => {
-    setLoading(true)
-      setTimeout(()=>
-      {
-        setLoading(false)
-      
-      },500)
-    setIsTitleEmpty(title.trim()==="")
-    console.log("searching for : ", { title });
+    console.log("searching for : ", { title, location, jobType });
     const filteredJobs = jobs.filter((job) => {
       const matchTitle = title
         ? job.title.toLowerCase().includes(title.toLowerCase())
         : true;
-      return matchTitle;
+      const matchLocation = location
+        ? job.location.toLowerCase().includes(location.toLowerCase())
+        : true;
+      const matchJobType = jobType
+        ? job.jobType.toLowerCase().includes(jobType.toLowerCase())
+        : true;
+
+      return matchTitle && matchLocation && matchJobType;
     });
     console.log("filtered jobs: ", { filteredJobs });
-    setFilteredSearchJobRole(filteredJobs);
+    setFilteredJobRole(filteredJobs);
   };
 
   useEffect(() => {
-    const industries = jobs.map((job) => job.industry);
-    const countries = jobs.map((job) => job.location);
-    const jobtypes = jobs.map((job) => job.jobType);
+    const industries = [...new Set(jobs.map((job) => job.industry))];
+    const countries = [...new Set(jobs.map((job) => job.location))];
+    const jobtypes = [...new Set(jobs.map((job) => job.jobType))];
 
-    const uniqueIndustriesSet = new Set(industries);
-
-    const uniqueCountrySet = new Set(countries);
-    const uniqueJobTypeSet = new Set(jobtypes);
-    setIndustry(Array.from(uniqueIndustriesSet));
-
-    setCountry(Array.from(uniqueCountrySet));
-    setJobTypes(Array.from(uniqueJobTypeSet));
+    setIndustry(industries);
+    setCountry(countries);
+    setJobTypes(jobtypes);
   }, [jobs]);
 
   useEffect(() => {
@@ -401,95 +198,114 @@ const JobList = () => {
             return false;
           });
 
-        const matchTitleAndCompany =
-          !currentJobRole.TitleAndCompany.length ||
-          currentJobRole.TitleAndCompany.some(
-            (role) =>
-              role.toLowerCase().includes(job.title.toLowerCase()) ||
-              role.toLowerCase().includes(job.company.toLowerCase())
-          );
-
-        const matchExperience =
-          !currentJobRole.Experience.length ||
-          currentJobRole.Experience.some((range) => {
-            if (range === "0-2 years")
-              return job.experienceYearsMin >= 0 && job.experienceYearsMax <= 2;
-            if (range === "3-5 years")
-              return job.experienceYearsMin >= 2 && job.experienceYearsMax <= 5;
-            if (range === "5+ years") return job.experienceYearsMax >= 5;
-            return false;
-          });
-
         return (
-          matchDate &&
-          matchIndustry &&
-          matchJobType &&
-          matchSalary &&
-          matchExperience &&
-          matchTitleAndCompany &&
-          matchLocation
+          matchDate && matchIndustry && matchJobRole && matchSalary
         );
       })
     );
-  }, [currentJobRole, jobs, filteredSearchJobRole]);
+  }, [currentJobRole, jobs]);
 
   console.log(currentJobRole);
-  console.log("Filtered jobs", filteredJobRole);
-  console.log("Filtered Seach Job role", filteredSearchJobRole);
-  console.log("in main", checkedOptions, selectedRadio);
-
-  useEffect(() => {
-    console.log("filteredjobrole : ", filteredJobRole);
-  }, [filteredJobRole]);
 
   return (
-    <div>
-      <div className="gap-4">
-        {/* Banner Section */}
-        <Banner />
-        <div className="px-4 py-8 -mt-10 bg-gray-100 rounded-md lg:mx-8 lg:-mt-16 md:shadow-xl">
-          <div className=" relative flex flex-col flex-wrap w-full gap-4 text-lg md:flex-row justify-evenly">
-            <div className="relative w-full">
-              <input
-                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none"
-                placeholder="Search Job Title"
-                value={title}
-                style={{ fontFamily: "Poppins, sans-serif" }}
-                onChange={handleSearchTitleChange}
-              />
-              {showDropdown && (
-                <div className="absolute left-0 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto z-50 top-full mt-1">
-                  {filteredSearchJob.map((jobTitle, index) => (
-                    <div
-                      key={index}
-                      className="p-2 cursor-pointer hover:bg-gray-200"
-                      onClick={() => handleDropdownSelect(jobTitle)}
-                    >
-                      {jobTitle}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-          <p className={`text-red-500 text-md font-medium ${isTitleEmpty?"block":"hidden"} `}>Job title cannot be empty. Please enter a title to search!</p>
-          {/* Search Button */}
-          <div className="flex justify-center mt-4 md:mx-40 gap-3">
-            <button
-              className={`w-full p-3 text-white transition-all bg-orange-500 rounded-md hover:bg-orange-600 ${isTitleEmpty?'bg-orange-600':""}`}
-              onClick={handleSearchChange}
-            >
-              Find Jobs
-            </button>
-            <button className="hover:text-orange-500" onClick={handleRefresh}>
-              <RefreshCcw />{" "}
-            </button>
-          </div>
-        </div>
-      </div>
+    <motion.div
+      className="min-h-screen bg-gray-50"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      {/* Banner Section */}
+      <Banner />
 
-      <div className="flex flex-col lg:flex-row mt-16 lg:p-3 ">
-        {/* Filter Section */}
+      {/* Search and Filter Section */}
+      <motion.div
+  className="container w-3/4 mx-auto px-4 py-8 mt-8 rounded-lg shadow-md bg-white/90"
+  initial={{ y: -20, opacity: 0 }}
+  animate={{ y: 0, opacity: 1 }}
+  transition={{ duration: 0.5 }}
+>
+  <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+    <motion.div
+      className="flex-grow relative"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+    >
+      <input
+        className="w-full p-3 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+        placeholder="Search Job Title"
+        value={title}
+        onChange={handleSearchTitleChange}
+      />
+      <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+      {showDropdown && (
+        <motion.div
+          ref={dropdownRef}
+          className="absolute left-0 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto z-50 mt-1"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
+          transition={{ duration: 0.2 }}
+        >
+          {filteredSearchJob.map((jobTitle, index) => (
+            <motion.div
+              key={index}
+              className="p-2 cursor-pointer hover:bg-gray-200"
+              onClick={() => handleDropdownSelect(jobTitle)}
+              whileHover={{ backgroundColor: "rgba(249, 250, 251, 0.8)" }}
+              transition={{ duration: 0.1 }}
+            >
+              {jobTitle}
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
+    </motion.div>
+
+    <motion.select
+      className="w-full md:w-1/4 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+      value={location}
+      onChange={(e) => setLocation(e.target.value)}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5, delay: 0.4 }}
+    >
+      <option value="" disabled>Select Country</option>
+      {jobcountry.map((country, index) => (
+        <option key={index} value={country}>{country}</option>
+      ))}
+    </motion.select>
+
+    <motion.select
+      className="w-full md:w-1/4 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+      value={jobType}
+      onChange={(e) => setJobType(e.target.value)}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5, delay: 0.6 }}
+    >
+      <option value="" disabled>Select Job Type</option>
+      {jobTypes.map((jobType, index) => (
+        <option key={index} value={jobType}>{jobType}</option>
+      ))}
+    </motion.select>
+  </div>
+
+  <motion.button
+    className="w-full p-3 mt-4 text-white bg-orange-500 rounded-md hover:bg-orange-600 flex items-center justify-center space-x-2"
+    onClick={handleSearchChange}
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.98 }}
+  >
+    <FaSearch /> <span>Find Jobs</span>
+  </motion.button>
+      </motion.div>
+
+
+
+      {/* Job Listings and Filters */}
+      <div className="container mx-auto px-4 mt-8 flex">
         <JobFilter
           industry={industry}
           location={jobcountry}
@@ -500,11 +316,12 @@ const JobList = () => {
           visibleSection={visibleSection}
           setVisibleSection={setVisibleSection}
         />
-        {/* Job Results */}
-        {loading?<div className="w-3/4 text-center text-lg font-semibold text-gray-500 mt-7 mb-7">Searching...</div>:(
-          <JobResults filteredJob={filteredJobRole} handleClick={handleClick} loading={loading} />)}
+        <JobResults
+          filteredJob={filteredJobRole}
+          handleClick={handleJobClick}
+        />
       </div>
-    </div>
+    </motion.div>
   );
 };
 

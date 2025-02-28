@@ -5,8 +5,6 @@ import { FaMapMarkerAlt, FaSearch } from "react-icons/fa"; // For Icons
 import Banner from "../components/Banner";
 import JobFilter from "../components/JobFilter";
 import JobResults from "../components/JobResults";
-import { RefreshCcw } from "lucide-react";
-
 import { AuthContext } from "../context/AuthContext";
 
 const JobList = () => {
@@ -22,6 +20,7 @@ const JobList = () => {
   const [jobType, setJobType] = useState("");
   const [filteredSearchJob, setFilteredSearchJob] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const dropdownRef = useRef(null); // Ref for click outside
 
@@ -65,6 +64,13 @@ const JobList = () => {
   };
 
   const handleSearchChange = () => {
+    handleRefresh(false)
+    setLoading(true)
+      setTimeout(()=>
+      {
+        setLoading(false)
+      
+      },500)
     console.log("searching for : ", { title, location, jobType });
     const filteredJobs = jobs.filter((job) => {
       const matchTitle = title
@@ -104,21 +110,14 @@ const JobList = () => {
       const diffTime = currentDate - jobDateObj;
       return Math.floor(diffTime / (1000 * 60 * 60 * 24));
     };
-    if (title.trim() !== "") {
-      setcurrentJobRole((prev) => ({
-        ...prev,
-        TitleAndCompany: [],
-      }));
-    }
+
     setFilteredJobRole(
-   
-      (title.trim() !== "" ? filteredSearchJobRole : jobs).filter((job) => {
+      jobs.filter((job) => {
         const daysAgo = getDaysDifference(job.applicationPostedDate);
 
         const matchDate =
           !currentJobRole.DatePosted.length ||
-          (currentJobRole.DatePosted.includes("Last 24 hours") &&
-            daysAgo <= 1) ||
+          (currentJobRole.DatePosted.includes("Last 24 hours") && daysAgo <= 1) ||
           (currentJobRole.DatePosted.includes("Last Week") && daysAgo <= 7) ||
           (currentJobRole.DatePosted.includes("Last Month") && daysAgo <= 30) ||
           (currentJobRole.DatePosted.includes("Older") && daysAgo > 30);
@@ -127,14 +126,10 @@ const JobList = () => {
           !currentJobRole.Industry.length ||
           currentJobRole.Industry.includes(job.industry);
 
-        const matchJobType =
-          !currentJobRole.JobTypes?.length ||
-          currentJobRole.JobTypes.includes(job.jobType);
-
-        const matchLocation =
-          !currentJobRole.Location.length ||
-          currentJobRole.Location.some((location) =>
-            job.location.toLowerCase().includes(location.toLowerCase())
+        const matchJobRole =
+          !currentJobRole.JobRoles.length ||
+          currentJobRole.JobRoles.some((role) =>
+            job.title.toLowerCase().includes(role.toLowerCase())
           );
 
         const matchSalary =
@@ -260,18 +255,12 @@ const JobList = () => {
       <div className="container mx-auto px-4 mt-8 flex">
         <JobFilter
           industry={industry}
-          location={jobcountry}
-          jobTypes={jobTypes}
+          jobRole={jobRole}
           handleJobRoleChange={handleJobRoleChange}
-          selectedRadio={selectedRadio}
-          checkedOptions={checkedOptions}
-          visibleSection={visibleSection}
-          setVisibleSection={setVisibleSection}
         />
-        <JobResults
-          filteredJob={filteredJobRole}
-          handleClick={handleJobClick}
-        />
+          {/* Job Results */}
+          {loading?<div className="w-3/4 text-center text-lg font-semibold text-gray-500 mt-7 mb-7">Searching...</div>:(
+          <JobResults filteredJob={filteredJobRole} handleClick={handleClick} loading={loading} />)}
       </div>
     </motion.div>
   );

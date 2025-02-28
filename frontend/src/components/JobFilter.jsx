@@ -10,7 +10,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 
-const FilterSection = ({ id, label, icon, options, type, handleJobRoleChange }) => {
+const FilterSection = ({ id, label, icon, options, type, handleJobRoleChange}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showAll, setShowAll] = useState(false);
 
@@ -73,7 +73,7 @@ const FilterSection = ({ id, label, icon, options, type, handleJobRoleChange }) 
   );
 };
 
-const JobFilter = ({ industry, location,jobTypes, handleJobRoleChange,selectedRadio,checkedOptions={},setVisibleSection,visibleSection}) => {
+const JobFilter = ({ industry, location,jobTypes, handleJobRoleChange,selectedRadio,checkedOptions={},setVisibleSection,visibleSection,jobRole}) => {
   const filters = [
     {
       id: "DatePosted",

@@ -282,7 +282,6 @@ export const AuthProvider = ({ children }) => {
         logout,
         handleJobRoleChange,
         setcurrentJobRole,
-        setcurrentJobRole,
         jobs,
         currentJobRole,
         industry,

@@ -1,8 +1,6 @@
 
 // //message
 // import React, { useState, useEffect, useContext } from "react";
-// import banner from "../assets/banner1.png";
-// import { Link } from "react-router-dom";
 // import companyLogo from "../assets/comlogo-1.png";
 // import { useNavigate, useLocation } from "react-router-dom";
 // import { AuthContext } from "../context/AuthContext";
@@ -56,7 +54,8 @@
 
 //   useEffect(() => {
 //     console.log("message : ", message);
-//   }, [message]);
+//     console.log("Job ID:", jobId);
+//   }, []);
 
 //   const onHandleClick = async () => {
 //     setShowApplied(false);
@@ -78,10 +77,10 @@
 
 //     setLoading(true);
 //     try {
-//         const token = localStorage.getItem("token");
+//         const token = localStorage.getItem("authToken");
 
 //         // 1. Check if the candidate has already applied for this job
-//         const checkResponse = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/applications?jobId=${jobId}`, {
+//         const checkResponse = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/applications/apply/${jobId}`, {
 //             method: "GET",
 //             headers: {
 //                 "Content-Type": "application/json",
@@ -99,7 +98,7 @@
 //             setLoading(false);
 //             return;
 //         }
-
+        
 //         // 2. If no existing application, proceed with applying
 //         const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/applications/apply/${jobId}`, {
 //             method: "POST",
@@ -326,7 +325,6 @@
 
 //message
 import React, { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
 import companyLogo from "../assets/comlogo-1.png";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
@@ -380,11 +378,13 @@ const JobDetail = () => {
 
   useEffect(() => {
     console.log("message : ", message);
-  }, [message]);
+    console.log("Job ID:", jobId);
+    console.log('isShowApplied',showApplied);
+    
+  }, []);
 
   const onHandleClick = async () => {
     setShowApplied(false);
-
     if (userType !== "candidate") {
         setShowAlert(true);
         setMessage("Login to apply");
@@ -393,7 +393,7 @@ const JobDetail = () => {
 
     const currentDate = new Date();
     if (deadlineDate && currentDate > deadlineDate) {
-        setIsApplied(false);
+        setIsApplied(true);
         setShowApplied(true);
         setMessage("Application is closed!");
         setShowMessage("Deadline for the application exceeded");
@@ -404,15 +404,34 @@ const JobDetail = () => {
     try {
         const token = localStorage.getItem("authToken");
 
-        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/applications/apply/${jobId}`, {
-          method: "POST",
-          headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-          },
-      });
+        // 1. Check if the candidate has already applied for this job
+        const checkResponse = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/applications/apply/${jobId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
 
-      const result = await response.json();
+        const existingApplications = await checkResponse.json();
+
+        if (checkResponse.ok && existingApplications.length > 0) {
+            setMessage("You have already applied for this job");
+            setShowMessage("Your application is already in progress!");
+            setLoading(false);
+            return;
+        }
+        
+        // 2. If no existing application, proceed with applying
+        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/applications/apply/${jobId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        const result = await response.json();
 
         if (response.ok) {
             setIsApplied(true);
@@ -420,23 +439,21 @@ const JobDetail = () => {
             setMessage("Application Submitted");
             setShowMessage("Your application has been successfully submitted!");
         } else {
-            setIsApplied(false);
-            setShowApplied(true);
+            // setIsApplied(false);
+            // setShowApplied(true);
             setShowAlert(true);
             setMessage(result.message || "Failed to apply");
         }
     } catch (error) {
         console.error("Error applying for job:", error);
-        setIsApplied(false);
-        setShowApplied(false);
+        // setIsApplied(false);
+        // setShowApplied(false);
         setShowAlert(true);
         setMessage("An error occurred. Please try again.");
     } finally {
         setLoading(false);
     }
 };
-
-
 
 
   // Close the alert box
@@ -589,7 +606,7 @@ const JobDetail = () => {
               </span>
             </button>
           </div>
-          {showApplied && (
+          {showApplied && isApplied &&(
             <div className="mt-6 flex items-center justify-center">
             <div className={`w-full max-w-md p-5 ${isApplied?'bg-green-50 border border-green-400':'bg-red-100 border border-red-400'}  shadow-lg rounded-lg`}>
               <div className="flex items-center gap-3">
@@ -626,3 +643,5 @@ const JobDetail = () => {
 };
 
 export default JobDetail;
+
+

@@ -31,7 +31,11 @@ passport.use(new GoogleStrategy({
                 },
                 email: profile.emails[0].value,
                 password: '', 
+                experienceLevel: 'Entry-Level',
+                jobType: 'Full-time',
+                phoneNumber:'',
                 profilePhoto: profilePhotoUpload.url,
+                resume:'',
                 gender: profile.gender, 
                 modeofLogin: 'google', 
                 isVerified: true,  
@@ -42,7 +46,7 @@ passport.use(new GoogleStrategy({
             await newProfile.save()
         }
 
-        const dashboardURL = `${process.env.VERCEL_URL}/`;
+        const dashboardURL = `${process.env.VERCEL_URL}`;
 
         const subject = "🎉 Welcome to Wokwantaim – Let's Get Started!";
 
@@ -70,6 +74,9 @@ passport.use(new GoogleStrategy({
                 <p style="color: #888; font-size: 12px;">
                 Need help? <a href="mailto:support@wokwantaim.com" style="color: #007bff; text-decoration: none;">Contact Support</a>
                 </p>
+            </div>
+            <div>
+            <p>If you no longer wish to receive these emails, <a href="${dashboardURL}/unsubscribe">Unsubscribe here</a>.</p>
             </div>
         </div>
         `;

@@ -10,46 +10,46 @@ const signup =  async (req, res) => {
     const { name, phone, email, password, website, joinType } = req.body;
 
     if (!name) {
-        return res.status(400).json({ msg: 'Name is required' });
+        return res.status(400).json({ message: 'Name is required' });
     }
     if (!phone) {
-        return res.status(400).json({ msg: 'Phone is required' });
+        return res.status(400).json({ message: 'Phone is required' });
     }
     if (!email) {
-        return res.status(400).json({ msg: 'Email is required' });
+        return res.status(400).json({ message: 'Email is required' });
     }
     if (!password) {
-        return res.status(400).json({ msg: 'Password is required' });
+        return res.status(400).json({ message: 'Password is required' });
     }
     if (!joinType) {
-        return res.status(400).json({ msg: 'Join type is required' });
+        return res.status(400).json({ message: 'Join type is required' });
     }
     if (!website) {
-        return res.status(400).json({ msg: 'Website is required' });
+        return res.status(400).json({ message: 'Website is required' });
     }
 
     if (name.length < 4) {
-        return res.status(400).json({ msg: 'Name must be at least 4 characters' });
+        return res.status(400).json({ message: 'Name must be at least 4 characters' });
     }
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.(com|net|org|edu)$/;
     if (!emailPattern.test(email)) {
-        return res.status(400).json({ msg: 'Invalid email format' });
+        return res.status(400).json({ message: 'Invalid email format' });
     }
 
     if (phone.length !== 10) {
-        return res.status(400).json({ msg: 'Phone number must be exactly 10 digits' });
+        return res.status(400).json({ message: 'Phone number must be exactly 10 digits' });
     }
     if (phone.startsWith('0')) {
-        return res.status(400).json({ msg: 'Phone number should not start with 0' });
+        return res.status(400).json({ message: 'Phone number should not start with 0' });
     }
     const phonePattern = /^[1-9]\d{9}$/;
     if (!phonePattern.test(phone)) {
-        return res.status(400).json({ msg: 'Invalid phone number format' });
+        return res.status(400).json({ message: 'Invalid phone number format' });
     }
 
     if (password.length < 8) {
-        return res.status(400).json({ msg: 'Password must be at least 6 characters' });
+        return res.status(400).json({ message: 'Password must be at least 6 characters' });
     }
 
     const urlPattern = new RegExp('^(https?:\\/\\/)?(www\\.)?' + // protocol and www
@@ -57,7 +57,7 @@ const signup =  async (req, res) => {
     );
 
     if (!urlPattern.test(website)) {
-        return res.status(400).json({ msg: 'Invalid website URL' });
+        return res.status(400).json({ message: 'Invalid website URL' });
     }
     
 
@@ -65,7 +65,7 @@ const signup =  async (req, res) => {
         let employer = await Employer.findOne({ email });
         let candidate = await Candidate.findOne({ email });
         if (employer || candidate) {
-            return res.status(400).json({ msg: 'Email already exists' });
+            return res.status(400).json({ message: 'Email already exists' });
         }
 
         const hashedpassword = await bcrypt.hash(password, 10);
@@ -87,27 +87,8 @@ const signup =  async (req, res) => {
         // Send verification email
         const verificationURL = `${process.env.VERCEL_URL}/verify-email/${verificationToken}`;
         
-        // const body =   `
-        // <h2 style="color:#333;">Welcome to Our Platform! 🎉</h2>
-        // <p style="font-size:16px;color:#555;">
-        //   Thank you for signing up! To get started, please verify your email address by clicking the button below:
-        // </p>
-        // <p>
-        //   <a href="${verificationURL}" 
-        //      style="display:inline-block;padding:12px 20px;margin:10px 0;font-size:16px;
-        //      color:#fff;background-color:#ff6600;border-radius:5px;text-decoration:none;">
-        //      ✅ Verify My Email
-        //   </a>
-        // </p>
-        // <p style="font-size:14px;color:#777;">
-        //   If you didn't sign up for this account, you can safely ignore this email. If you have any questions, feel free to reach out. 
-        // </p>
-        // <p style="font-size:14px;color:#777;">
-        //   Best Regards, <br> 
-        //   The Support Team 💼
-        // </p>
-        // `
-        // const subject =   "✨ Verify Your Email - Action Required! ✨"
+        const dashboardURL = `${process.env.VERCEL_URL}`;
+        
         const subject = "🔐 Confirm Your Email Address"
 
         const body = `
@@ -130,6 +111,9 @@ const signup =  async (req, res) => {
               Need help? <a href="mailto:support@wokwantaim.com" style="color: #007bff; text-decoration: none;">Contact Support</a>
             </p>
           </div>
+          <div>
+            <p>If you no longer wish to receive these emails, <a href="${dashboardURL}/unsubscribe">Unsubscribe here</a>.</p>
+            </div>
         </div>
         `
         await sendEmail(email, subject, body);
@@ -138,7 +122,7 @@ const signup =  async (req, res) => {
 
 
     } catch (err) {
-        res.status(500).json({ msg: err.message });
+        res.status(500).json({ message: err.message });
     }
 };
 
@@ -147,22 +131,22 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        return res.status(400).json({ msg: 'Please provide email and password' });
+        return res.status(400).json({ message: 'Please provide email and password' });
     }
 
     try {
         let employer = await Employer.findOne({ email });
         if (!employer) {
-            return res.status(400).json({ msg: 'User Not found' });
+            return res.status(400).json({ message: 'User Not found' });
         }
 
         const isMatch = await bcrypt.compare(password, employer.password);
         if (!isMatch) {
-            return res.status(400).json({ msg: 'Invalid credentials' });
+            return res.status(400).json({ message: 'Invalid credentials' });
         }
 
         if(!employer.isVerified) {
-            return res.status(400).json({ msg: 'Please verify your email to login' });
+            return res.status(400).json({ message: 'Please verify your email to login' });
         }
 
         const token = jwt.sign(
@@ -175,7 +159,7 @@ const login = async (req, res) => {
                 
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ msg: 'Server error' });
+        res.status(500).json({ message: 'Server error' });
     }
 };
 
@@ -190,39 +174,81 @@ const profile =  async (req, res) => {
 
         // If candidate not found, return 404 error
         if (!employer) {
-            return res.status(404).json({ msg: 'Candidate not found' });
+            return res.status(404).json({ message: 'Candidate not found' });
         }
         res.json(employer);
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ msg: 'Server error while updating profile' });
+        res.status(500).json({ message: 'Server error while updating profile' });
     }
 }
 
 const verifyEmail = async (req, res) => {
     try {
-        const { token } = req.params;  // Token from the URL
+        const { token } = req.params; 
 
-        // Find the user by the verification token
+        
         const user = await Employer.findOne({ verificationToken: token });
 
         if (!user) {
             return res.status(400).json({ message: "Invalid token or token expired!" });
         }
 
-        // Optional: Check if token has expired
+        const email = user.email;
+
+        
         const tokenExpirationTime = user.tokenExpirationTime || Date.now() + 3600000; // Default: 1 hour
         if (Date.now() > tokenExpirationTime) {
             return res.status(400).json({ message: "Token has expired!" });
         }
 
-        // Mark the user's email as verified
+        
         user.isVerified = true;
-        user.verificationToken = undefined;  // Clear the verification token after use
-        user.tokenExpirationTime = undefined; // Clear expiration time if any
+        user.verificationToken = undefined;  
+        user.tokenExpirationTime = undefined; 
         await user.save();
 
         res.json({ message: "Email verified successfully! You can now log in." });
+
+        const dashboardURL = `${process.env.VERCEL_URL}/login`;
+
+        const subject = "🎉 Welcome to Wokwantaim – Let's Get Started!";
+
+
+        const body = `
+        <div style="font-family: Arial, sans-serif; padding: 40px; background-color: #f4f4f4; text-align: center;">
+            <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <h2 style="color: #333;">Welcome to Wokwantaim 🎉</h2>
+                <p style="color: #555; font-size: 16px; line-height: 1.6;">
+                We're thrilled to have you on board! Wokwantaim is all about connecting people and creating opportunities. Here’s how you can get started:
+                </p>
+                <ul style="text-align: left; color: #555; font-size: 16px; line-height: 1.6; margin: 20px auto; display: inline-block;">
+                    <li>✅ <strong>Complete Your Profile</strong> – Let others know more about you.</li>
+                    <li>🔍 <strong>Explore Opportunities</strong> – Discover new connections and possibilities.</li>
+                    <li>💬 <strong>Engage with the Community</strong> – Stay updated and be part of discussions.</li>
+                </ul>
+                <a href="${dashboardURL}" 
+                style="display: inline-block; padding: 12px 24px; margin-top: 20px; background: #007bff; color: #ffffff; 
+                text-decoration: none; font-size: 16px; font-weight: bold; border-radius: 6px;">
+                🚀 Get Started
+                </a>
+                <p style="color: #888; font-size: 14px; margin-top: 20px;">
+                If you have any questions, feel free to reach out to our support team.
+                </p>
+                <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                <p style="color: #888; font-size: 12px;">
+                Need help? <a href="mailto:support@wokwantaim.com" style="color: #007bff; text-decoration: none;">Contact Support</a>
+                </p>
+            </div>
+            <div>
+            <p>If you no longer wish to receive these emails, <a href="${dashboardURL}/unsubscribe">Unsubscribe here</a>.</p>
+            </div>
+        </div>
+        `;
+
+        await sendEmail(email, subject, body);
+
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: error.message });
@@ -243,17 +269,17 @@ const deleteAccount = async (req, res) => {
         const isMatch = await bcrypt.compare(password, employer.password);
         
         if (!isMatch) {
-            return res.status(400).json({ msg: 'Invalid credentials' });
+            return res.status(400).json({ message: 'Invalid credentials' });
         }
 
         if (!employer) {
-            return res.status(404).json({ msg: 'Employer not found' });
+            return res.status(404).json({ message: 'Employer not found' });
         }
 
         await employer.deleteOne();
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ msg: 'Server error while deleting account' });
+        res.status(500).json({ message: 'Server error while deleting account' });
     }
 }
 

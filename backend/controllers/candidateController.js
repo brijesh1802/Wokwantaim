@@ -14,58 +14,58 @@ const signup = async (req, res) => {
 
        
         if (!firstName) {
-            return res.status(400).json({ msg: 'First name is required' });
+            return res.status(400).json({ message: 'First name is required' });
         }
         if (!lastName) {
-            return res.status(400).json({ msg: 'Last name is required' });
+            return res.status(400).json({ message: 'Last name is required' });
         }
         if (!email) {
-            return res.status(400).json({ msg: 'Email is required' });
+            return res.status(400).json({ message: 'Email is required' });
         }
         if (!password) {
-            return res.status(400).json({ msg: 'Password is required' });
+            return res.status(400).json({ message: 'Password is required' });
         }
         if (!experienceLevel) {
-            return res.status(400).json({ msg: 'Experience level is required' });
+            return res.status(400).json({ message: 'Experience level is required' });
         }
         if (!jobType) {
-            return res.status(400).json({ msg: 'Job type is required' });
+            return res.status(400).json({ message: 'Job type is required' });
         }
         if (!phoneNumber) {
-            return res.status(400).json({ msg: 'Phone number is required' });
+            return res.status(400).json({ message: 'Phone number is required' });
         }
 
         if (firstName.length < 4) {
-            return res.status(400).json({ msg: 'First name must be at least 4 characters' });
+            return res.status(400).json({ message: 'First name must be at least 4 characters' });
         }
 
         const emailPattern = /^[^\s@]+@[^\s@]+\.(com|net|org|edu)$/;
         if (!emailPattern.test(email)) {
-            return res.status(400).json({ msg: 'Invalid email format' });
+            return res.status(400).json({ message: 'Invalid email format' });
         }
 
         if (phoneNumber.length !== 10) {
-            return res.status(400).json({ msg: 'Phone number must be exactly 10 digits' });
+            return res.status(400).json({ message: 'Phone number must be exactly 10 digits' });
         }
         if (phoneNumber.startsWith('0')) {
-            return res.status(400).json({ msg: 'Phone number should not start with 0' });
+            return res.status(400).json({ message: 'Phone number should not start with 0' });
         }
         const phonePattern = /^[1-9]\d{9}$/;
         if (!phonePattern.test(phoneNumber)) {
-            return res.status(400).json({ msg: 'Invalid phone number format' });
+            return res.status(400).json({ message: 'Invalid phone number format' });
         }
 
         if (password.length < 8) {
-            return res.status(400).json({ msg: 'Password must be at least 8 characters' });
+            return res.status(400).json({ message: 'Password must be at least 8 characters' });
         }
 
         const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         if (!passwordPattern.test(password)) {
-            return res.status(400).json({ msg: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character' });
+            return res.status(400).json({ message: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character' });
         }
         
         if (!req.files || !req.files['profilePhoto'] || !req.files['resume']) {
-            return res.status(400).json({ msg: 'Profile photo and resume are required' });
+            return res.status(400).json({ message: 'Profile photo and resume are required' });
         }
 
         const profilePhotoFile = req.files['profilePhoto'][0].buffer;
@@ -79,7 +79,7 @@ const signup = async (req, res) => {
         let employer = await Employer.findOne({ email });
         let candidate = await Candidate.findOne({ email });
         if (employer || candidate) {
-            return res.status(400).json({ msg: 'Email already exists' });
+            return res.status(400).json({ message: 'Email already exists' });
         }
 
         
@@ -110,6 +110,8 @@ const signup = async (req, res) => {
         
         const verificationURL = `${process.env.VERCEL_URL}/verify-email/${verificationToken}`;
 
+        const dashboardURL = `${process.env.VERCEL_URL}`;
+
         const subject = "🔐 Confirm Your Email Address"
 
         const body = `
@@ -132,6 +134,9 @@ const signup = async (req, res) => {
             Need help? <a href="mailto:support@wokwantaim.com" style="color: #007bff; text-decoration: none;">Contact Support</a>
             </p>
         </div>
+        <div>
+        <p>If you no longer wish to receive these emails, <a href="${dashboardURL}/unsubscribe">Unsubscribe here</a>.</p>
+        </div>
         </div>
         `
         await sendEmail(email, subject, body);
@@ -148,63 +153,108 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        return res.status(400).json({ msg: 'Please provide email and password' });
+        return res.status(400).json({ message: 'Please provide both email and password' });
     }
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.(com|net|org|edu)$/;
     if (!emailPattern.test(email)) {
-        return res.status(400).json({ msg: 'Invalid email format' });
+        return res.status(400).json({ message: 'Invalid email format' });
     }
 
     try {
         let candidate = await Candidate.findOne({ email });
         if (!candidate) {
-            return res.status(400).json({ msg: 'User not found' });
+            return res.status(400).json({ message: 'User not found with the provided email' });
         }
 
         const isMatch = await bcrypt.compare(password, candidate.password);
 
         if (!isMatch) {
-            return res.status(400).json({ msg: 'Invalid credentials' });
+            return res.status(400).json({ message: 'Incorrect password' });
         }
 
-        if(!candidate.isVerified) {
-            return res.status(400).json({ msg: 'Please verify your email to login' });
+        if (!candidate.isVerified) {
+            return res.status(400).json({ message: 'Please verify your email to login' });
         }
-        
 
         const token = jwt.sign(
             { email: candidate.email },
             process.env.JWT_SECRET,
             { expiresIn: "7d", algorithm: "HS256" }
-        );  
-        
+        );
+
         res.json({ message: "Login successful!", token });
 
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ msg: 'Server error' });
+        res.status(500).json({ message: 'Server error while logging in' });
+    }
+};
+
+const update = async (req, res) => {
+    try {
+        const updates = { ...req.body }; // Ensure updates is an object
+        const user = await Candidate.findOne({ email: req.user.email });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Handle Profile Photo Upload
+        if (req.files?.profilePhoto?.length > 0) {
+            try {
+                const profilePhotoFile = req.files.profilePhoto[0].buffer;
+                const profilePhotoUpload = await uploadToCloudinary(profilePhotoFile, 'uploads/profilePhotos', 'image');
+                updates.profilePhoto = profilePhotoUpload.url;
+            } catch (error) {
+                return res.status(500).json({ message: 'Error uploading profile photo' });
+            }
+        }
+
+        // Handle Resume Upload
+        if (req.files?.resume?.length > 0) {
+            try {
+                const resumeFile = req.files.resume[0].buffer;
+                const resumeUpload = await uploadToCloudinary(resumeFile, 'uploads/resumes', 'pdf');
+                updates.resume = resumeUpload.url;
+            } catch (error) {
+                return res.status(500).json({ message: 'Error uploading resume' });
+            }
+        }
+
+        // Update the Profile
+        const profile = await Candidate.findOneAndUpdate(
+            { _id: user._id },
+            { $set: updates },
+            { new: true }
+        );
+
+        if (!profile) {
+            return res.status(400).json({ message: 'Error updating profile' });
+        }
+
+        return res.status(200).json({ message: 'Profile updated successfully', profile });
+
+    } catch (err) {
+        return res.status(500).json({ message: 'Server error while updating profile', error: err.message });
     }
 };
 
 // Profile route
 const profile = async (req, res) => {
     try {
-        
         const userEmail = req.user.email;
 
-        
         const candidate = await Candidate.findOne({ email: userEmail });
 
-        
         if (!candidate) {
-            return res.status(404).json({ msg: 'Candidate not found' });
+            return res.status(404).json({ message: 'Candidate not found' });
         }
-        res.json(candidate);
+        res.status(200).json({ message: 'Profile fetched successfully', candidate });
 
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ msg: 'Server error while fetching profile' });
+        res.status(500).json({ message: 'Server error while fetching profile' });
     }
 };
 
@@ -235,7 +285,7 @@ const verifyEmail = async (req, res) => {
 
         res.json({ message: "Email verified successfully! You can now log in." });
 
-        const dashboardURL = `${process.env.VERCEL_URL}/`;
+        const dashboardURL = `${process.env.VERCEL_URL}/login`;
 
         const subject = "🎉 Welcome to Wokwantaim – Let's Get Started!";
 
@@ -264,6 +314,9 @@ const verifyEmail = async (req, res) => {
                 <p style="color: #888; font-size: 12px;">
                 Need help? <a href="mailto:support@wokwantaim.com" style="color: #007bff; text-decoration: none;">Contact Support</a>
                 </p>
+            </div>
+            <div>
+            <p>If you no longer wish to receive these emails, <a href="${dashboardURL}/unsubscribe">Unsubscribe here</a>.</p>
             </div>
         </div>
         `;
@@ -298,13 +351,13 @@ const deleteAccount = async (req, res) => {
         const candidate = await Candidate.findOne({ email: userEmail });
 
         if (!candidate) {
-            return res.status(404).json({ msg: 'Candidate not found' });
+            return res.status(404).json({ message: 'Candidate not found' });
         }
 
         if (candidate.modeofLogin === 'email') {
             const isMatch = await bcrypt.compare(password, candidate.password);
             if (!isMatch) {
-                return res.status(400).json({ msg: 'Invalid credentials' });
+                return res.status(400).json({ message: 'Invalid credentials' });
             }
         }
 
@@ -322,12 +375,12 @@ const deleteAccount = async (req, res) => {
 
         await candidate.deleteOne();
 
-        res.json({ msg: 'Account deleted successfully' });
+        res.json({ message: 'Account deleted successfully' });
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ msg: 'Server error while deleting account' });
+        res.status(500).json({ message: 'Server error while deleting account' });
     }
 };
 
 
-module.exports = { signup, login, profile, verifyEmail, deleteAccount };
+module.exports = { signup, login, profile, verifyEmail, deleteAccount, update };

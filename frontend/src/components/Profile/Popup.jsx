@@ -1,106 +1,157 @@
-const Popup = ({ type, data, setData, handleSave, togglePopup }) => {
-  // Handle inputs based on the type of data (social, certifications, etc.)
-  const handleChange = (e, field) => {
-    const updatedData = { ...data, [field]: e.target.value };
-    setData(updatedData);
+import { useState, useEffect } from "react";
+
+const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const token = localStorage.getItem("authToken");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  // Check if all required fields are filled
   const isSaveDisabled =
-    (type === "Social Links" &&
+    (type === "socialLinks" &&
       !data.linkedin?.trim() &&
-      !data.github?.trim()) ||
-    (type === "Certification" &&
-      (!data.name?.trim() || !data.link?.trim() || !data.issuedDate?.trim())) ||
-    (type === "Education" &&
-      (!data.name?.trim() ||
-        !data.grade?.trim() ||
-        !data.fromDate?.trim() ||
-        !data.toDate?.trim())) ||
-    (type === "Skills" && (!data.skill?.trim() || !data.proficiency?.trim())) ||
-    (type === "Experience" &&
-      (!data.company?.trim() ||
-        !data.role?.trim() ||
-        !data.industry?.trim() ||
-        !data.fromDate?.trim() ||
-        !data.toDate?.trim()));
+      !data.github?.trim() &&
+      !data.portfolio?.trim()) ||
+    (type === "Skills" && !data.skill?.trim()) ||
+    (type === "personalProjects" &&
+      (!data.title?.trim() ||
+        !data.description?.trim() ||
+        !data.technologiesUsed?.trim() ||
+        !data.projectURL?.trim() ||
+        !data.githubRepo?.trim()));
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const fetchUrl = `${
+        import.meta.env.VITE_BASE_URL
+      }/api/v1/candidates/info/get`;
+
+      const fetchResponse = await fetch(fetchUrl, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!fetchResponse.ok) {
+        throw new Error("Failed to fetch existing data");
+      }
+
+      const existingData = await fetchResponse.json();
+
+      const payload = {
+        ...existingData,
+        ...data,
+        skills:
+          type === "Skills"
+            ? [...(existingData.skills || []), data.skill]
+            : existingData.skills,
+        personalProjects:
+          type === "personalProjects"
+            ? [
+                ...(existingData.personalProjects || []),
+                {
+                  title: data.title,
+                  description: data.description,
+                  technologiesUsed: data.technologiesUsed
+                    ? data.technologiesUsed
+                        .split(",")
+                        .map((tech) => tech.trim())
+                    : [],
+                  projectURL: data.projectURL,
+                  githubRepo: data.githubRepo,
+                },
+              ]
+            : existingData.personalProjects,
+        socialLinks:
+          type === "socialLinks"
+            ? [
+                ...(existingData.socialLinks || []),
+                {
+                  linkedin: data.linkedin,
+                  github: data.github,
+                  portfolio: data.portfolio,
+                },
+              ]
+            : existingData.SocialLinks,
+      };
+      console.log(payload);
+
+      const updateUrl = `${
+        import.meta.env.VITE_BASE_URL
+      }/api/v1/candidates/info/update`;
+
+      const updateResponse = await fetch(updateUrl, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!updateResponse.ok) {
+        setError(updateResponse.error || "Failed to update profile");
+      }
+
+      const updatedData = await updateResponse.json();
+
+      setData((prevData) => ({
+        ...prevData,
+        ...updatedData,
+      }));
+      updateParentState(updatedData);
+
+      togglePopup(); // Close popup after saving
+    } catch (error) {
+      console.error("Error saving data:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const renderFormFields = () => {
     switch (type) {
-      case "Social Links":
+      case "socialLinks":
         return (
           <>
             <label className="block mb-2">LinkedIn URL:</label>
             <input
-              type="url"
-              value={data.linkedin}
-              onChange={(e) => handleChange(e, "linkedin")}
+              type="text"
+              name="linkedin"
+              value={data.linkedin || ""}
+              onChange={handleChange}
+              placeholder="https://linkedin.com/in/username"
               className="w-full p-2 border border-gray-300 rounded mb-4"
             />
             <label className="block mb-2">GitHub URL:</label>
             <input
-              type="url"
-              value={data.github}
-              onChange={(e) => handleChange(e, "github")}
+              type="text"
+              name="github"
+              value={data.github || ""}
+              onChange={handleChange}
+              placeholder="https://github.com/username"
               className="w-full p-2 border border-gray-300 rounded mb-4"
             />
-          </>
-        );
-      case "Certification":
-        return (
-          <>
-            <label className="block mb-2">Certification Name:</label>
+            <label className="block mb-2">Personal Portfolio:</label>
             <input
               type="text"
-              value={data.name}
-              onChange={(e) => handleChange(e, "name")}
-              className="w-full p-2 border border-gray-300 rounded mb-4"
-            />
-            <label className="block mb-2">Certification Link:</label>
-            <input
-              type="url"
-              value={data.link}
-              onChange={(e) => handleChange(e, "link")}
-              className="w-full p-2 border border-gray-300 rounded mb-4"
-            />
-            <label className="block mb-2">Issued Date:</label>
-            <input
-              type="date"
-              value={data.issuedDate}
-              onChange={(e) => handleChange(e, "issuedDate")}
-              className="w-full p-2 border border-gray-300 rounded mb-4"
-            />
-          </>
-        );
-      case "Education":
-        return (
-          <>
-            <label className="block mb-2">Institution Name:</label>
-            <input
-              type="text"
-              value={data.name}
-              onChange={(e) => handleChange(e, "name")}
-              className="w-full p-2 border border-gray-300 rounded mb-4"
-            />
-            <label className="block mb-2">Percentage/CGPA:</label>
-            <input
-              type="number"
-              value={data.grade}
-              onChange={(e) => handleChange(e, "grade")}
-              className="w-full p-2 border border-gray-300 rounded mb-4"
-            />
-            <label className="block mb-2">From:</label>
-            <input
-              type="date"
-              value={data.fromDate}
-              onChange={(e) => handleChange(e, "fromDate")}
-              className="w-full p-2 border border-gray-300 rounded mb-4"
-            />
-            <label className="block mb-2">To:</label>
-            <input
-              type="date"
-              value={data.toDate}
-              onChange={(e) => handleChange(e, "toDate")}
+              name="portfolio"
+              value={data.portfolio || ""}
+              onChange={handleChange}
+              placeholder="https://yourportfolio.com"
               className="w-full p-2 border border-gray-300 rounded mb-4"
             />
           </>
@@ -111,55 +162,61 @@ const Popup = ({ type, data, setData, handleSave, togglePopup }) => {
             <label className="block mb-2">Skill:</label>
             <input
               type="text"
-              value={data.skill}
-              onChange={(e) => handleChange(e, "skill")}
-              className="w-full p-2 border border-gray-300 rounded mb-4"
-            />
-            <label className="block mb-2">Proficiency:</label>
-            <input
-              type="text"
-              value={data.proficiency}
-              onChange={(e) => handleChange(e, "proficiency")}
+              name="skill"
+              value={data.skill || ""}
+              onChange={handleChange}
+              placeholder="Enter your skill"
               className="w-full p-2 border border-gray-300 rounded mb-4"
             />
           </>
         );
-      case "Experience":
+      case "personalProjects":
         return (
           <>
-            <label className="block mb-2">Company Name:</label>
+            <label className="block mb-2">Project Title:</label>
             <input
               type="text"
-              value={data.company}
-              onChange={(e) => handleChange(e, "company")}
+              name="title"
+              value={data.title || ""}
+              onChange={handleChange}
+              placeholder="Enter project title"
               className="w-full p-2 border border-gray-300 rounded mb-4"
             />
-            <label className="block mb-2">Role:</label>
+            <label className="block mb-2">Description:</label>
+            <textarea
+              name="description"
+              value={data.description || ""}
+              onChange={handleChange}
+              placeholder="Enter project description"
+              className="w-full p-2 border border-gray-300 rounded mb-4"
+            />
+            <label className="block mb-2">
+              Technologies Used (comma separated):
+            </label>
             <input
               type="text"
-              value={data.role}
-              onChange={(e) => handleChange(e, "role")}
+              name="technologiesUsed"
+              value={data.technologiesUsed || ""}
+              onChange={handleChange}
+              placeholder="e.g., React, Node.js, MongoDB"
               className="w-full p-2 border border-gray-300 rounded mb-4"
             />
-            <label className="block mb-2">Industry:</label>
+            <label className="block mb-2">Project URL:</label>
             <input
               type="text"
-              value={data.industry}
-              onChange={(e) => handleChange(e, "industry")}
+              name="projectURL"
+              value={data.projectURL || ""}
+              onChange={handleChange}
+              placeholder="https://projecturl.com"
               className="w-full p-2 border border-gray-300 rounded mb-4"
             />
-            <label className="block mb-2">From:</label>
+            <label className="block mb-2">GitHub Repository:</label>
             <input
-              type="date"
-              value={data.fromDate}
-              onChange={(e) => handleChange(e, "fromDate")}
-              className="w-full p-2 border border-gray-300 rounded mb-4"
-            />
-            <label className="block mb-2">To:</label>
-            <input
-              type="date"
-              value={data.toDate}
-              onChange={(e) => handleChange(e, "toDate")}
+              type="text"
+              name="githubRepo"
+              value={data.githubRepo || ""}
+              onChange={handleChange}
+              placeholder="https://github.com/username/repo"
               className="w-full p-2 border border-gray-300 rounded mb-4"
             />
           </>
@@ -170,31 +227,36 @@ const Popup = ({ type, data, setData, handleSave, togglePopup }) => {
   };
 
   return (
-    <div className="popup-overlay fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
+    <div className="popup-overlay fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
       <div className="popup-content bg-white p-6 rounded-md shadow-lg w-96">
         <h3 className="text-xl font-semibold mb-4">{type} Details</h3>
 
-        {renderFormFields()}
+        <form onSubmit={handleSave}>
+          {renderFormFields()}
 
-        <div className="flex justify-between">
-          <button
-            onClick={togglePopup}
-            className="px-4 py-2 bg-gray-500 text-white rounded"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSave}
-            disabled={isSaveDisabled}
-            className={`px-4 py-2 rounded ${
-              isSaveDisabled
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-blue-500 text-white"
-            }`}
-          >
-            Save
-          </button>
-        </div>
+          {error && <div className="text-red-500 mb-4">{error}</div>}
+
+          <div className="flex justify-between">
+            <button
+              type="button"
+              onClick={togglePopup}
+              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSaveDisabled || loading}
+              className={`px-4 py-2 rounded transition-colors ${
+                isSaveDisabled || loading
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-blue-500 text-white hover:bg-blue-600"
+              }`}
+            >
+              {loading ? "Saving..." : "Save"}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

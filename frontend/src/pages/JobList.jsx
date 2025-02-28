@@ -1,94 +1,87 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { FaMapMarkerAlt, FaSearch } from "react-icons/fa"; // For Icons
 import Banner from "../components/Banner";
 import JobFilter from "../components/JobFilter";
 import JobResults from "../components/JobResults";
 import { AuthContext } from "../context/AuthContext";
 
 const JobList = () => {
-  const { handleJobRoleChange, currentJobRole, jobs, jobRole } = useContext(AuthContext);
+  const {handleJobRoleChange,currentJobRole,jobs,jobRole}=useContext(AuthContext)
+  // const jobTypes = ["Full-time", "Part-Time", "Contract"]; // Example job type data
   const navigate = useNavigate();
+   
 
   const [industry, setIndustry] = useState([]);
-  const [jobcountry, setCountry] = useState([]);
-  const [jobTypes, setJobTypes] = useState([]);
+  const [jobcountry,setCountry]=useState([])
+  
+  const [jobTypes,setJobTypes]=useState([]);
+  
   const [filteredJobRole, setFilteredJobRole] = useState([]);
-  const [title, setTitle] = useState("");
-  const [location, setLocation] = useState("");
-  const [jobType, setJobType] = useState("");
+
+  const [title,setTitle]=useState("");
+  const [location,setLocation]=useState("");
+  const [jobType,setJobType]=useState("");
+
   const [filteredSearchJob, setFilteredSearchJob] = useState("");
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [showDropdown,setShowDropDown]=useState(false) 
 
-  const dropdownRef = useRef(null); // Ref for click outside
-
-  // Click outside dropdown hook
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowDropdown(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const handleJobClick = (jobId) => {
-    navigate("/jobdetail", { state: { jobId } });
+  const handleClick = (jobs) => {
+    navigate("/jobdetail", { state: { jobs } });
   };
-
   const handleSearchTitleChange = (e) => {
+    
     const value = e.target.value;
     setTitle(value);
 
-    if (value.trim() === "") {
-      setFilteredSearchJob([]);
-      setShowDropdown(false);
-      return;
+    if(value.trim()==="")
+    {
+      setFilteredSearchJob([])
+      setShowDropDown(false)
+      return
     }
-    const filtered = jobRole.filter((role) =>
-      role.toLowerCase().includes(value.toLowerCase())
-    );
+    const filtered = jobRole.filter((role) => role.toLowerCase().includes(value.toLowerCase()));
     setFilteredSearchJob(filtered);
-    setShowDropdown(filtered.length > 0);
+    setShowDropDown(filtered.length > 0);
   };
-
-  const handleDropdownSelect = (jobTitle) => {
+  const handleDropdownSelect=(jobTitle)=>
+  {
     setTitle(jobTitle);
     setFilteredSearchJob([]);
-    setShowDropdown(false);
-    console.log(title);
-  };
+    setShowDropDown(false)
+    console.log(searchTerm)
+  }
 
+  // Handle search input change
   const handleSearchChange = () => {
-    console.log("searching for : ", { title, location, jobType });
+    console.log('searching for : ',{title,location,jobType})
     const filteredJobs = jobs.filter((job) => {
-      const matchTitle = title
-        ? job.title.toLowerCase().includes(title.toLowerCase())
-        : true;
-      const matchLocation = location
-        ? job.location.toLowerCase().includes(location.toLowerCase())
-        : true;
-      const matchJobType = jobType
-        ? job.jobType.toLowerCase().includes(jobType.toLowerCase())
-        : true;
-
+      const matchTitle = title ? job.title.toLowerCase().includes(title.toLowerCase()) : true;
+      const matchLocation = location ? job.location.toLowerCase().includes(location.toLowerCase()) : true;
+      const matchJobType = jobType ? job.jobType.toLowerCase().includes(jobType.toLowerCase()) : true;
+    
       return matchTitle && matchLocation && matchJobType;
     });
-    console.log("filtered jobs: ", { filteredJobs });
-    setFilteredJobRole(filteredJobs);
+    console.log('filtered jobs: ',{filteredJobs})
+    setFilteredJobRole(filteredJobs)
   };
 
-  useEffect(() => {
-    const industries = [...new Set(jobs.map((job) => job.industry))];
-    const countries = [...new Set(jobs.map((job) => job.location))];
-    const jobtypes = [...new Set(jobs.map((job) => job.jobType))];
 
-    setIndustry(industries);
-    setCountry(countries);
-    setJobTypes(jobtypes);
+  
+  useEffect(() => {
+    const industries = jobs.map((job) => job.industry);
+    const countries = jobs.map((job) => job.location);
+    const jobtypes = jobs.map((job) => job.jobType);
+   
+    const uniqueIndustriesSet = new Set(industries);
+  
+    const uniqueCountrySet = new Set(countries);
+    const uniqueJobTypeSet = new Set(jobtypes);
+    setIndustry(Array.from(uniqueIndustriesSet));
+   
+    setCountry(Array.from(uniqueCountrySet));
+    setJobTypes(Array.from(uniqueJobTypeSet));
+    
   }, [jobs]);
 
   useEffect(() => {
@@ -137,125 +130,118 @@ const JobList = () => {
             return false;
           });
 
+          const matchTitleAndCompany =
+          !currentJobRole.TitleAndCompany.length ||
+          currentJobRole.TitleAndCompany.some(
+            (role) =>
+              role.toLowerCase().includes(job.title.toLowerCase()) ||
+              role.toLowerCase().includes(job.company.toLowerCase())
+          );
+
+        const matchExperience =
+          !currentJobRole.Experience.length ||
+          currentJobRole.Experience.some((range) => {
+            if (range === "0-2 years")
+              return job.experienceYearsMin >= 0 && job.experienceYearsMax <= 2;
+            if (range === "3-5 years")
+              return job.experienceYearsMin >= 2 && job.experienceYearsMax <= 5;
+            if (range === "5+ years") return job.experienceYearsMax >= 5;
+            return false;
+          });
+
+        
+
         return (
-          matchDate && matchIndustry && matchJobRole && matchSalary
+          matchDate &&
+          matchIndustry &&
+          matchJobRole &&
+          matchSalary &&
+          matchExperience &&
+          matchTitleAndCompany
         );
       })
     );
   }, [currentJobRole, jobs]);
-
-  console.log(currentJobRole);
-
+console.log(currentJobRole)
   return (
-    <motion.div
-      className="min-h-screen bg-gray-50"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      {/* Banner Section */}
-      <Banner />
-
-      {/* Search and Filter Section */}
-      <motion.div
-  className="container w-3/4 mx-auto px-4 py-8 mt-8 rounded-lg shadow-md bg-white/90"
-  initial={{ y: -20, opacity: 0 }}
-  animate={{ y: 0, opacity: 1 }}
-  transition={{ duration: 0.5 }}
->
-  <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-    <motion.div
-      className="flex-grow relative"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5, delay: 0.2 }}
-    >
-      <input
-        className="w-full p-3 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-        placeholder="Search Job Title"
-        value={title}
-        onChange={handleSearchTitleChange}
-      />
-      <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-      {showDropdown && (
-        <motion.div
-          ref={dropdownRef}
-          className="absolute left-0 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto z-50 mt-1"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 10 }}
-          transition={{ duration: 0.2 }}
-        >
-          {filteredSearchJob.map((jobTitle, index) => (
-            <motion.div
-              key={index}
-              className="p-2 cursor-pointer hover:bg-gray-200"
-              onClick={() => handleDropdownSelect(jobTitle)}
-              whileHover={{ backgroundColor: "rgba(249, 250, 251, 0.8)" }}
-              transition={{ duration: 0.1 }}
+    <div>
+      <div className="gap-4">
+        {/* Banner Section */}
+        <Banner />
+        <div className="px-4 py-8 -mt-10 bg-gray-100 rounded-md lg:mx-8 lg:-mt-16">
+          <div className=" relative flex flex-col flex-wrap w-full gap-4 text-lg md:flex-row justify-evenly">
+            <input
+              className="w-full p-3 border border-gray-300 rounded-md md:w-1/3 focus:outline-none"
+              placeholder="Search Job Title" value={title}
+              style={{ fontFamily: "Poppins, sans-serif" }}
+              onChange={handleSearchTitleChange}
+            />
+          {showDropdown && (
+              <div className="absolute left-0 w-full md:w-1/3 bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto z-50 top-full mt-1">
+                {filteredSearchJob.map((jobTitle, index) => (
+                  <div
+                    key={index}
+                    className="p-2 cursor-pointer hover:bg-gray-200"
+                    onClick={() => handleDropdownSelect(jobTitle)}
+                  >
+                    {jobTitle}
+                  </div>
+                ))}
+              </div>
+            )}
+            <select
+              className="flex-1 w-full p-3 border border-gray-300 rounded-md cursor-pointer md:w-1/4"
+              defaultValue=""
+              style={{ fontFamily: "Poppins, sans-serif" }}
+              onChange={(e)=>setLocation(e.target.value)}
             >
-              {jobTitle}
-            </motion.div>
-          ))}
-        </motion.div>
-      )}
-    </motion.div>
+              <option value="" disabled>
+                Select Country
+              </option >
+              {jobcountry.map((country, index) => (
+                <option key={index} value={country} >
+                  {country}
+                </option>
+              ))}
+            </select>
+            <select
+              className="flex-1 w-full p-3 border border-gray-300 rounded-md md:w-1/4"
+              defaultValue=""
+              style={{ fontFamily: "Poppins, sans-serif" }}
+              onChange={(e)=>setJobType(e.target.value)}
+            >
+              <option value="" disabled>
+                Select Job Type
+              </option>
+              {jobTypes.map((jobType, index) => (
+                <option key={index} value={jobType}>
+                  {jobType}
+                </option>
+              ))}
+            </select>
+          </div>
 
-    <motion.select
-      className="w-full md:w-1/4 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-      value={location}
-      onChange={(e) => setLocation(e.target.value)}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5, delay: 0.4 }}
-    >
-      <option value="" disabled>Select Country</option>
-      {jobcountry.map((country, index) => (
-        <option key={index} value={country}>{country}</option>
-      ))}
-    </motion.select>
+          {/* Search Button */}
+          <div className="flex justify-center mt-4">
+            <button className="w-full p-3 text-white transition-all bg-orange-500 rounded-md md:w-1/3 hover:bg-orange-600"
+            onClick={handleSearchChange}>
+              Find Jobs
+            </button>
+          </div>
+        </div>
+      </div>
 
-    <motion.select
-      className="w-full md:w-1/4 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-      value={jobType}
-      onChange={(e) => setJobType(e.target.value)}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5, delay: 0.6 }}
-    >
-      <option value="" disabled>Select Job Type</option>
-      {jobTypes.map((jobType, index) => (
-        <option key={index} value={jobType}>{jobType}</option>
-      ))}
-    </motion.select>
-  </div>
-
-  <motion.button
-    className="w-full p-3 mt-4 text-white bg-orange-500 rounded-md hover:bg-orange-600 flex items-center justify-center space-x-2"
-    onClick={handleSearchChange}
-    whileHover={{ scale: 1.02 }}
-    whileTap={{ scale: 0.98 }}
-  >
-    <FaSearch /> <span>Find Jobs</span>
-  </motion.button>
-      </motion.div>
-
-
-
-      {/* Job Listings and Filters */}
-      <div className="container mx-auto px-4 mt-8 flex">
+      <div className="flex flex-col lg:flex-row mt-16 lg:p-3">
+        {/* Filter Section */}
         <JobFilter
           industry={industry}
           jobRole={jobRole}
           handleJobRoleChange={handleJobRoleChange}
         />
-        <JobResults
-          filteredJob={filteredJobRole}
-          handleClick={handleJobClick}
-        />
+        {/* Job Results */}
+        <JobResults filteredJob={filteredJobRole} handleClick={handleClick} />
       </div>
-    </motion.div>
+    </div>
   );
 };
 

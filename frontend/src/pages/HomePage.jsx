@@ -135,6 +135,7 @@ function HomePage() {
             name='TitleAndCompany'
             value={searchTerm}
             onChange={handleSearchChange}
+            autoComplete="off"
             onFocus={() => setShowDropDown(filteredSearchJob.length > 0)}
           />
           <button 

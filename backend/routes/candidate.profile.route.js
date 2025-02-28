@@ -27,6 +27,7 @@ router.get('/get', auth, async (req, res) => {
 router.patch('/update', auth, async (req, res) => {
     try {
         const updates = req.body;
+    console.log("Updatibg",updates)
         const user = await Candidate.findOne({
             email : req.user.email
         })

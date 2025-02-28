@@ -192,6 +192,7 @@ const login = async (req, res) => {
 
 const update = async (req, res) => {
     try {
+        console.log(req.files);
         const updates = req.body;
         const user = await Candidate.findOne({
             email: req.user.email

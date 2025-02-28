@@ -113,7 +113,7 @@ function Header() {
         const data = await response.json();
         console.log("Fetched user data:", data);
         // setUserData(data.candidate || data.employer);]
-        setUserData(data);
+        setUserData(data);//RECHECK 
       } catch (error) {
         console.error("Error fetching user data:", error);
       }

@@ -107,7 +107,7 @@ const Profile = () => {
         if (!response.ok) throw new Error("Failed to fetch user data");
 
         const data = await response.json();
-        setUser(data.candidate || data.employer);
+        setUser(data.candidate || data.employer || data);
       } catch (error) {
         console.error("Error fetching user profile:", error);
       } finally {
@@ -299,8 +299,7 @@ const Profile = () => {
               portfolio: "",
             });
             togglePopup();
-          }
-          }
+          }}
           contentExists={socialLinks.length > 0}
         >
           <SocialLinks

@@ -113,7 +113,7 @@ function Header() {
 
         const data = await response.json();
         console.log("Fetched user data:", data);
-        setUserData(data.candidate || data.employer);
+        setUserData(data.candidate || data.employer || data);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -148,16 +148,12 @@ function Header() {
   }, [navOpen]);
 
   const NavLinkWithAnimation = ({ children, ...props }) => (
-    <motion.div
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-    >
+    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
       <NavLink className="block py-2 text-lg hover:text-orange-500" {...props}>
         {children}
       </NavLink>
     </motion.div>
   );
-  
 
   return (
     <>

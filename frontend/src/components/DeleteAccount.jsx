@@ -34,7 +34,7 @@ const DeleteAccount = () => {
         if (!response.ok) throw new Error("Failed to fetch user data");
 
         const data = await response.json();
-        setUser(data.candidate || data.employer);
+        setUser(data.candidate || data.employer || data);
         console.log("User Profile:", data.candidate.modeofLogin);
       } catch (error) {
         console.error("Error fetching user profile:", error);

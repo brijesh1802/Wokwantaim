@@ -246,9 +246,9 @@ const JobApplications = () => {
     navigate('/joblist')
   }
 
-  const handleJobClick = (jobs) => {
-    console.log('job navigation ',jobs)
-    navigate('/jobdetail', { state: { jobs } });
+  const handleJobClick = (jobId) => {
+    console.log('job navigation-jobId ',jobId)
+    navigate('/jobdetail', { state: { jobId } });
   };
   
   useEffect(() => {
@@ -258,7 +258,7 @@ const JobApplications = () => {
   
 
   return (
-    <div className="max-w-6xl mx-auto mt-20 p-6 bg-white shadow-md rounded-lg">
+    <div className="max-w-6xl mx-auto mt-20 p-6 bg-white shadow-md rounded-lg cursor-pointer">
       <div className="flex">
         <p className="hover:text-orange-900 text-orange-500 cursor-pointer font-sans"
         onClick={handleNavClick}><ChevronLeft size={32}/></p>
@@ -316,7 +316,6 @@ const JobApplications = () => {
           <div
             key={index}
             onClick={()=>{handleJobClick(app.jobId)
-              console.log(app.jobId)
             }}
             className="p-4 border bg-gray-50 border-gray-200 rounded-lg shadow-sm py-6  hover:bg-gray-100 hover:scale-[1.01] transition-all"
           >

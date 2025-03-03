@@ -137,18 +137,29 @@ import {
   HandCoins,
   Building2,
   PersonStanding,
-  ChevronUp,
   ChevronDown,
 } from "lucide-react";
 
-const FilterSection = ({ id, label, icon, options, type, handleJobRoleChange,selectedRadio,checkedOptions }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const FilterSection = ({
+  id,
+  label,
+  icon,
+  options,
+  type,
+  handleJobRoleChange,
+  selectedRadio,
+  checkedOptions,
+  activeFilter,
+  setActiveFilter,
+}) => {
+  const isOpen = activeFilter === id;
   const [showAll, setShowAll] = useState(false);
 
-  const toggleSection = () => setIsOpen(!isOpen);
-  const toggleShowAll = () => setShowAll(!showAll);
+  const toggleSection = () => {
+    setActiveFilter(isOpen ? null : id);
+  };
 
-  const visibleOptions = showAll ?  (options || []) : (options || []).slice(0, 4);
+  const visibleOptions = showAll ? options || [] : (options || []).slice(0, 4);
 
   return (
     <div className="mb-4 bg-white rounded-lg shadow-md overflow-hidden">
@@ -183,11 +194,13 @@ const FilterSection = ({ id, label, icon, options, type, handleJobRoleChange,sel
                   type={type}
                   name={id}
                   value={option}
-                  checked={ type === "radio"
-                    ? selectedRadio?.[id] === option
-                    : type === "checkbox"
-                    ? Boolean(checkedOptions?.[option])
-                    : false}
+                  checked={
+                    type === "radio"
+                      ? selectedRadio?.[id] === option
+                      : type === "checkbox"
+                      ? Boolean(checkedOptions?.[option])
+                      : false
+                  }
                   onChange={handleJobRoleChange}
                   autoComplete="false"
                   className="form-checkbox text-orange-500 rounded focus:ring-orange-500"
@@ -198,7 +211,7 @@ const FilterSection = ({ id, label, icon, options, type, handleJobRoleChange,sel
             {options.length > 4 && (
               <button
                 className="mt-2 text-sm text-orange-500 hover:text-orange-600 focus:outline-none"
-                onClick={toggleShowAll}
+                onClick={() => setShowAll(!showAll)}
               >
                 {showAll ? "Show less" : "Show more"}
               </button>
@@ -210,7 +223,19 @@ const FilterSection = ({ id, label, icon, options, type, handleJobRoleChange,sel
   );
 };
 
-const JobFilter = ({ industry, location,jobTypes, handleJobRoleChange,selectedRadio,checkedOptions={},setVisibleSection,visibleSection,jobRole}) => {
+const JobFilter = ({
+  industry,
+  location,
+  jobTypes,
+  handleJobRoleChange,
+  selectedRadio,
+  checkedOptions = {},
+  jobRole,
+  activeFilter,
+  setActiveFilter
+}) => {
+  // const [activeFilter, setActiveFilter] = useState(null);
+
   const filters = [
     {
       id: "DatePosted",
@@ -259,6 +284,8 @@ const JobFilter = ({ industry, location,jobTypes, handleJobRoleChange,selectedRa
           handleJobRoleChange={handleJobRoleChange}
           selectedRadio={selectedRadio}
           checkedOptions={checkedOptions}
+          activeFilter={activeFilter}
+          setActiveFilter={setActiveFilter}
         />
       ))}
     </div>

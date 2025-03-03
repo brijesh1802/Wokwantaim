@@ -296,6 +296,7 @@ const JobList = () => {
   const [jobType, setJobType] = useState("");
   const [filteredSearchJob, setFilteredSearchJob] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
+   const [activeFilter, setActiveFilter] = useState(null);
 
   const dropdownRef = useRef(null); // Ref for click outside
   const handleRefresh = () => {
@@ -307,7 +308,8 @@ const JobList = () => {
     setIsTitleEmpty(false);
     setTitle("");
     setLocation("");
-    setJobType("")
+    setJobType("");
+    setActiveFilter(null);
     setcurrentJobRole({
       DatePosted: [],
       Industry: [],
@@ -319,6 +321,8 @@ const JobList = () => {
       JobType: [],
       TitleAndCompany: [],
     });
+    console.log('refresh-currentjob',currentJobRole);
+    
     setVisibleSection((prev) =>
       Object.fromEntries(Object.keys(prev).map((key) => [key, false]))
     );
@@ -349,18 +353,18 @@ const JobList = () => {
     if(value.trim()==="")
     {
       setFilteredSearchJob([])
-      setShowDropDown(false)
+      setShowDropdown(false)
       return
     }
     const filtered = jobRole.filter((role) => role.toLowerCase().includes(value.toLowerCase()));
     setFilteredSearchJob(filtered);
-    setShowDropDown(filtered.length > 0);
+    setShowDropdown(filtered.length > 0);
   };
   const handleDropdownSelect=(jobTitle)=>
   {
     setTitle(jobTitle);
     setFilteredSearchJob([]);
-    setShowDropDown(false)
+    setShowDropdown(false)
     console.log(searchTerm)
   }
 
@@ -392,6 +396,11 @@ const JobList = () => {
     setJobTypes([...uniqueJobTypeSet]);
   }, [jobs]);
 
+  console.log('current job role',currentJobRole);
+  console.log('filtered search job',filteredSearchJob);
+  console.log('filtered jobs',filteredJobRole);
+  
+
   useEffect(() => {
     const getDaysDifference = (jobDate) => {
       const currentDate = new Date();
@@ -405,7 +414,7 @@ const JobList = () => {
     };
 
     setFilteredJobRole(
-      (title.trim() !== "" || location.trim() !== "" || jobType.trim() !== ""
+      ((title.trim() !== "" || location.trim() !== "" || jobType.trim() !== "")
         ? filteredSearchJobRole
         : jobs
       ).filter((job) => {
@@ -453,12 +462,21 @@ const JobList = () => {
             return false;
           });
 
+          const matchTitleAndCompany =
+          !currentJobRole.TitleAndCompany.length ||
+          currentJobRole.TitleAndCompany.some(
+            (role) =>
+              role.toLowerCase().includes(job.title.toLowerCase()) ||
+              role.toLowerCase().includes(job.company.toLowerCase())
+          );
+
         return (
           matchDate &&
           matchIndustry &&
           matchExperience &&
           matchJobRole &&
-          matchSalary
+          matchSalary &&
+          matchTitleAndCompany
         );
       })
     );
@@ -590,11 +608,13 @@ const JobList = () => {
           handleJobRoleChange={handleJobRoleChange}
           selectedRadio={selectedRadio}
           checkedOptions={checkedOptions}
+          activeFilter={activeFilter}
+          setActiveFilter={setActiveFilter}
         />
         {/* Job Results */}
-        <JobResults filteredJob={filteredJobRole} handleClick={handleClick} />
+        <JobResults filteredJob={filteredJobRole} handleClick={handleJobClick} />
       </div>
-    </div>
+    </motion.div>
   );
 };
 

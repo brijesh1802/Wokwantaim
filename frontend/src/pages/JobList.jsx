@@ -341,49 +341,45 @@ const JobList = () => {
   const handleJobClick = (jobId) => {
     navigate("/jobdetail", { state: { jobId } });
   };
-
   const handleSearchTitleChange = (e) => {
+    
     const value = e.target.value;
     setTitle(value);
 
-    if (value.trim() === "") {
-      setFilteredSearchJob([]);
-      setShowDropdown(false);
-      return;
+    if(value.trim()==="")
+    {
+      setFilteredSearchJob([])
+      setShowDropDown(false)
+      return
     }
-    const filtered = jobRole.filter((role) =>
-      role.toLowerCase().includes(value.toLowerCase())
-    );
+    const filtered = jobRole.filter((role) => role.toLowerCase().includes(value.toLowerCase()));
     setFilteredSearchJob(filtered);
-    setShowDropdown(filtered.length > 0);
+    setShowDropDown(filtered.length > 0);
   };
-
-  const handleDropdownSelect = (jobTitle) => {
+  const handleDropdownSelect=(jobTitle)=>
+  {
     setTitle(jobTitle);
     setFilteredSearchJob([]);
-    setShowDropdown(false);
-    console.log(title);
-  };
+    setShowDropDown(false)
+    console.log(searchTerm)
+  }
 
+  // Handle search input change
   const handleSearchChange = () => {
-    console.log("searching for : ", { title, location, jobType });
+    console.log('searching for : ',{title,location,jobType})
     const filteredJobs = jobs.filter((job) => {
-      const matchTitle = title
-        ? job.title.toLowerCase().includes(title.toLowerCase())
-        : true;
-      const matchLocation = location
-        ? job.location.toLowerCase().includes(location.toLowerCase())
-        : true;
-      const matchJobType = jobType
-        ? job.jobType.toLowerCase().includes(jobType.toLowerCase())
-        : true;
-
+      const matchTitle = title ? job.title.toLowerCase().includes(title.toLowerCase()) : true;
+      const matchLocation = location ? job.location.toLowerCase().includes(location.toLowerCase()) : true;
+      const matchJobType = jobType ? job.jobType.toLowerCase().includes(jobType.toLowerCase()) : true;
+    
       return matchTitle && matchLocation && matchJobType;
     });
     console.log("filtered jobs: ", { filteredJobs });
     setFilteredSearchJobRole(filteredJobs);
   };
 
+
+  
   useEffect(() => {
     const industries = [...new Set(jobs.map((job) => job.industry))];
     const countries = [...new Set(jobs.map((job) => job.location))];
@@ -595,12 +591,10 @@ const JobList = () => {
           selectedRadio={selectedRadio}
           checkedOptions={checkedOptions}
         />
-        <JobResults
-          filteredJob={filteredJobRole}
-          handleClick={handleJobClick}
-        />
+        {/* Job Results */}
+        <JobResults filteredJob={filteredJobRole} handleClick={handleClick} />
       </div>
-    </motion.div>
+    </div>
   );
 };
 

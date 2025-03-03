@@ -1,56 +1,26 @@
 import React, { useEffect, useState } from "react";
-import banner from "../assets/banner1.png";
-import { Link,useLocation} from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const Banner = () => {
   const location = useLocation();
-  const [heading, setHeading] = useState("");
+  const [pageInfo, setPageInfo] = useState({ heading: "", description: "", icon: null });
 
-  useEffect(() => {
-    console.log(location.pathname);
-    if (location.pathname === "/joblist") {
-      setHeading("JobList");
-    } else if (location.pathname === "/jobdetail") setHeading("JobDetails");
-    else setHeading("Company Detail");
-  });
-
-  const navLinks = () => {
-    if (location.pathname === "/joblist") {
-      return(
-        <>
-        <h1 className="text-white font-bold text-3xl lg:text-4xl">{heading}</h1>
-        <p className="text-white lg:text-xl"><Link to='/' className=" hover:text-orange-700 ">Home</Link><span>/</span>JobList</p>
-        </>
-      )
-    }
-    else if (location.pathname === "/jobdetail") {
-      return(
-        <>
-        <h1 className="text-white font-bold text-3xl lg:text-4xl">{heading}</h1>
-        <p className="text-white  lg:text-xl"><Link to='/' className="hover:text-orange-700">Home</Link><span>/</span><Link to='/joblist' className="hover:text-orange-800">JobList</Link><span>/</span>JobDetails</p>
-        </>
-      )
-    }
-    else {
-      return(
-        <>
-        <h1 className="text-white font-bold text-3xl lg:text-4xl ">{heading}</h1>
-        <p className="text-white lg:text-xl"><Link to='/' className="hover:text-orange-700">Home</Link><span>/</span><Link to='/joblist' className="hover:text-orange-800">JobList</Link><span>/</span><Link to='jobdetails' className="hover:text-orange-800">JobDetails<span>/</span>CompanyDetails</Link></p>
-        </>
-      )
-    }
-  };
 
   return (
-    <div
-      className="flex flex-col items-center justify-center p-8 mt-6 bg-center bg-cover shadow-lg lg:h-72 min-h-52"
-      style={{
-        backgroundImage: `url(${banner})`,
-        backgroundPosition: "center",
-        backgroundSize: "cover",
-      }}
-    >
-      {navLinks()}
+    <div className="relative flex flex-col items-center justify-center mt-6 lg:h-72 min-h-52 overflow-hidden">
+      {/* Stylish background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600">
+        {/* Decorative elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-40 h-40 bg-white rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+          <div className="absolute bottom-0 right-0 w-60 h-60 bg-white rounded-full translate-x-1/3 translate-y-1/3"></div>
+          <div className="absolute top-1/2 left-1/4 w-20 h-20 bg-white rounded-full"></div>
+          <div className="absolute bottom-1/4 right-1/3 w-16 h-16 bg-white rounded-full"></div>
+        </div>
+        {/* Animated gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-transparent via-orange-300/20 to-orange-100/20 animate-pulse"></div>
+      </div>
     </div>
   );
 };

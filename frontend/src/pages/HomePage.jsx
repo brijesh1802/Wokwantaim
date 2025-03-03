@@ -172,6 +172,7 @@ function HomePage() {
             value={searchTerm}
             autoComplete="false"
             onChange={handleSearchChange}
+            autoComplete="off"
             onFocus={() => setShowDropDown(filteredSearchJob.length > 0)}
           />
           <button 

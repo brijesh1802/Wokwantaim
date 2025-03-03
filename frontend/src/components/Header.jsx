@@ -194,14 +194,26 @@ function Header() {
             <nav className="items-center hidden space-x-6 lg:flex">
               <NavLink
                 to="/"
-                className="text-lg text-gray-700 transition-colors hover:text-orange-500"
+                className={({ isActive }) =>
+                  `text-xl ml-4 ${
+                    isActive
+                      ? "text-orange-500 font-semibold"
+                      : "text-gray-600 hover:text-orange-500"
+                  }`
+                }
               >
                 Home
               </NavLink>
 
               <NavLink
                 to="/aboutus"
-                className="text-lg text-gray-700 transition-colors hover:text-orange-500"
+                className={({ isActive }) =>
+                  `text-xl ml-4 ${
+                    isActive
+                      ? "text-orange-500 font-semibold"
+                      : "text-gray-600 hover:text-orange-500"
+                  }`
+                }
                >
               About Us
                </NavLink>
@@ -583,8 +595,6 @@ function Header() {
               onCancel={handleChangePasswordCancel}
             />
           )}
-
-          {loading && <Loading />}
         </motion.header>
       )}
     </>

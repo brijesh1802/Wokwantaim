@@ -1,7 +1,14 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 const Loading = () => {
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
   const containerVariants = {
     start: {
       transition: {
@@ -17,21 +24,21 @@ const Loading = () => {
 
   const circleVariants = {
     start: {
-      y: "50%",
+      y: '50%',
     },
     end: {
-      y: "150%",
+      y: '150%',
     },
   };
 
   const circleTransition = {
     duration: 0.5,
     yoyo: Infinity,
-    ease: "easeInOut",
+    ease: 'easeInOut',
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-100">
       <motion.div
         className="flex space-x-3"
         variants={containerVariants}
@@ -53,7 +60,7 @@ const Loading = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.5 }}
       >
-        Loading....
+        Loading...
       </motion.p>
     </div>
   );

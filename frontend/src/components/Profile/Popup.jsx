@@ -24,7 +24,24 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
         !data.description?.trim() ||
         !data.technologiesUsed?.trim() ||
         !data.projectURL?.trim() ||
-        !data.githubRepo?.trim()));
+        !data.githubRepo?.trim())) ||
+    (type === "certifications" &&
+      (!data.title?.trim() ||
+        !data.issuingOrganization?.trim() ||
+        !data.issueDate?.trim() ||
+        !data.expirationDate?.trim() ||
+        !data.credentialId?.trim() ||
+        !data.credentialURL?.trim())) ||
+    (type === "workExperience" &&
+      (!data.jobTitle?.trim() ||
+        !data.company?.trim() ||
+        !data.industry?.trim() ||
+        !data.location?.trim() ||
+        !data.startDate?.trim() ||
+        (!data.isCurrentJob && !data.endDate?.trim()) ||
+        (data.startDate > data.endDate && !data.isCurrentJob) ||
+        !data.description?.trim())) ||
+    !data.description?.trim();
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -85,6 +102,36 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
                 },
               ]
             : existingData.SocialLinks,
+        certifications:
+          type === "certifications"
+            ? [
+                ...(existingData.certifications || []),
+                {
+                  title: data.title,
+                  issueDate: data.issueDate,
+                  issuingOrganization: data.issuingOrganization,
+                  credentialId: data.credentialId,
+                  credentialURL: data.credentialURL,
+                  expirationDate: data.expirationDate,
+                },
+              ]
+            : existingData.certifications,
+        workExperience:
+          type === "workExperience"
+            ? [
+                ...(existingData.workExperience || []),
+                {
+                  jobTitle: data.jobTitle,
+                  company: data.company,
+                  industry: data.industry,
+                  location: data.location,
+                  startDate: data.startDate,
+                  endDate: data.isCurrentJob ? null : data.endDate, // Set endDate to null if isCurrentJob is true
+                  isCurrentJob: data.isCurrentJob || false, // Ensure boolean value
+                  description: data.description,
+                },
+              ]
+            : existingData.workExperience,
       };
       console.log(payload);
 
@@ -169,6 +216,151 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
               className="w-full p-2 border border-gray-300 rounded mb-4"
             />
           </>
+        );
+      case "certifications":
+        return (
+          <>
+            <label className="block mb-2">Certification Title:</label>
+            <input
+              type="text"
+              name="title"
+              value={data.title || ""} // Updated to use data.title
+              onChange={handleChange}
+              placeholder="Enter certification name"
+              className="w-full p-2 border border-gray-300 rounded mb-4"
+            />
+            <label className="block mb-2">Issued Organization:</label>
+            <input
+              type="text"
+              name="issuingOrganization"
+              value={data.issuingOrganization || ""}
+              onChange={handleChange}
+              placeholder="Enter issuing organization"
+              className="w-full p-2 border border-gray-300 rounded mb-4"
+            />
+            <label className="block mb-2">Issued Date:</label>
+            <input
+              type="date"
+              name="issueDate" // Updated to use issueDate
+              value={data.issueDate || ""}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded mb-4"
+            />
+            <label className="block mb-2">Expiration Date:</label>
+            <input
+              type="date"
+              name="expirationDate"
+              value={data.expirationDate || ""}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded mb-4"
+            />
+            <label className="block mb-2">Credential Id:</label>
+            <input
+              type="text"
+              name="credentialId"
+              value={data.credentialId || ""}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded mb-4"
+            />
+            <label className="block mb-2">Credential URL:</label>
+            <input
+              type="text"
+              name="credentialURL"
+              value={data.credentialURL || ""}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded mb-4"
+            />
+          </>
+        );
+      case "workExperience":
+        return (
+          <div className="max-w-4xl mx-auto bg-white rounded-lg overflow-x-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5  max-h-96 pb-4">
+              {[
+                {
+                  label: "Job Title",
+                  name: "jobTitle",
+                  type: "text",
+                  placeholder: "Enter job title",
+                },
+                {
+                  label: "Company",
+                  name: "company",
+                  type: "text",
+                  placeholder: "Enter company name",
+                },
+                {
+                  label: "Industry",
+                  name: "industry",
+                  type: "text",
+                  placeholder: "Enter industry",
+                },
+                {
+                  label: "Location",
+                  name: "location",
+                  type: "text",
+                  placeholder: "Enter location",
+                },
+                { label: "Start Date", name: "startDate", type: "date" },
+                {
+                  label: "End Date",
+                  name: "endDate",
+                  type: "date",
+                  disabled: data.isCurrentJob,
+                },
+              ].map(({ label, name, type, placeholder, disabled }) => (
+                <div key={name}>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {label}:
+                  </label>
+                  <input
+                    type={type}
+                    name={name}
+                    value={data[name] || ""}
+                    onChange={handleChange}
+                    placeholder={placeholder}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      disabled ? "bg-gray-100 cursor-not-allowed" : ""
+                    }`}
+                    disabled={disabled}
+                  />
+                </div>
+              ))}
+
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  name="isCurrentJob"
+                  checked={data.isCurrentJob || false}
+                  onChange={(e) =>
+                    setData((prevData) => ({
+                      ...prevData,
+                      isCurrentJob: e.target.checked,
+                      endDate: e.target.checked ? "" : prevData.endDate,
+                    }))
+                  }
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label className="text-sm text-gray-900">
+                  Currently Working Here
+                </label>
+              </div>
+
+              <div className="md:col-span-2 lg:col-span-3">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description:
+                </label>
+                <textarea
+                  name="description"
+                  value={data.description || ""}
+                  onChange={handleChange}
+                  placeholder="Enter job description"
+                  rows="4"
+                  className="w-full px-3 py-2 mb-4 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
+          </div>
         );
       case "personalProjects":
         return (

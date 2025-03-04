@@ -1,14 +1,19 @@
 import { createContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { isTokenExpired } from "./auth";
 
 export const AuthContext = createContext();
 
+const publicRoutes = ['/login', '/signup', '/admin/login', '/']; // Added home route '/'
+
 export const AuthProvider = ({ children }) => {
   const [industry, setIndustry] = useState([]);
   const storedUserType = localStorage.getItem("userType");
+  const [isAdmin, setIsAdmin] = useState(localStorage.getItem('adminToken') !== null);
 
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [currentJobRole, setcurrentJobRole] = useState({
     DatePosted: [],
     Industry: [],
@@ -22,35 +27,39 @@ export const AuthProvider = ({ children }) => {
   });
 
   const [jobs, setJobs] = useState([]);
+
   useEffect(() => {
-    if (isTokenExpired()) {
+    const currentPath = location.pathname;
+    const adminToken = localStorage.getItem('adminToken');
+    
+    if (!publicRoutes.includes(currentPath) && !adminToken && isTokenExpired()) {
       console.log("Token Expired, Logging out");
-      localStorage.clear();
-      navigate("/");
+      logout();
     } else {
-      console.log("Token is valid");
+      console.log("Token is valid or on a public route");
     }
 
     fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/jobs/getAll`)
       .then((response) => response.json())
       .then((data) => setJobs(data))
       .catch((error) => console.error("Error fetching jobs:", error));
-  }, []);
+  }, [navigate, location]);
 
-  const [userType, setUserType] = useState(
-    storedUserType ? storedUserType : null
-  );
+  const [userType, setUserType] = useState(storedUserType ? storedUserType : null);
 
-  const login = (type) => {
+  const login = (type, isAdminLogin = false) => {
     setUserType(type);
-    localStorage.setItem("userType", type); // Store userType in localStorage
-    console.log(type);
+    localStorage.setItem("userType", type);
+    if (isAdminLogin) {
+      setIsAdmin(true);
+    }
   };
 
   const logout = () => {
     navigate("/");
-    // setUserData(null);
     localStorage.clear();
+    setIsAdmin(false);
+    setUserType(null);
     window.location.reload();
   };
 
@@ -96,9 +105,10 @@ export const AuthProvider = ({ children }) => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  const [jobRole, setJobRole] = useState([]);
 
+  const [jobRole, setJobRole] = useState([]);
   const [companyRole, setCompanyRole] = useState([]);
+  
   useEffect(() => {
     const jobRoles = jobs.map((job) => job.title);
     const companies = jobs.map((job) => job.company);
@@ -108,6 +118,7 @@ export const AuthProvider = ({ children }) => {
     setJobRole(Array.from(uniqueJobRolesSet));
     setCompanyRole(Array.from(uniqueCompanySet));
   }, [jobs]);
+
   return (
     <AuthContext.Provider
       value={{
@@ -121,6 +132,7 @@ export const AuthProvider = ({ children }) => {
         showScroll,
         jobRole,
         companyRole,
+        isAdmin,
       }}
     >
       {children}

@@ -161,12 +161,15 @@ export const AuthProvider = ({ children }) => {
         jobRole,
         companyRole,
         isAdmin,
+        checkedOptions,
+        setCheckedOptions,
+        selectedRadio,
+        setSelectedRadio,
+        setIsTitleEmpty,
+        isTitleEmpty
       }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
-
-
-

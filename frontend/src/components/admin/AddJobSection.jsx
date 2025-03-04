@@ -52,45 +52,62 @@ const AddJobSection = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormError('');
-
+  
     if (!job.companyLogo) {
       setFormError('Please select a company logo');
       return;
     }
-
+  
     const formData = new FormData();
     for (const key in job) {
       if (key === 'companyLogo') {
-        formData.append(key, job[key], job[key].name);
+        formData.append(key, job[key]);
       } else if (Array.isArray(job[key])) {
-        formData.append(key, JSON.stringify(job[key]));
+        job[key].forEach((item) => formData.append(`${key}[]`, item));
+
       } else {
         formData.append(key, job[key]);
       }
     }
-
-    console.log('Job submitted:', formData);
-
-    // Simulate API request
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    setJob({
-      companyLogo: null,
-      title: '',
-      company: '',
-      location: '',
-      description: '',
-      requirements: [],
-      salary: '',
-      jobType: '',
-      experienceLevel: '',
-      skills: [],
-      industry: '',
-      applicationDeadline: '',
-      applicationPostedDate: new Date().toISOString().split('T')[0]
-    });
-    setPreviewLogo(null);
+  
+  
+   
+    try {
+      const url=`${import.meta.env.VITE_BASE_URL}/api/v1/jobs/add`
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData
+      });
+  
+      if (response.ok) {
+        alert('Job added successfully');
+        setJob({
+          companyLogo: null,
+          title: '',
+          company: '',
+          location: '',
+          salary: '',
+          description: '',
+          requirements: [],
+          jobType: '',
+          experienceLevel: '',
+          skills: [],
+          industry: '',
+          applicationDeadline: '',
+          applicationPostedDate: new Date().toISOString().split('T')[0]
+        });
+        setPreviewLogo(null);
+      } else {
+        // Log the error response
+        const responseText = await response.text();
+        console.error('Response Error:', responseText);
+        setFormError(responseText || 'Error submitting job');
+      }
+    } catch (error) {
+      setFormError('Error submitting job');
+    }
   };
+
 
   return (
     <motion.div

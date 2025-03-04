@@ -39,6 +39,8 @@ function LoginForm({ userType }) {
         userType === "candidate"
           ? `${import.meta.env.VITE_BASE_URL}/api/v1/candidates/login`
           : `${import.meta.env.VITE_BASE_URL}/api/v1/employers/login`;
+          console.log("Request Body:", JSON.stringify({ email, password }));
+
 
       const response = await fetch(url, {
         method: "POST",
@@ -48,6 +50,9 @@ function LoginForm({ userType }) {
         body: JSON.stringify({ email, password }),
       });
 
+      const errorData = await response.json();
+console.log("Response Status:", response.status);
+console.log("Response Body:", errorData)
       if (response.ok) {
         const { token, candidate, message } = await response.json();
         localStorage.setItem("authToken", token);

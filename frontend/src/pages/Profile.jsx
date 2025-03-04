@@ -108,6 +108,7 @@ const Profile = () => {
 
         const data = await response.json();
         setUser(data.candidate || data.employer);
+     
       } catch (error) {
         console.error("Error fetching user profile:", error);
       } finally {
@@ -182,7 +183,7 @@ const Profile = () => {
   if (!user) {
     return <Error message="User not found. Please log in." />;
   }
-
+ 
   return (
     <div className="mx-auto mt-12 px-4 flex flex-col lg:flex-row h-full w-full mb-2 sm:ml-4">
       <div className="flex flex-col items-center xl:items-start xl:ml-2 xl:px-5 lg:w-max xl:w-1/3 mt-10 xl:mt-5">

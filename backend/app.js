@@ -152,6 +152,7 @@ const resetPassRoute = require('./routes/resetPassword.route');
 const jobsListRoute = require('./routes/jobs.route');
 const candidateProfileRoute = require('./routes/candidate.profile.route');
 const authRoute = require('./routes/auth.route');
+const adminRoute = require('./routes/admin.route');
 const jobApplicationRoutes = require('./routes/job.application'); 
 
 
@@ -252,6 +253,7 @@ app.use('/api/v1/employers', employerRoutes);
 app.use('/api/v1/auth', resetPassRoute);
 app.use('/api/v1/jobs', jobsListRoute);
 app.use('/api/v1', authRoute);
+app.use('/api/v1/admin', adminRoute);
 app.use("/api/v1/applications", jobApplicationRoutes);
 
 

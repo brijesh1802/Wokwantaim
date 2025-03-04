@@ -26,7 +26,7 @@ const Profile = () => {
   const [certifications, setCertifications] = useState([]);
   const [educations, setEducations] = useState([]);
   const [skills, setSkills] = useState([]);
-  const [experiences, setExperiences] = useState([]);
+  const [workExperience, setWorkExperience] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [popupType, setPopupType] = useState("");
   const [popupData, setPopupData] = useState({
@@ -35,13 +35,19 @@ const Profile = () => {
     portfolio: "",
     name: "",
     link: "",
-    issuedDate: "",
+    issuingOrganization: "",
+    issueDate: "",
+    expirationDate: "",
+    credentialId: "",
+    credentialURL: "",
     grade: "",
-    fromDate: "",
-    toDate: "",
+    startDate: "",
+    endDate: "",
+    isCurrentJob: false,
     skill: "",
+    jobtitle: "",
     company: "",
-    role: "",
+    location: "",
     industry: "",
     title: "",
     description: "",
@@ -54,7 +60,6 @@ const Profile = () => {
 
   const { userType, logout } = useContext(AuthContext);
   const token = localStorage.getItem("authToken");
-  const [experienceContentExists, setExperienceContentExists] = useState(false);
   const [educationContentExists, setEducationContentExists] = useState(false);
 
   const handleLogout = () => {
@@ -107,7 +112,7 @@ const Profile = () => {
         if (!response.ok) throw new Error("Failed to fetch user data");
 
         const data = await response.json();
-        setUser(data.candidate || data.employer);
+        setUser(data.candidate || data.employer || data);
       } catch (error) {
         console.error("Error fetching user profile:", error);
       } finally {
@@ -135,6 +140,8 @@ const Profile = () => {
       setSkills(data.skills || []);
       setPersonalProjects(data.personalProjects || []);
       setSocialLinks(data.socialLinks || []);
+      setCertifications(data.certifications || []);
+      setWorkExperience(data.workExperience|| []);
     };
 
     fetchUserData();
@@ -142,19 +149,6 @@ const Profile = () => {
 
   const togglePopup = () => {
     setShowPopup(!showPopup);
-  };
-
-  const handleAddExperience = () => {
-    setPopupType("Experience");
-    setPopupData({
-      company: "",
-      role: "",
-      industry: "",
-      fromDate: "",
-      toDate: "",
-      index: null,
-    });
-    togglePopup();
   };
 
   const handleAddEducation = () => {
@@ -173,6 +167,8 @@ const Profile = () => {
     setSkills(updatedData.skills || []);
     setPersonalProjects(updatedData.personalProjects || []);
     setSocialLinks(updatedData.socialLinks || []);
+    setCertifications(updatedData.certifications || []);
+    setWorkExperience(updatedData.workExperience || []);
   };
 
   if (loading) {
@@ -193,22 +189,27 @@ const Profile = () => {
         <EditableSection user={user} title="About Me" />
         <ProfileSection
           title="Experience"
-          onAdd={handleAddExperience}
-          contentExists={experienceContentExists}
+          onAdd={() => {
+            setPopupType("workExperience");
+            setPopupData({
+              jobtitle: "",
+              company: "",
+              location: "",
+              industry: "",
+              startDate: "",
+              endDate: "",
+              isCurrentJob: false,
+              description: "",
+              index: null,
+            });
+            togglePopup();
+          }}
+          contentExists={workExperience.length > 0}
         >
-          {experienceContentExists ? (
-            <ExperienceSection
-              experiences={experiences}
-              setExperiences={setExperiences}
-              togglePopup={togglePopup}
-              setPopupType={setPopupType}
-              setPopupData={setPopupData}
-            />
-          ) : (
-            <p className="text-gray-500">
-              No experience details available. Add your experience here.
-            </p>
-          )}
+          <ExperienceSection
+            workExperience={workExperience}
+            setWorkExperience={setWorkExperience}
+          />
         </ProfileSection>
 
         <ProfileSection
@@ -269,11 +270,14 @@ const Profile = () => {
         <ProfileSection
           title="Certifications"
           onAdd={() => {
-            setPopupType("Certification");
+            setPopupType("certifications");
             setPopupData({
-              name: "",
-              link: "",
-              issuedDate: "",
+              title: "",
+              issuingOrganization: "",
+              issueDate: "",
+              expirationDate: "",
+              credentialId: "",
+              credentialURL: "",
               index: null,
             });
             togglePopup();
@@ -283,9 +287,6 @@ const Profile = () => {
           <Certifications
             certifications={certifications}
             setCertifications={setCertifications}
-            togglePopup={togglePopup}
-            setPopupType={setPopupType}
-            setPopupData={setPopupData}
           />
         </ProfileSection>
 
@@ -299,8 +300,7 @@ const Profile = () => {
               portfolio: "",
             });
             togglePopup();
-          }
-          }
+          }}
           contentExists={socialLinks.length > 0}
         >
           <SocialLinks

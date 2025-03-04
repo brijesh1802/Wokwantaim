@@ -113,7 +113,7 @@ function Header() {
 
         const data = await response.json();
         console.log("Fetched user data:", data);
-        setUserData(data.candidate || data.employer);
+        setUserData(data.candidate || data.employer || data);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -148,16 +148,12 @@ function Header() {
   }, [navOpen]);
 
   const NavLinkWithAnimation = ({ children, ...props }) => (
-    <motion.div
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-    >
+    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
       <NavLink className="block py-2 text-lg hover:text-orange-500" {...props}>
         {children}
       </NavLink>
     </motion.div>
   );
-  
 
   return (
     <>
@@ -214,9 +210,9 @@ function Header() {
                       : "text-gray-600 hover:text-orange-500"
                   }`
                 }
-               >
-              About Us
-               </NavLink>
+              >
+                About Us
+              </NavLink>
 
               {userType === "candidate" || userType === null ? (
                 <NavLink
@@ -293,7 +289,11 @@ function Header() {
                         transition={{ duration: 0.2 }}
                       >
                         Profile{" "}
-                        {manageProfileOpen ? <FaChevronUp /> : <FaChevronDown />}
+                        {manageProfileOpen ? (
+                          <FaChevronUp />
+                        ) : (
+                          <FaChevronDown />
+                        )}
                       </motion.button>
 
                       <AnimatePresence>
@@ -500,12 +500,18 @@ function Header() {
                           {userData !== null && (
                             <motion.button
                               className="flex items-center justify-between w-full py-2 text-lg hover:text-orange-500"
-                              onClick={() => setManageProfileOpen(!manageProfileOpen)}
+                              onClick={() =>
+                                setManageProfileOpen(!manageProfileOpen)
+                              }
                               whileHover={{ scale: 1.05 }}
                               transition={{ duration: 0.2 }}
                             >
                               Manage Profile{" "}
-                              {manageProfileOpen ? <FaChevronUp /> : <FaChevronDown />}
+                              {manageProfileOpen ? (
+                                <FaChevronUp />
+                              ) : (
+                                <FaChevronDown />
+                              )}
                             </motion.button>
                           )}
 
@@ -516,7 +522,10 @@ function Header() {
                                 initial={{ height: 0, opacity: 0 }}
                                 animate={{ height: "auto", opacity: 1 }}
                                 exit={{ height: 0, opacity: 0 }}
-                                transition={{ duration: 0.3, ease: "easeInOut" }}
+                                transition={{
+                                  duration: 0.3,
+                                  ease: "easeInOut",
+                                }}
                               >
                                 <NavLink
                                   to="/delete-account"
@@ -549,33 +558,31 @@ function Header() {
                     <hr className="w-full my-2 border-gray-300" />
 
                     {userType ? (
-              <motion.button
-                onClick={handleLogoutClick}
-                className="py-2 text-lg hover:text-orange-400 bg-orange-500 text-white rounded-md p-3"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.2 }}
-              >
-                Log Out
-              </motion.button>
-            ) : (
-              <>
-                <motion.button
-                  className="py-2 text-lg hover:text-orange-400 bg-orange-500 text-white rounded-md p-3"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <NavLink to="/login">Login</NavLink>
-                </motion.button>
-                <motion.button
-                  className="mt-4 py-2 text-lg hover:text-orange-400 bg-orange-500 text-white rounded-md p-3"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <NavLink to="/signup">Signup</NavLink>
-                </motion.button>
-              </>
-            )}
-
+                      <motion.button
+                        onClick={handleLogoutClick}
+                        className="py-2 text-lg hover:text-orange-400 bg-orange-500 text-white rounded-md p-3"
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        Log Out
+                      </motion.button>
+                    ) : (
+                      <>
+                        <motion.button
+                          className="px-4 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <NavLink to="/signup" className="text-white">
+                            Sign Up
+                          </NavLink>
+                          <span className="mx-2 text-gray-400">/</span>
+                          <NavLink to="/login" className="text-white">
+                            Login
+                          </NavLink>
+                        </motion.button>
+                      </>
+                    )}
                   </motion.div>
                 </motion.div>
               </motion.div>

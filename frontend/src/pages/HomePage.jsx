@@ -153,51 +153,65 @@ function HomePage() {
   return (
     <div >
       {/* Hero Section */}
-      <section className="py-20 text-white bg-gradient-to-r from-orange-500 to-orange-600">
-        <div className="container px-4 mx-auto">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="mb-6 text-4xl font-bold md:text-5xl">
-              Find Your Dream Job Today
-            </h1>
-            <p className="mb-8 text-xl">
-              Connecting talented professionals with amazing opportunities
-            </p>
-            <div className=" relative flex items-center p-1 bg-white rounded-lg">
-              <input
-                type="text"
-                placeholder="Job title or company"
-                className="flex-grow px-4 py-2 text-gray-800 cus:outline-none sm:z-1"
-                name='TitleAndCompany'
-                value={searchTerm}
-                onChange={handleSearchChange}
-                onFocus={()=>setShowDropDown(filteredSearchJob.length>0)}
-              />
-              <button className="flex items-center max-w-xs px-4 py-2 m-1 text-white transition-colors bg-orange-500 rounded-md hover:bg-orange-600 sm:max-w"
-              onClick={handleSearch}>
-                <Search className="hidden w-5 h-5 mr-2 sm:block" />
-                <span className="hidden sm:block">Search</span>
-                <Search className="w-5 h-5 sm:hidden" />
-              </button>
-               {/* Suggestions Dropdown */}
-               {showDropdown && (
-                <div className="absolute left-0 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full max-h-40 overflow-y-auto">
-                  
-                    {filteredSearchJob.map((title, index) => (
-                      <div
-                        key={index}
-                        className="px-4 py-2 cursor-pointer hover:bg-gray-200 text-black"
-                        onClick={() => handleSuggestionClick(title)}
-                      >
-                        {title}
-                      </div>
-                    ))}
-                  
-                </div>
-              )}
+      <section className="py-24 text-white bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 mt-10">
+  <div className="container px-4 mx-auto">
+    <div className="max-w-3xl mx-auto text-center">
+      <h1 className="mb-6 text-5xl font-extrabold leading-tight md:text-6xl">
+        Discover Your Dream Career
+      </h1>
+      <p className="mb-10 text-xl font-light text-orange-100">
+        Connecting ambitious professionals with extraordinary opportunities
+      </p>
+      <div className="relative max-w-2xl mx-auto">
+        <div className="flex items-center p-1 bg-white bg-opacity-40 backdrop-blur-lg rounded-full shadow-2xl">
+          <input
+            type="text"
+            placeholder="Search job title or company"
+            className="flex-grow px-4 py-3 text-white bg-transparent rounded-full focus:outline-none placeholder-white placeholder-opacity-70"
+            name='TitleAndCompany'
+            value={searchTerm}
+            onChange={handleSearchChange}
+            autoComplete="off"
+            onFocus={() => setShowDropDown(filteredSearchJob.length > 0)}
+          />
+          <button 
+            className="flex items-center px-5 py-3 font-medium text-orange-500 mr-1 transition-all duration-300 bg-white rounded-full hover:bg-orange-50 hover:shadow-lg"
+            onClick={handleSearch}
+          >
+            <Search className="w-5 h-5 mr-1 stroke-[3]" />
+          </button>
+        </div>
+
+        {/* Suggestions Dropdown */}
+        {showDropdown && (
+          <div className="absolute left-0 w-full mt-3 bg-white bg-opacity-95 backdrop-blur-xl border border-orange-100 rounded-3xl shadow-2xl top-full max-h-80 overflow-hidden">
+            <div className="p-4">
+              <h3 className="text-lg font-semibold text-orange-600 mb-2">Suggestions</h3>
+              <div className="space-y-2 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                {filteredSearchJob.map((title, index) => (
+                  <div
+                    key={index}
+                    className="group flex items-center px-4 py-3 cursor-pointer rounded-xl hover:bg-orange-50 transition-all duration-300 ease-in-out"
+                    onClick={() => handleSuggestionClick(title)}
+                  >
+                    <div className="ml-4">
+                      <p className="text-gray-800 font-medium">{title}</p>
+                    </div>
+                    <div className="ml-auto">
+                      <ArrowRight className="w-5 h-5 text-orange-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"  />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
+
+
 
       {/* Featured Categories */}
       <section className="py-5 px-5 bg-gradient-to-b from-orange-50 to-white">

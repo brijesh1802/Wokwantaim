@@ -11,6 +11,6 @@ router.get('/getsome', getLimitedJobs)
 
 router.post('/add',upload.fields([{ name: 'companyLogo', maxCount: 1 }]), addJob);
 
-router.delete('/:id', deleteJob);
+router.delete('/delete/:id', deleteJob);
 
 module.exports = router;

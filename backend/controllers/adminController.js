@@ -1,4 +1,5 @@
 const Admin = require('../models/admin.model.js');
+const Candidate = require('../models/candidate.model.js');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
@@ -164,4 +165,22 @@ const getAdmin = async (req, res) => {
     }
 }
 
-module.exports = { signup, login, profile, getAll, deleteAdmin, editAdmin, getAdmin };
+
+const deleteCandidate = async (req, res) => {
+    try {
+        const candidate = await Candidate.findById(req.params.id);
+        if (!candidate) {
+            return res.status(404).json({ message: 'Admin not found' });
+        }
+
+        await candidate.deleteOne();
+        res.json({ message: 'Candidate deleted successfully' });
+
+    } catch (error) {
+        console.error('Error in deleting candidate:', error);
+        res.status(500).json({ message: 'An error occurred while deleting candidate' });
+    }
+}
+
+
+module.exports = { signup, login, profile, getAll, deleteAdmin, editAdmin, getAdmin, deleteCandidate };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { FiUser, FiMail, FiEdit, FiTrash2, FiUserCheck } from 'react-icons/fi';
+import { FiUser, FiMail, FiEdit, FiTrash2, FiUserCheck, FiX, FiAlertTriangle } from 'react-icons/fi';
 
 const ViewAdminsSection = () => {
   const [admins, setAdmins] = useState([]);
@@ -8,6 +8,8 @@ const ViewAdminsSection = () => {
   const [error, setError] = useState(null);
   const [editingAdmin, setEditingAdmin] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // New state for delete confirmation modal
+  const [adminToDelete, setAdminToDelete] = useState(null); // New state to hold the admin ID to delete
 
   const fetchAdmins = useCallback(async () => {
     try {
@@ -101,28 +103,42 @@ const ViewAdminsSection = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = useCallback(async (adminId) => {
-    if (window.confirm("Are you sure you want to delete this admin?")) {
-      try {
-        const token = localStorage.getItem("adminToken");
-        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/admin/delete/${adminId}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+  const openDeleteModal = (adminId) => {
+    setAdminToDelete(adminId);
+    setIsDeleteModalOpen(true);
+  };
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setAdminToDelete(null);
+  };
+
+  const handleDelete = useCallback(async () => {
+    if (!adminToDelete) return;
+
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/admin/delete/${adminToDelete}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
+      });
 
-        fetchAdmins(); 
-      } catch (error) {
-        console.error("Error deleting admin:", error);
-        setError(error.message);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      // Update state after successful deletion
+      setAdmins(admins.filter(admin => admin._id !== adminToDelete));
+      setIsDeleteModalOpen(false);
+      setAdminToDelete(null);
+      fetchAdmins(); // Refresh admins list
+    } catch (error) {
+      console.error("Error deleting admin:", error);
+      setError(error.message);
     }
-  }, [fetchAdmins]);
+  }, [fetchAdmins, admins, adminToDelete]);
 
   const handleSave = useCallback(async (e) => {
     e.preventDefault();
@@ -156,7 +172,6 @@ const ViewAdminsSection = () => {
     if(profile){
      isSuperAdmin = role === 'superadmin';
     }
-
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -210,7 +225,7 @@ const ViewAdminsSection = () => {
                     <button onClick={() => handleEdit(admin._id)} className="text-blue-600 hover:text-blue-900 mr-2">
                       <FiEdit />
                     </button>
-                    <button onClick={() => handleDelete(admin._id)} className="text-red-600 hover:text-red-900">
+                    <button onClick={() => openDeleteModal(admin._id)} className="text-red-600 hover:text-red-900">
                       <FiTrash2 />
                     </button>
                   </td>
@@ -287,6 +302,35 @@ const ViewAdminsSection = () => {
                  
                     
                   )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Delete Confirmation Modal */}
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 max-w-sm w-full">
+            <div className="flex items-center justify-center text-red-500 mb-4">
+              <FiAlertTriangle size={48} />
+            </div>
+            <h3 className="text-xl font-bold text-center mb-4">Confirm Deletion</h3>
+            <p className="text-gray-700 text-center mb-6">
+              Are you sure you want to delete this admin? This action cannot be undone.
+            </p>
+            <div className="flex justify-center space-x-4">
+              <button
+                onClick={closeDeleteModal}
+                className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+              >
+                Delete
+              </button>
             </div>
           </div>
         </div>

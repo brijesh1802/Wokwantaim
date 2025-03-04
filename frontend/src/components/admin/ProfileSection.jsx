@@ -44,6 +44,8 @@ const ProfileSection = () => {
     navigate('/admin/login');
   };
 
+  const name = profile.username ||''
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -55,19 +57,19 @@ const ProfileSection = () => {
       <div className="flex flex-col items-center mb-8">
         <motion.div 
           whileHover={{ scale: 1.05 }}
-          className="w-40 h-40 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full flex items-center justify-center mb-4"
+          className="w-40 h-40 bg-orange-100 rounded-full flex items-center justify-center text-orange-500 font-bold text-6xl mr-4 mb-4"
         >
-          <FiUser className="w-20 h-20 text-white" />
+          {name.charAt(0).toUpperCase()}
         </motion.div>
         <h3 className="text-2xl font-semibold text-gray-700">{profile.username || 'Loading...'}</h3>
         <p className="text-gray-500 mt-2">{profile.role || 'Admin'}</p>
       </div>
       <div className="space-y-6">
-        <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-          <FiMail className="w-6 h-6 text-orange-500 mr-4" />
+        <div className="flex items-center justify-center p-3 bg-gray-50 rounded-lg gap-3">
+          <FiMail className="w-4 h-6 text-orange-500" />
           <div>
-            <p className="text-sm text-gray-500">Email</p>
-            <p className="text-lg font-medium text-gray-700">{profile.email || 'Loading...'}</p>
+            {/* <p className="text-sm text-gray-500">Email</p> */}
+            <p className="sm:text-l text-lg font-medium text-gray-700">{profile.email || 'Loading...'}</p>
           </div>
         </div>
         <motion.button

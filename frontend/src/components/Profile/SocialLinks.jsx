@@ -42,6 +42,11 @@ const SocialLinks = ({ socialLinks, setSocialLinks }) => {
     setEditLink(socialLinks[index]);
   };
 
+  const isSaveDisabled =
+    !editLink.linkedin?.trim() &&
+    !editLink.github?.trim() &&
+    !editLink.portfolio?.trim();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEditLink((prevLink) => ({
@@ -133,7 +138,12 @@ const SocialLinks = ({ socialLinks, setSocialLinks }) => {
                 <div className="flex space-x-2">
                   <button
                     onClick={handleSave}
-                    className="text-white bg-blue-500 px-4 py-2 rounded hover:bg-blue-600 transition"
+                    disabled={isSaveDisabled}
+                    className={`px-4 py-2 rounded transition ${
+                      isSaveDisabled
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        : "bg-blue-500 text-white hover:bg-blue-600"
+                    }`}
                   >
                     Save
                   </button>

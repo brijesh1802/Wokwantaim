@@ -1,13 +1,12 @@
-// App.jsx
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import HomePage from "./pages/HomePage";
 import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
-import { AuthProvider } from "./context/AuthContext";
-import JobList from './pages/JobList'
+import { AuthProvider, AuthContext } from "./context/AuthContext";
+import JobList from "./pages/JobList";
 import JobDetail from "./pages/JobDetail";
 import CompanyDetail from "./pages/CompanyDetail";
 import Profile from "./pages/Profile";
@@ -22,17 +21,25 @@ import ForgotPassword from "./components/ForgotPassword";
 import ScrollToTop from "./components/ScrollToTop";
 import AboutUs from "./components/Home/About/AboutUs";
 import SplashScreen from "./pages/SplashScreen";
+import AdminDashboard from './pages/AdminDashboard';
+import AdminLogin from './pages/AdminLogin';
+import { useContext } from 'react';
+
+const AdminRoute = ({ children }) => {
+  const { isAdmin } = useContext(AuthContext);
+  return isAdmin ? children : <Navigate to="/admin/login" />;
+};
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
-  const noPaths = ["/signup", "/login"];
-  const noFooter = ["/profile"];
+  const noPaths = ["/signup", "/login", "/admin/login", "/admin/dashboard"];
+  const noFooter = ["/profile", "/admin/login", "/admin/dashboard"];
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 3000); // 3 seconds for loading screen
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -63,6 +70,8 @@ function App() {
               <Route path="/applications" element={<JobApplications />} />
               <Route path="/delete-account" element={<DeleteAccount />} />
               <Route path="/aboutus" element={<AboutUs />} />
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
             </Routes>
           )}
         </main>

@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 
 const jobSchema = new mongoose.Schema({
+  companyLogo:{
+    type: String,
+  },
   title: {
     type: String,
     required: true,

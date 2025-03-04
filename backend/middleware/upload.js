@@ -35,40 +35,36 @@ const deleteFromCloudinary = (public_id) => {
 
 
 const uploadToCloudinary = (fileBuffer, folder, fileType) => {
-    const transformations = [];
-
-    if (fileType === 'image') {
-        transformations.push({
-            quality: 'auto',
-            format : 'webp'
-        });
-    }
-
-    if (fileType === 'pdf') {
-        transformations.push({
-            resource_type: 'raw'
-        });
-    }
-
     return new Promise((resolve, reject) => {
+        const uploadOptions = {
+            folder: folder,
+            resource_type: 'auto',
+        };
+
+        // if (fileType === 'image') {
+        //     uploadOptions.transformation = [{
+        //         quality: 'auto',
+        //         format: 'webp'
+        //     }];
+        // }
+
         cloudinary.uploader.upload_stream(
-            {
-                folder: folder,
-                resource_type: fileType === 'image' ? 'image' : 'raw',
-                transformation: transformations
-            },
+            uploadOptions,
             (error, result) => {
                 if (error) {
                     console.error('Error uploading to Cloudinary:', error);
-                    reject(error); 
+                    console.error('Upload options:', uploadOptions);
+                    console.error('File type:', fileType);
+                    reject(error);
                 }
                 resolve({
                     url: result.secure_url,
                     public_id: result.public_id
                 });
             }
-        ).end(fileBuffer); 
+        ).end(fileBuffer);
     });
 };
+
 
 module.exports = { upload, uploadToCloudinary, deleteFromCloudinary};

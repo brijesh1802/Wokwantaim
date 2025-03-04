@@ -112,33 +112,101 @@ const signup = async (req, res) => {
 
         const dashboardURL = `${process.env.VERCEL_URL}`;
 
-        const subject = "🔐 Confirm Your Email Address"
+        const subject = "🔓 Verify Your Email Address - Welcome to Wokwantaim 🎉"
 
-        const body = `
-        <div style="font-family: Arial, sans-serif; padding: 40px; background-color: #f4f4f4; text-align: center;">
-        <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-            <h2 style="color: #333;">Welcome to Wokwantaim 🎉</h2>
-            <p style="color: #555; font-size: 16px; line-height: 1.6;">
-            Please confirm your email address to activate your account. Simply click the button below to verify:
-            </p>
-            <a href="${verificationURL}" 
-            style="display: inline-block; padding: 12px 24px; margin-top: 20px; background: #007bff; color: #ffffff; 
-            text-decoration: none; font-size: 16px; font-weight: bold; border-radius: 6px;">
-            ✅ Verify Email
-            </a>
-            <p style="color: #888; font-size: 14px; margin-top: 20px;">
-            If you did not sign up for this account, you can safely ignore this email.
-            </p>
-            <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
-            <p style="color: #888; font-size: 12px;">
-            Need help? <a href="mailto:support@wokwantaim.com" style="color: #007bff; text-decoration: none;">Contact Support</a>
-            </p>
-        </div>
-        <div>
-        <p>If you no longer wish to receive these emails, <a href="${dashboardURL}/unsubscribe">Unsubscribe here</a>.</p>
-        </div>
-        </div>
-        `
+const body = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email - Wokwantaim</title>
+    <style>
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        img { -ms-interpolation-mode: bicubic; }
+        img { border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+        table { border-collapse: collapse !important; }
+        body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
+        a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !important; font-size: inherit !important; font-family: inherit !important; font-weight: inherit !important; line-height: inherit !important; }
+        div[style*="margin: 16px 0;"] { margin: 0 !important; }
+    </style>
+</head>
+<body style="background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td bgcolor="#ff9900" align="center">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td align="center" valign="top" style="padding: 40px 10px 40px 10px;">
+                            <a href="https://www.wokwantaim.com" target="_blank" style="text-decoration: none;">
+                                <h1 style="font-size: 32px; font-weight: 700; color: #ffffff; margin: 0;">Wokwantaim 🎉</h1>
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#f4f4f4" align="center" style="padding: 0px 10px 0px 10px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;">👋 Welcome to Wokwantaim! We're excited to have you on board 🚀. To get started, please verify your email address by clicking the button below: 📧</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff" align="left">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td align="center" style="border-radius: 3px;" bgcolor="#ff9900">
+                                        <a href="${verificationURL}" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #ff9900; display: inline-block;">✅ Verify Email 📝</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;">If you have any questions, just reply to this email—we're always happy to help out 🤗.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;">Cheers,<br>The Wokwantaim Team 👋</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#f4f4f4" align="center" style="padding: 30px 10px 0px 10px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td bgcolor="#ffecce" align="center" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <h2 style="font-size: 20px; font-weight: 400; color: #111111; margin: 0;">Need more help? 🤔</h2>
+                            <p style="margin: 0;"><a href="mailto:support@wokwantaim.com" target="_blank" style="color: #ff9900;">We're here to help you out 📧</a></p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#f4f4f4" align="center" style="padding: 0px 10px 0px 10px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td bgcolor="#f4f4f4" align="left" style="padding: 0px 30px 30px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;">
+                            <p style="margin: 0;">You received this email because you signed up for Wokwantaim 📝. If you no longer wish to receive these emails, <a href="${dashboardURL}/unsubscribe" target="_blank" style="color: #111111; font-weight: 700;">unsubscribe here 🚫</a>.</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+`
+
         await sendEmail(email, subject, body);
         
         res.status(201).json({ message: "User registered! Please verify your email." });
@@ -382,5 +450,28 @@ const deleteAccount = async (req, res) => {
     }
 };
 
+const getAll = async (req, res) => {
+    try {
+        const candidates = await Candidate.find();
+        res.status(200).json({ message: 'Candidates fetched successfully', candidates });
+    } catch (err) {
+        console.error('Error fetching candidates:', err.message);
+        res.status(500).json({ message: 'Server error while fetching candidates' });
+    }
+}
 
-module.exports = { signup, login, profile, verifyEmail, deleteAccount, update };
+const getOne = async (req, res) => {
+    try {
+        const candidate = await Candidate.findById(req.params.id);
+        if (!candidate) {
+            return res.status(404).json({ message: 'Candidate not found' });
+        }
+        res.status(200).json({ message: 'Candidate fetched successfully', candidate });
+    } catch (err) {
+        console.error('Error fetching candidate:', err.message);
+        res.status(500).json({ message: 'Server error while fetching candidate' });
+    }
+}
+
+
+module.exports = { signup, login, profile, verifyEmail, deleteAccount, update, getAll, getOne };

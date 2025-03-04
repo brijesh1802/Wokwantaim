@@ -1,10 +1,10 @@
-import Admin from '../models/admin.model.js'
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
-import validator from 'validator';
+const Admin = require('../models/admin.model.js');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const validator = require('validator');
 
 const signup = async (req, res) => {
-    const { username, password, email,role } = req.body;
+    const { username, password, email, role } = req.body;
 
     if (!username || !password || !email) {
         return res.status(400).json({ message: 'All fields are required' });
@@ -14,11 +14,11 @@ const signup = async (req, res) => {
         return res.status(400).json({ message: 'Invalid email format' });
     }
 
-    if (!validator.isAlphanumeric(username) || !validator.isLength(username, {min: 3, max: 20})) {
+    if (!validator.isAlphanumeric(username) || !validator.isLength(username, { min: 3, max: 20 })) {
         return res.status(400).json({ message: 'Username must be alphanumeric and between 3-20 characters' });
     }
 
-    if (!validator.isStrongPassword(password, { 
+    if (!validator.isStrongPassword(password, {
         minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 0
     })) {
         return res.status(400).json({ message: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number' });
@@ -37,10 +37,10 @@ const signup = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newAdmin = new Admin({ 
-            username, 
-            password: hashedPassword, 
-            email ,
+        const newAdmin = new Admin({
+            username,
+            password: hashedPassword,
+            email,
             role
         });
         await newAdmin.save();
@@ -76,11 +76,10 @@ const login = async (req, res) => {
         const token = jwt.sign(
             { email: admin.email },
             process.env.JWT_SECRET,
-            { expiresIn: '7d', algorithm: 'HS256' } 
+            { expiresIn: '7d', algorithm: 'HS256' }
         );
 
         res.json({ message: "Login successful!", token });
-
 
     } catch (error) {
         console.error('Error in admin login:', error);
@@ -117,7 +116,6 @@ const getAll = async (req, res) => {
 
 const deleteAdmin = async (req, res) => {
     try {
-
         const admin = await Admin.findById(req.params.id);
         if (!admin) {
             return res.status(404).json({ message: 'Admin not found' });
@@ -134,7 +132,6 @@ const deleteAdmin = async (req, res) => {
 
 const editAdmin = async (req, res) => {
     try {
-
         const admin = await Admin.findById(req.params.id);
         if (!admin) {
             return res.status(404).json({ message: 'Admin not found' });
@@ -154,7 +151,7 @@ const editAdmin = async (req, res) => {
     }
 }
 
-const getAdmin = async (req, res) => {  
+const getAdmin = async (req, res) => {
     try {
         const admin = await Admin.findById(req.params.id).select('-password');
         if (!admin) {
@@ -167,7 +164,4 @@ const getAdmin = async (req, res) => {
     }
 }
 
-
-
-
-export { signup, login, profile, getAll, deleteAdmin, editAdmin, getAdmin };
+module.exports = { signup, login, profile, getAll, deleteAdmin, editAdmin, getAdmin };

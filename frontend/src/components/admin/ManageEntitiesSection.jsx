@@ -145,54 +145,8 @@ const ManageEntitiesSection = () => {
             setError(err.message);
         }
     };
-
-    const getGridColumns = (entityType) => {
-      switch (entityType) {
-        case 'company':
-          return 'grid-cols-1 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8';
-        case 'industry':
-        case 'jobType':
-          return 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6';
-        case 'experienceLevel':
-          return 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6';
-        default:
-          return 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5';
-      }
-    };
     
-
-    
-    const getEntityIcon = (entityType, entity) => {
-      const iconSize = "3rem";
-      switch (entityType) {
-        case 'industry':
-          return <FiBriefcase size={iconSize} className="text-green-500" />;
-        case 'jobType':
-          return <FiClock size={iconSize} className="text-purple-500" />;
-        case 'experienceLevel':
-          return <FiTrendingUp size={iconSize} className="text-yellow-500" />;
-        default:
-          return null;
-      }
-    };
-    
-    const getEntitySpecificInfo = (entityType, entity) => {
-      switch (entityType) {
-        case 'company':
-          return <span className="text-sm text-gray-500 mt-1">{entity.industry}</span>;
-        case 'industry':
-          return <span className="text-sm font-medium text-green-600 mt-1">{entity.jobCount} jobs</span>;
-        case 'jobType':
-          return <span className="text-sm font-medium text-purple-600 mt-1">{entity.description}</span>;
-        case 'experienceLevel':
-          return <span className="text-sm font-medium text-yellow-600 mt-1">{entity.yearsRange}</span>;
-        default:
-          return null;
-      }
-    };
-    
-    
-
+  
     const getIcon = (entity) => {
         switch (entity) {
             case 'company': return <FiBriefcase className="mr-2" size={20} />;
@@ -281,65 +235,73 @@ const ManageEntitiesSection = () => {
         </div>
 
     
-          {/* Entity List */}
-          {loading ? (
-            <div className="text-center text-gray-500 flex-grow flex items-center justify-center">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-              >
-                <FiLoader className="text-4xl text-orange-500" />
-              </motion.div>
-            </div>
-          ) : error ? (
-            <div className="text-center text-red-500 flex-grow flex items-center justify-center">
-              <FiAlertCircle className="text-4xl mr-2" />
-              {error}
-            </div>
-          ) : filteredEntities.length === 0 ? (
-            <div className="text-center text-gray-500 flex-grow flex items-center justify-center">
-              <FiInbox className="text-4xl mr-2" />
-              No data to show.
-            </div>
-          ) : (
-            <motion.div 
-              className={`grid ${getGridColumns(activeEntity)} gap-6 flex-grow overflow-y-auto px-4`}
-              layout
+        {/* Entity List */}
+        {loading ? (
+          <div className="text-center text-gray-500 flex-grow flex items-center justify-center">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
             >
-              {filteredEntities.map(entity => (
-                <motion.div
-                  key={entity._id}
-                  className={`bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 flex flex-col items-center text-center `}
-                  layout
-                  whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                >
-                  <div className="relative w-full pb-[100%] mb-4">
-                    {activeEntity === 'company' ? (
-                      <motion.img
-                        src={entity.logo || 'https://via.placeholder.com/150'}
-                        alt={entity.name}
-                        className="absolute inset-0 w-full h-full object-cover rounded-xl"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center bg-orange-100 rounded-xl">
-                        {getEntityIcon(activeEntity, entity)}
-                      </div>
-                    )}
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-800 mb-2 line-clamp-2">{entity.name}</h3>
-                  {getEntitySpecificInfo(activeEntity, entity)}
-                  <motion.button
-                    onClick={() => openDeleteConfirmation(entity._id)}
-                    className="mt-4 text-red-500 hover:text-red-700 transition-colors p-2 rounded-full bg-red-100 hover:bg-red-200"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <FiTrash2 size={20} />
-                  </motion.button>
-                </motion.div>
-              ))}
+              <FiLoader className="text-4xl text-orange-500" />
             </motion.div>
-          )}
+          </div>
+        ) : error ? (
+          <div className="text-center text-red-500 flex-grow flex items-center justify-center">
+            <FiAlertCircle className="text-4xl mr-2" />
+            {error}
+          </div>
+        ) : filteredEntities.length === 0 ? (
+          <div className="text-center text-gray-500 flex-grow flex items-center justify-center">
+            <FiInbox className="text-4xl mr-2" />
+            No data to show.
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
+              <thead className="bg-orange-100">
+                <tr>
+                  {activeEntity === 'company' && <th className="px-6 py-3 text-left text-xs font-medium text-orange-800 uppercase tracking-wider">Logo</th>}
+                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-800 uppercase tracking-wider">Name</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-800 uppercase tracking-wider">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {filteredEntities.map(entity => (
+                  <motion.tr 
+                    key={entity._id}
+                    className="hover:bg-orange-50 transition-colors duration-200"
+                    whileHover={{ y: -2 }}
+                  >
+                    {activeEntity === 'company' && (
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <img 
+                          src={entity.logo || 'https://via.placeholder.com/150'} 
+                          alt={entity.name}
+                          className="h-10 w-10 rounded-full object-cover"
+                        />
+                      </td>
+                    )}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">{entity.name}</div>
+                    </td>
+
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <motion.button
+                        onClick={() => openDeleteConfirmation(entity._id)}
+                        className="text-red-500 hover:text-red-700 transition-colors"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
+                        <FiTrash2 size={20} />
+                      </motion.button>
+                    </td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
 
 
     

@@ -11,7 +11,7 @@ function LoginPage() {
 
   return (
     <div className="container max-w-md px-4 py-12 mx-auto">
-      <h1 className="mb-8 text-2xl font-semibold text-center">Login to Your Account</h1>
+      <h1 className="mb-14 text-2xl font-semibold text-center">Login to Your Account</h1>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
   <motion.button

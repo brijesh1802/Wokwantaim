@@ -213,7 +213,7 @@ const AddJobSection = () => {
           >
             <option value="">Select Job Type</option>
             <option value="Full-time">Full-time</option>
-            <option value="Part-time">Part-time</option>
+            <option value="Part-time">Part-Time</option>
             <option value="Contract">Contract</option>
             <option value="Temporary">Temporary</option>
             <option value="Internship">Internship</option>

@@ -304,8 +304,8 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
         );
       case "workExperience":
         return (
-          <div className="max-w-4xl mx-auto bg-white rounded-lg overflow-x-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5  max-h-96 pb-4">
+          <div className="max-w-4xl mx-auto bg-white rounded-lg overflow-x-auto p-4">
+            <div className="flex flex-wrap gap-5 max-h-96 pb-4">
               {[
                 {
                   label: "Job Title",
@@ -339,7 +339,7 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
                   disabled: data.isCurrentJob,
                 },
               ].map(({ label, name, type, placeholder, disabled }) => (
-                <div key={name}>
+                <div key={name} className="flex-1 min-w-[250px]">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     {label}:
                   </label>
@@ -376,7 +376,7 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
                 </label>
               </div>
 
-              <div className="md:col-span-2 lg:col-span-3">
+              <div className="w-full">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Description:
                 </label>

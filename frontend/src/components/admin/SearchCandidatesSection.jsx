@@ -231,9 +231,10 @@ const SearchCandidatesSection = () => {
                     <p className="flex items-center text-gray-600">
                       <FiCheckCircle className="mr-3 text-orange-500" size={20} /> Verified: {selectedCandidate.isVerified ? 'Yes' : 'No'}
                     </p>
-                    <p className="flex items-center text-gray-600">
+                    {selectedCandidate.resume && <p className="flex items-center text-gray-600">
                       <FiFileText className="mr-3 text-orange-500 " size={20} /> <a href={selectedCandidate.resume} className='text-blue-500 cursor-pointer'  target='_blank'>View Resume</a>
-                    </p>
+                    </p>}
+                    
                   </div>
                 </div>
                 

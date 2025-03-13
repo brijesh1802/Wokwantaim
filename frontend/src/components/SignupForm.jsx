@@ -182,6 +182,14 @@ function SignupForm({ userType }) {
     joinType: "",
   });
 
+  const [experienceOptions, setExperienceOptions] = useState([
+    { value: "", label: "Select experience level" },
+  ]);
+
+  const [jobTypeOptions, setJobTypeOptions] = useState([
+    { value: "", label: "Select job type" },
+  ]);
+
   useEffect(() => {
     setFormData({
       firstName: "",
@@ -198,6 +206,11 @@ function SignupForm({ userType }) {
       website: "",
       joinType: "",
     });
+
+    if (userType === "candidate") {
+      fetchExperienceLevels();
+      fetchJobTypes();
+    }
   }, [userType]);
 
   const [fileNames, setFileNames] = useState({
@@ -224,6 +237,40 @@ function SignupForm({ userType }) {
       [name]: files[0] ? files[0].name : null,
     });
   };;
+
+  const fetchExperienceLevels = async () => {
+    try {
+      const url = `${import.meta.env.VITE_BASE_URL}/api/v1/admin/getExperienceLevels`;
+      const response = await fetch(url); 
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        const formattedOptions = data.map((level) => ({
+          value: level.name,
+          label: level.name,
+        }));
+        setExperienceOptions([{ value: "", label: "Select experience level" }, ...formattedOptions]);
+      }
+    } catch (error) {
+      console.error("Error fetching experience levels:", error);
+    }
+  }
+
+  const fetchJobTypes = async () => {
+    try {
+      const url = `${import.meta.env.VITE_BASE_URL}/api/v1/admin/getJobTypes`
+      const response = await fetch(url); 
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        const formattedOptions = data.map((job) => ({
+          value: job.name,
+          label: job.name,
+        }));
+        setJobTypeOptions([{ value: "", label: "Select job type" }, ...formattedOptions]);
+      }
+    } catch (error) {
+      console.error("Error fetching job types:", error);
+    }
+  };
 
   const [loading, setLoading] = useState(false);
   const [redirect, setRedirect] = useState(false);
@@ -455,7 +502,7 @@ function SignupForm({ userType }) {
           )}
         </div>
 
-        <AnimatedSelect
+        {/* <AnimatedSelect
           label={userType === "candidate" ? "Experience Level" : "Join Type"}
           id="level"
           name={userType === "candidate" ? "experienceLevel" : "joinType"}
@@ -483,25 +530,39 @@ function SignupForm({ userType }) {
           }
           icon={<Briefcase className="h-5 w-5" />}
           required
-        />
+        /> */}
+
+<AnimatedSelect
+      label={userType === "candidate" ? "Experience Level" : "Join Type"}
+      id="level"
+      name={userType === "candidate" ? "experienceLevel" : "joinType"}
+      value={userType === "candidate" ? formData.experienceLevel : formData.joinType}
+      onChange={handleChange}
+      options={
+        userType === "candidate"
+          ? experienceOptions
+          : [
+              { value: "", label: "Select join type" },
+              { value: "company", label: "Company" },
+              { value: "recruiter", label: "Recruiter" },
+              { value: "agency", label: "Agency" },
+            ]
+      }
+      icon={<Briefcase className="h-5 w-5" />}
+      required
+    />
 
         {userType === "candidate" && (
           <AnimatedSelect
-            label="Job Type"
-            id="jobType"
-            name="jobType"
-            value={formData.jobType}
-            onChange={handleChange}
-            options={[
-              { value: "", label: "Select job type" },
-              { value: "Full-time", label: "Full Time" },
-              { value: "Part-time", label: "Part Time" },
-              { value: "Internship", label: "Internship" },
-              { value: "Contract", label: "Contract" },
-            ]}
-            icon={<Briefcase className="h-5 w-5" />}
-            required
-          />
+          label="Job Type"
+          id="jobType"
+          name="jobType"
+          value={formData.jobType}
+          onChange={handleChange}
+          options={jobTypeOptions}
+          icon={<Briefcase className="h-5 w-5" />}
+          required
+        />
         )}
 
         {userType === "candidate" && (

@@ -1,5 +1,10 @@
 const Admin = require('../models/admin.model.js');
+const Company = require('../models/jobSettings/company.model.js');
+const Industry = require('../models/jobSettings/industry.model.js');
+const JobType = require('../models/jobSettings/jobType.model.js');
+const experienceLevel = require('../models/jobSettings/experience.model.js');
 const Candidate = require('../models/candidate.model.js');
+const { uploadToCloudinary,deleteFromCloudinary } = require('../middleware/upload');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
@@ -183,4 +188,225 @@ const deleteCandidate = async (req, res) => {
 }
 
 
-module.exports = { signup, login, profile, getAll, deleteAdmin, editAdmin, getAdmin, deleteCandidate };
+const getPublicIdFromUrl = (url) => {
+    const regex = /upload\/v\d+\/([^\.]+)/;  // Matches the part after "upload/v123456789/" and before the file extension
+    const matches = url.match(regex);
+    if (matches) {
+        return matches[1];  
+    }
+    throw new Error('Invalid Cloudinary URL');
+};
+
+
+const addCompany = async (req, res) => {
+    try {
+        const name  = req.body.name;
+
+        if (!name) {
+            return res.status(400).json({ message: 'Name and logo are required' });
+        }
+
+        const logoFile = req.files['logo'][0].buffer;
+
+        if (!logoFile) {
+            return res.status(400).json({ message: 'Logo is required' });
+        }
+
+        const logoUpload = await uploadToCloudinary(logoFile, 'uploads/companyLogo','image');
+
+        const newCompany = new Company({ name, logo: logoUpload.url });
+        await newCompany.save();
+        res.status(201).json({ message: 'Company added successfully' });
+
+    } catch (error) {
+        console.error('Error in adding company:', error);
+        res.status(500).json({ message: 'An error occurred while adding company' });
+    }
+}
+
+const deleteCompany = async (req, res) => {
+    try {
+        const company = await Company.findById(req.params.id);
+        if (!company) {
+            return res.status(404).json({ message: 'Company not found' });
+        }
+
+        if (company.logo) {
+                    const logoPublicId = getPublicIdFromUrl(company.logo);
+                    await deleteFromCloudinary(logoPublicId);
+        }
+        await company.deleteOne();
+        res.status(201).json({ message: 'Company deleted successfully' });
+
+    } catch (error) {
+        console.error('Error in deleting company:', error);
+        res.status(500).json({ message: 'An error occurred while deleting company' });
+    }
+}
+
+const getCompanies = async (req, res) => {
+    try {
+        const companies = await Company.find();
+        res.json(companies);
+    } catch (error) {
+        console.error('Error in getting all companies:', error);
+        res.status(500).json({ message: 'An error occurred while getting all companies' });
+    }
+}
+
+// Add Industry
+const addIndustry = async (req, res) => {
+    try {
+        const name = req.body.name;
+
+        if (!name) {
+            return res.status(400).json({ message: 'Name is required' });
+        }
+
+        const existingIndustry = await Industry.findOne({ name });
+        if (existingIndustry) {
+            return res.status(400).json({ message: 'Industry with this name already exists' });
+        }
+
+        const newIndustry = new Industry({ name });
+        await newIndustry.save();
+        res.status(201).json({ message: 'Industry added successfully' });
+
+    } catch (error) {
+        console.error('Error in adding industry:', error);
+        res.status(500).json({ message: 'An error occurred while adding industry', error: error.message });
+    }
+}
+
+// Delete Industry
+const deleteIndustry = async (req, res) => {
+    try {
+        const industry = await Industry.findById(req.params.id);
+        if (!industry) {
+            return res.status(404).json({ message: 'Industry not found' });
+        }
+        await industry.deleteOne();
+        res.status(200).json({ message: 'Industry deleted successfully' });
+
+    } catch (error) {
+        console.error('Error in deleting industry:', error);
+        res.status(500).json({ message: 'An error occurred while deleting industry', error: error.message });
+    }
+}
+
+// Get all Industries
+const getIndustries = async (req, res) => {
+    try {
+        const industries = await Industry.find();
+        res.json(industries);
+    } catch (error) {
+        console.error('Error in getting all industries:', error);
+        res.status(500).json({ message: 'An error occurred while getting all industries', error: error.message });
+    }
+}
+
+// Add Job Type
+const addJobType = async (req, res) => {
+    try {
+        const name = req.body.name;
+
+        if (!name) {
+            return res.status(400).json({ message: 'Name is required' });
+        }
+
+        const existingJobType = await JobType.findOne({ name });
+        if (existingJobType) {
+            return res.status(400).json({ message: 'Job Type with this name already exists' });
+        }
+
+        const newJobType = new JobType({ name });
+        await newJobType.save();
+        res.status(201).json({ message: 'Job Type added successfully' });
+
+    } catch (error) {
+        console.error('Error in adding job type:', error);
+        res.status(500).json({ message: 'An error occurred while adding job type', error: error.message });
+    }
+}
+
+// Delete Job Type
+const deleteJobType = async (req, res) => {
+    try {
+        const jobType = await JobType.findById(req.params.id);
+        if (!jobType) {
+            return res.status(404).json({ message: 'Job Type not found' });
+        }
+        await jobType.deleteOne();
+        res.status(200).json({ message: 'Job Type deleted successfully' });
+
+    } catch (error) {
+        console.error('Error in deleting job type:', error);
+        res.status(500).json({ message: 'An error occurred while deleting job type', error: error.message });
+    }
+}
+
+// Get all Job Types
+const getJobTypes = async (req, res) => {
+    try {
+        const jobTypes = await JobType.find();
+        res.json(jobTypes);
+    } catch (error) {
+        console.error('Error in getting all job types:', error);
+        res.status(500).json({ message: 'An error occurred while getting all job types', error: error.message });
+    }
+}
+
+// Add Experience Level
+const addExperienceLevel = async (req, res) => {
+    try {
+        const name = req.body.name;
+
+        if (!name) {
+            return res.status(400).json({ message: 'Name is required' });
+        }
+
+        const existingExperienceLevel = await experienceLevel.findOne({ name });
+        if (existingExperienceLevel) {
+            return res.status(400).json({ message: 'Experience Level with this name already exists' });
+        }
+
+        const newExperienceLevel = new experienceLevel({ name });
+        await newExperienceLevel.save();
+        res.status(201).json({ message: 'Experience Level added successfully' });
+
+    } catch (error) {
+        console.error('Error in adding experience level:', error);
+        res.status(500).json({ message: 'An error occurred while adding experience level', error: error.message });
+    }
+}
+
+// Delete Experience Level
+const deleteExperienceLevel = async (req, res) => {
+    try {
+        const ExperienceLevel = await experienceLevel.findById(req.params.id);
+        if (!ExperienceLevel) {
+            return res.status(404).json({ message: 'Experience Level not found' });
+        }
+        await experienceLevel.deleteOne();
+        res.status(200).json({ message: 'Experience Level deleted successfully' });
+
+    } catch (error) {
+        console.error('Error in deleting experience level:', error);
+        res.status(500).json({ message: 'An error occurred while deleting experience level', error: error.message });
+    }
+}
+
+// Get all Experience Levels
+const getExperienceLevels = async (req, res) => {
+    try {
+        const experienceLevels = await experienceLevel.find();
+        res.json(experienceLevels);
+    } catch (error) {
+        console.error('Error in getting all experience levels:', error);
+        res.status(500).json({ message: 'An error occurred while getting all experience levels', error: error.message });
+    }
+}
+
+
+
+module.exports = { signup, login, profile, getAll, deleteAdmin, editAdmin, getAdmin, deleteCandidate, addCompany, deleteCompany, getCompanies, addIndustry, deleteIndustry, getIndustries, addJobType, deleteJobType, getJobTypes, addExperienceLevel, deleteExperienceLevel, getExperienceLevels };

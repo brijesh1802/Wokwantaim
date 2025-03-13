@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { MapPin, ChevronLeft, ChevronRight,Briefcase,Clock } from "lucide-react";
+import { MapPin, ChevronLeft, ChevronRight, Briefcase, Clock } from "lucide-react";
 import companyLogo from "../assets/comlogo-1.png";
 
 const JobResults = ({ filteredJob }) => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortOrder, setSortOrder] = useState("");
+  const [sortOrder, setSortOrder] = useState(""); // Default to empty string or other default sorting
   const [sortedJobs, setSortedJobs] = useState([]);
 
   const jobsPerPage = 7;
@@ -24,7 +24,7 @@ const JobResults = ({ filteredJob }) => {
       sorted.sort((a, b) => b.company.localeCompare(a.company));
     }
     setSortedJobs(sorted);
-    setCurrentPage(1);  
+    setCurrentPage(1);  // Reset to first page when filteredJob or sorting changes
   }, [sortOrder, filteredJob]);
 
   const handleJobClick = (jobId) => {
@@ -32,68 +32,74 @@ const JobResults = ({ filteredJob }) => {
   };
 
 
-  const JobCard = ({ job }) => (
-    <motion.div
-      className="bg-white p-4 sm:p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100"
-      whileHover={{ scale: 1.01 }}
-      onClick={() => handleJobClick(job._id)}
-    >
-      <div className="flex flex-col space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
-          <div className="flex items-center space-x-3">
-            <div
-              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-200 flex-shrink-0"
-              style={{
-                backgroundImage: `url(${job.companyLogo || companyLogo})`,
-                backgroundPosition: "center",
-                backgroundSize: "cover",
-              }}
-            />
-            <div>
-              <h3 className="text-base sm:text-lg font-bold text-gray-900 group-hover:text-orange-500 transition-colors">
-                {job.company}
-              </h3>
-              <p className="text-xs sm:text-sm text-gray-600">{job.location}</p>
+
+  const JobCard = ({ job }) => {
+    const skills = Array.isArray(job.job.skills) ? job.job.skills : [];
+  
+    return (
+      <motion.div
+        className="bg-white p-4 sm:p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100"
+        whileHover={{ scale: 1.01 }}
+        onClick={() => handleJobClick(job.job.id)}
+      >
+        <div className="flex flex-col space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+            <div className="flex items-center space-x-3">
+              <div
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-200 flex-shrink-0"
+                style={{
+                  backgroundImage: `url(${job.job.companyLogo || companyLogo})`,
+                  backgroundPosition: "center",
+                  backgroundSize: "cover",
+                }}
+                alt={`${job.job.company} logo`}
+              />
+              <div>
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 group-hover:text-orange-500 transition-colors">
+                  {job.job.company}
+                </h3>
+                <p className="text-xs sm:text-sm text-gray-600">{job.job.location}</p>
+              </div>
+            </div>
+            <div className="inline-flex items-center space-x-2 px-3 py-1 bg-green-50 rounded-full">
+              <span className="text-base sm:text-lg font-bold text-green-600">₹{(job.job.salary / 10000)}K</span>
+              <span className="text-xs sm:text-sm text-gray-600">per month</span>
             </div>
           </div>
-          <div className="inline-flex items-center space-x-2 px-3 py-1 bg-green-50 rounded-full">
-            <span className="text-base sm:text-lg font-bold text-green-600">₹{(job.salary / 1000).toFixed(1)}K</span>
-            <span className="text-xs sm:text-sm text-gray-600">per month</span>
+    
+          <div>
+            <h4 className="text-lg sm:text-xl font-semibold text-gray-800">{job.job.title}</h4>
+            <div className="flex flex-wrap items-center gap-2 mt-2 text-xs sm:text-sm text-gray-600">
+              <span className="flex items-center">
+                <Briefcase size={14} className="mr-1" />
+                {job.job.experienceLevel}
+              </span>
+              <span className="hidden sm:inline">•</span>
+              <span className="flex items-center">
+                <Clock size={14} className="mr-1" />
+                {job.job.jobType}
+              </span>
+            </div>
+          </div>
+    
+          <div className="flex flex-wrap gap-2">
+            {skills.slice(0, 3).map((skill, index) => (
+              <span key={index} className="px-2 sm:px-3 py-1 text-xs font-medium text-orange-700 bg-orange-100 rounded-full">
+                {skill}
+              </span>
+            ))}
+            {skills.length > 3 && (
+              <span className="px-2 sm:px-3 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">
+                +{skills.length - 3} more
+              </span>
+            )}
           </div>
         </div>
+      </motion.div>
+    );
+  };
   
-        <div>
-          <h4 className="text-lg sm:text-xl font-semibold text-gray-800">{job.title}</h4>
-          <div className="flex flex-wrap items-center gap-2 mt-2 text-xs sm:text-sm text-gray-600">
-            <span className="flex items-center">
-              <Briefcase size={14} className="mr-1" />
-              {job.experienceLevel}
-            </span>
-            <span className="hidden sm:inline">•</span>
-            <span className="flex items-center">
-              <Clock size={14} className="mr-1" />
-              {job.jobType}
-            </span>
-          </div>
-        </div>
-  
-        <div className="flex flex-wrap gap-2">
-          {job.skills.slice(0, 3).map((skill, index) => (
-            <span key={index} className="px-2 sm:px-3 py-1 text-xs font-medium text-orange-700 bg-orange-100 rounded-full">
-              {skill}
-            </span>
-          ))}
-          {job.skills.length > 3 && (
-            <span className="px-2 sm:px-3 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">
-              +{job.skills.length - 3} more
-            </span>
-          )}
-        </div>
-      </div>
-    </motion.div>
-  );
-  
-  
+
   return (
     <div className="flex flex-col space-y-6 lg:w-3/4 mt-9 lg:mt-0">
       <div className="flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-100 rounded-lg">

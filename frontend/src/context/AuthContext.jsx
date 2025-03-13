@@ -170,7 +170,7 @@ import { isTokenExpired } from "./auth";
 
 export const AuthContext = createContext();
 
-const publicRoutes = ['/login', '/signup', '/admin/login', '/']; // Added home route '/'
+const publicRoutes = ['/login', '/signup', '/admin/login', '/','/joblist']; // Added home route '/'
 
 export const AuthProvider = ({ children }) => {
   const [industry, setIndustry] = useState([]);
@@ -181,7 +181,7 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [currentJobRole, setcurrentJobRole] = useState({
+  const [currentJobRole, setCurrentJobRole] = useState({
     DatePosted: [],
     Industry: [],
     JobRoles: [],
@@ -193,7 +193,7 @@ export const AuthProvider = ({ children }) => {
     TitleAndCompany: [],
   });
 
-  const [jobs, setJobs] = useState([]);
+  const [jobsInfo, setJobsInfo] = useState([]);
 
   useEffect(() => {
     const currentPath = location.pathname;
@@ -206,10 +206,18 @@ export const AuthProvider = ({ children }) => {
       console.log("Token is valid or on a public route");
     }
 
-    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/jobs/getAll`)
-      .then((response) => response.json())
-      .then((data) => setJobs(data))
-      .catch((error) => console.error("Error fetching jobs:", error));
+    // Fetch jobs info
+    const fetchJobsInfo = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/jobs/getAll`);
+        const data = await response.json();
+        setJobsInfo(data);
+      } catch (error) {
+        console.error("Error fetching jobsinfo:", error);
+      }
+    };
+    
+    fetchJobsInfo();
   }, [navigate, location]);
 
   const [userType, setUserType] = useState(storedUserType ? storedUserType : null);
@@ -244,53 +252,42 @@ export const AuthProvider = ({ children }) => {
 
   const handleJobRoleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
-    if (type === "radio") {
-      setSelectedRadio((prev) => ({
-        ...prev,
-        [name]: value, // Store selected value per category
-      }));
-
-      setcurrentJobRole((prev) => ({
-        ...prev,
-        [name]: [value], // Ensure only one value for radio button categories
-      }));
-    } else if (type === "checkbox") {
-      setCheckedOptions((prev) => ({
-        ...prev,
-        [value]: checked,
-      }));
-      console.log("checked options-auth : ", value);
-
-      setcurrentJobRole((prev) => ({
-        ...prev,
-        [name]: checked
-          ? [...(prev[name] || []), value]
-          : (prev[name] || []).filter((v) => v !== value),
-      }));
-    } else {
-      setcurrentJobRole((prev) => ({
-        ...prev,
-        [name]: [value],
-      }));
-    }
+    setCurrentJobRole((prev) => ({
+      ...prev,
+      [name]:
+        type === "checkbox" || type === "radio"
+          ? checked
+            ? [...(prev[name] || []), value]
+            : (prev[name] || []).filter((v) => v !== value)
+          : [value],
+    }));
   };
   useEffect(() => {
     const industryCountMap = new Map();
-    jobs.forEach((job) => {
-      industryCountMap.set(
-        job.industry,
-        (industryCountMap.get(job.industry) || 0) + 1
-      );
+    console.log(jobsInfo);
+
+    jobsInfo.forEach((jobData) => {
+      const industry = jobData.job.industry; // Now using jobData.job.industry, which is a string
+
+      if (industry) {
+        industryCountMap.set(
+          industry, // Using industry name directly
+          (industryCountMap.get(industry) || 0) + 1
+        );
+      }
     });
+
+    // Convert the Map to an array to set it in state
     const industryArray = Array.from(industryCountMap, ([industry, count]) => ({
       industry,
       count,
     }));
+
     setIndustry(industryArray);
-  }, [jobs]);
+  }, [jobsInfo]);
 
   const [showScroll, setShowScroll] = useState(false);
+
   useEffect(() => {
     const handleScroll = () => {
       setShowScroll(window.scrollY > 50);
@@ -301,16 +298,16 @@ export const AuthProvider = ({ children }) => {
 
   const [jobRole, setJobRole] = useState([]);
   const [companyRole, setCompanyRole] = useState([]);
-  
+
   useEffect(() => {
-    const jobRoles = jobs.map((job) => job.title);
-    const companies = jobs.map((job) => job.company);
+    const jobRoles = jobsInfo.map((jobData) => jobData.job.title); // Changed to jobData.job.title
+    const companies = jobsInfo.map((jobData) => jobData.job.company.name); // Changed to jobData.job.company.name
     const uniqueJobRolesSet = new Set(jobRoles);
     const uniqueCompanySet = new Set(companies);
 
     setJobRole(Array.from(uniqueJobRolesSet));
     setCompanyRole(Array.from(uniqueCompanySet));
-  }, [jobs]);
+  }, [jobsInfo]);
 
   return (
     <AuthContext.Provider
@@ -319,8 +316,7 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         handleJobRoleChange,
-        setcurrentJobRole,
-        jobs,
+        jobsInfo,
         currentJobRole,
         industry,
         showScroll,

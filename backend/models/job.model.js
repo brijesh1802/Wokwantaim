@@ -1,16 +1,14 @@
 const mongoose = require('mongoose');
 
 const jobSchema = new mongoose.Schema({
-  companyLogo:{
-    type: String,
-  },
   title: {
     type: String,
     required: true,
     index: true
   },
   company: {
-    type: String, 
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Company', 
     required: true,
     index: true
   },
@@ -31,13 +29,13 @@ const jobSchema = new mongoose.Schema({
     required: true
   },
   jobType: {
-    type: String,
-    enum: ['Full-time', 'Part-time', 'Contract', 'Temporary', 'Internship'],
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'JobType', 
     required: true
   },
   experienceLevel: {
-    type: String,
-    enum: ['Entry', 'Mid-level', 'Senior', 'Lead', 'Executive'],
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ExperienceLevel',
     required: true
   },
   skills: [{
@@ -49,7 +47,8 @@ const jobSchema = new mongoose.Schema({
     default: 'active'
   },
   industry: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Industry',
     required: true
   },
   applicationDeadline: {
@@ -71,7 +70,6 @@ const jobSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
-
 
 const Job = mongoose.model('Job', jobSchema);
 

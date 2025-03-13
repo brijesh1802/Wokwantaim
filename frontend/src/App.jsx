@@ -31,18 +31,18 @@ const AdminRoute = ({ children }) => {
 };
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
   const noPaths = ["/signup", "/login", "/admin/login", "/admin/dashboard"];
   const noFooter = ["/profile", "/admin/login", "/admin/dashboard"];
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     setIsLoading(false);
+  //   }, 3000);
 
-    return () => clearTimeout(timer);
-  }, []);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   return (
     <AuthProvider>

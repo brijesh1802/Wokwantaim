@@ -44,11 +44,25 @@
 
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import {BriefcaseBusiness, ArrowRight } from 'lucide-react'
+import { BriefcaseBusiness, ArrowRight } from 'lucide-react';
 import { AuthContext } from "../../../context/AuthContext";
 
 const FeaturedJobCategories = ({ sectionTitle }) => {
-  const { industry, handleJobRoleChange } = useContext(AuthContext);
+  const { jobsInfo, handleJobRoleChange } = useContext(AuthContext);
+
+  // Get the industry count
+  const industryCountMap = jobsInfo.reduce((acc, job) => {
+    const industry = job.job.industry; // Accessing industry directly from job
+    if (industry) {
+      acc[industry] = (acc[industry] || 0) + 1;
+    }
+    return acc;
+  }, {});
+
+  const industryArray = Object.entries(industryCountMap).map(([industry, count]) => ({
+    industry,
+    count,
+  }));
 
   return (
     <section className="py-16">
@@ -57,7 +71,7 @@ const FeaturedJobCategories = ({ sectionTitle }) => {
           <span className="text-orange-500">{sectionTitle}</span>
         </h2>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {industry.map(({ industry, count }, index) => (
+          {industryArray.map(({ industry, count }, index) => (
             <div
               key={index}
               className="group p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
@@ -91,6 +105,5 @@ const FeaturedJobCategories = ({ sectionTitle }) => {
     </section>
   );
 };
-
 
 export default FeaturedJobCategories;

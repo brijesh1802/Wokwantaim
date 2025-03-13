@@ -202,81 +202,117 @@ const AddJobSection = () => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className="bg-white p-6 rounded-2xl shadow-lg"
+      transition={{ duration: 0.5 }}
+      className="bg-gradient-to-br from-orange-50 to-white p-8 rounded-3xl shadow-2xl max-w-4xl mx-auto"
     >
-      <h2 className="text-3xl font-semibold text-gray-800 mb-6">Add New Job</h2>
-      {formError && <p className="text-red-500 mb-4">{formError}</p>}
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Job Title */}
-        <div>
-          <label className="text-gray-700 text-sm font-bold mb-2 flex items-center">
-            <FiBriefcase className="mr-2" /> Job Title
-          </label>
-          <input
-            className="border rounded w-full py-2 px-3"
-            type="text"
-            placeholder="Enter job title"
-            name="title"
-            value={job.title}
-            onChange={handleChange}
-            required
-          />
+      <h2 className="text-4xl font-bold text-orange-600 mb-8">Add New Job</h2>
+      {formError && (
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-red-500 mb-6 p-4 bg-red-100 rounded-lg"
+        >
+          {formError}
+        </motion.p>
+      )}
+  
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Job Title */}
+          <div className="col-span-2">
+            <label className="text-gray-700 text-sm font-semibold mb-2 flex items-center">
+              <FiBriefcase className="mr-2 text-orange-500" /> Job Title
+            </label>
+            <input
+              className="w-full py-3 px-4 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300"
+              type="text"
+              placeholder="Enter job title"
+              name="title"
+              value={job.title}
+              onChange={handleChange}
+              required
+            />
+          </div>
+  
+          {/* Company */}
+          <div>
+            <label className="block text-gray-700 text-sm font-semibold mb-2">Company</label>
+            {renderDropdown('company', companies, "Search company...")}
+          </div>
+  
+          {/* Location */}
+          <div>
+            <label className="text-gray-700 text-sm font-semibold mb-2 flex items-center">
+              <FiMapPin className="mr-2 text-orange-500" /> Location
+            </label>
+            <input
+              className="w-full py-3 px-4 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300"
+              type="text"
+              placeholder="Enter location"
+              name="location"
+              value={job.location}
+              onChange={handleChange}
+              required
+            />
+          </div>
+  
+          {/* Industry */}
+          <div>
+            <label className="block text-gray-700 text-sm font-semibold mb-2">Industry</label>
+            {renderDropdown('industry', industries, "Select Industry")}
+          </div>
+  
+          {/* Salary */}
+          <div>
+            <label className="text-gray-700 text-sm font-semibold mb-2 flex items-center">
+              <FiDollarSign className="mr-2 text-orange-500" /> Salary Per Annum (INR)
+            </label>
+            <input
+              className="w-full py-3 px-4 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300"
+              type="number"
+              placeholder="Enter salary"
+              name="salary"
+              value={job.salary}
+              onChange={handleChange}
+              required
+            />
+          </div>
+  
+          {/* Job Type */}
+          <div>
+            <label className="block text-gray-700 text-sm font-semibold mb-2">Job Type</label>
+            {renderDropdown('jobType', jobTypes, "Select Job Type")}
+          </div>
+  
+          {/* Experience Level */}
+          <div>
+            <label className="block text-gray-700 text-sm font-semibold mb-2">Experience Level</label>
+            {renderDropdown('experienceLevel', experienceLevels, "Select Experience Level")}
+          </div>
+  
+          {/* Application Deadline */}
+          <div>
+            <label className="text-gray-700 text-sm font-semibold mb-2 flex items-center">
+              <FiCalendar className="mr-2 text-orange-500" /> Application Deadline
+            </label>
+            <input
+              className="w-full py-3 px-4 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300"
+              type="date"
+              name="applicationDeadline"
+              value={job.applicationDeadline}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
-
-        {/* Company */}
-        <div>
-          <label className="block text-gray-700 text-sm font-bold mb-2">Company</label>
-          {renderDropdown('company', companies, "Search company...")}
-        </div>
-
-
-        {/* Location */}
-        <div>
-          <label className="text-gray-700 text-sm font-bold mb-2 flex items-center">
-            <FiMapPin className="mr-2" /> Location
-          </label>
-          <input
-            className="border rounded w-full py-2 px-3"
-            type="text"
-            placeholder="Enter location"
-            name="location"
-            value={job.location}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        {/* Industry */}
-        <div>
-          <label className="block text-gray-700 text-sm font-bold mb-2">Industry</label>
-          {renderDropdown('industry', industries, "Select Industry")}
-        </div>
-
-        {/* Salary */}
-        <div>
-          <label className="text-gray-700 text-sm font-bold mb-2 flex items-center">
-            <FiDollarSign className="mr-2" /> Salary Per Annum (INR)
-          </label>
-          <input
-            className="border rounded w-full py-2 px-3"
-            type="number"
-            placeholder="Enter salary"
-            name="salary"
-            value={job.salary}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
+  
         {/* Description */}
         <div>
-          <label className="text-gray-700 text-sm font-bold mb-2 flex items-center">
-            <FiFileText className="mr-2" /> Description
+          <label className="text-gray-700 text-sm font-semibold mb-2 flex items-center">
+            <FiFileText className="mr-2 text-orange-500" /> Description
           </label>
           <textarea
-            className="border rounded w-full py-2 px-3"
+            className="w-full py-3 px-4 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300"
             placeholder="Enter job description"
             name="description"
             value={job.description}
@@ -285,14 +321,14 @@ const AddJobSection = () => {
             rows="4"
           />
         </div>
-
+  
         {/* Requirements */}
         <div>
-          <label className=" text-gray-700 text-sm font-bold mb-2 flex items-center">
-            <FiTool className="mr-2" /> Requirements (comma-separated)
+          <label className="text-gray-700 text-sm font-semibold mb-2 flex items-center">
+            <FiTool className="mr-2 text-orange-500" /> Requirements (comma-separated)
           </label>
           <input
-            className="border rounded w-full py-2 px-3"
+            className="w-full py-3 px-4 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300"
             type="text"
             placeholder="Enter requirements"
             name="requirements"
@@ -300,26 +336,14 @@ const AddJobSection = () => {
             onChange={handleChange}
           />
         </div>
-
-        {/* Job Type */}
-        <div>
-          <label className="block text-gray-700 text-sm font-bold mb-2">Job Type</label>
-          {renderDropdown('jobType', jobTypes, "Select Job Type")}
-        </div>
-
-        {/* Experience Level */}
-        <div>
-          <label className="block text-gray-700 text-sm font-bold mb-2">Experience Level</label>
-          {renderDropdown('experienceLevel', experienceLevels, "Select Experience Level")}
-        </div>
-
+  
         {/* Skills */}
         <div>
-          <label className=" text-gray-700 text-sm font-bold mb-2 flex items-center">
-            <FiTool className="mr-2" /> Skills (comma-separated)
+          <label className="text-gray-700 text-sm font-semibold mb-2 flex items-center">
+            <FiTool className="mr-2 text-orange-500" /> Skills (comma-separated)
           </label>
           <input
-            className="border rounded w-full py-2 px-3"
+            className="w-full py-3 px-4 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300"
             type="text"
             placeholder="Enter skills"
             name="skills"
@@ -327,35 +351,20 @@ const AddJobSection = () => {
             onChange={handleChange}
           />
         </div>
-
-
-        {/* Application Deadline */}
-        <div>
-          <label className="text-gray-700 text-sm font-bold mb-2 flex items-center">
-            <FiCalendar className="mr-2" /> Application Deadline
-          </label>
-          <input
-            className="border rounded w-full py-2 px-3"
-            type="date"
-            name="applicationDeadline"
-            value={job.applicationDeadline}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
+  
         {/* Submit Button */}
         <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           type="submit"
-          className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-3 px-6 rounded-xl w-full"
+          className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-8 rounded-xl w-full transition-colors duration-300 shadow-lg hover:shadow-xl"
         >
           Add Job
         </motion.button>
       </form>
     </motion.div>
   );
+  
 };
 
 export default AddJobSection;

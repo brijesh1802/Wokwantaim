@@ -112,17 +112,17 @@ const SearchCandidatesSection = () => {
   };
 
   return (
-      <div className="bg-white p-8 rounded-2xl shadow-lg">
-        <h2 className="text-3xl font-bold text-gray-800 mb-8">Search Candidates</h2>
-        <div className="mb-8 relative">
+        <div className="bg-gradient-to-br from-orange-50 to-white p-10 rounded-3xl shadow-xl">
+        <h2 className="text-4xl font-bold text-orange-600 mb-10">Search Candidates</h2>
+        <div className="mb-10 relative">
           <input
             type="text"
             placeholder="Search by name, skills...."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full py-4 px-6 pl-12 border-2 border-gray-200 rounded-full shadow-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-gray-700 text-lg transition-all duration-300"
+            className="w-full py-5 px-8 pl-14 border-2 border-orange-200 rounded-full shadow-lg focus:ring-4 focus:ring-orange-300 focus:border-orange-400 text-gray-700 text-xl transition-all duration-300"
           />
-          <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl" />
+          <FiSearch className="absolute left-6 top-1/2 transform -translate-y-1/2 text-orange-400 text-2xl" />
         </div>
         {loading && <div className="text-center text-gray-500">Loading...</div>}
         {error && <div className="text-center text-red-500">Error: {error}</div>}
@@ -178,82 +178,83 @@ const SearchCandidatesSection = () => {
           <p className="text-center text-gray-500 text-xl">No candidates found.</p>
         )}
 
-        {selectedCandidate && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="sticky top-0 bg-white z-10 px-8 py-6 border-b border-gray-200">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-3xl font-bold text-gray-800">
-                    {`${selectedCandidate.fullName.firstName || ''} ${selectedCandidate.fullName.lastName || ''}`}
-                  </h3>
-                  <button onClick={closeModal} className="text-gray-500 hover:text-gray-700 transition-colors">
-                    <FiX size={28} />
-                  </button>
+      {selectedCandidate && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-all duration-300">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden animate-modal-appear">
+            <div className="sticky top-0 bg-gradient-to-r from-orange-500 to-orange-600 z-10 px-8 py-6">
+              <div className="flex justify-between items-center">
+                <h3 className="text-3xl font-bold text-white">
+                  {`${selectedCandidate.fullName.firstName || ''} ${selectedCandidate.fullName.lastName || ''}`}
+                </h3>
+                <button onClick={closeModal} className="text-white hover:text-orange-200 transition-colors">
+                  <FiX size={28} />
+                </button>
+              </div>
+            </div>
+            
+            <div className="px-8 py-6 space-y-8 overflow-y-auto max-h-[calc(90vh-180px)]">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="bg-orange-50 p-6 rounded-2xl shadow-inner">
+                  <h4 className="text-2xl font-semibold text-orange-700 mb-4">Contact Information</h4>
+                  <div className="space-y-4">
+                    <p className="flex items-center text-gray-700">
+                      <FiMail className="mr-3 text-orange-500" size={24} /> {selectedCandidate.email}
+                    </p>
+                    <p className="flex items-center text-gray-700">
+                      <FiPhone className="mr-3 text-orange-500" size={24} /> {selectedCandidate.phoneNumber || 'N/A'}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="bg-orange-50 p-6 rounded-2xl shadow-inner">
+                  <h4 className="text-2xl font-semibold text-orange-700 mb-4">Professional Details</h4>
+                  <div className="space-y-4">
+                    <p className="flex items-center text-gray-700">
+                      <FiBriefcase className="mr-3 text-orange-500" size={24} /> {selectedCandidate.experienceLevel || 'N/A'}
+                    </p>
+                    <p className="flex items-center text-gray-700">
+                      <FiClock className="mr-3 text-orange-500" size={24} /> {selectedCandidate.jobType || 'N/A'}
+                    </p>
+                  </div>
                 </div>
               </div>
               
-              <div className="px-8 py-6 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="text-xl font-semibold text-gray-700 mb-3">Contact Information</h4>
-                    <div className="space-y-3">
-                      <p className="flex items-center text-gray-600">
-                        <FiMail className="mr-3 text-orange-500" size={20} /> {selectedCandidate.email}
-                      </p>
-                      <p className="flex items-center text-gray-600">
-                        <FiPhone className="mr-3 text-orange-500" size={20} /> {selectedCandidate.phoneNumber || 'N/A'}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-xl font-semibold text-gray-700 mb-3">Professional Details</h4>
-                    <div className="space-y-3">
-                      <p className="flex items-center text-gray-600">
-                        <FiBriefcase className="mr-3 text-orange-500" size={20} /> {selectedCandidate.experienceLevel || 'N/A'}
-                      </p>
-                      <p className="flex items-center text-gray-600">
-                        <FiClock className="mr-3 text-orange-500" size={20} /> {selectedCandidate.jobType || 'N/A'}
-                      </p>
-                    </div>
-                  </div>
+              <div className="bg-orange-50 p-6 rounded-2xl shadow-inner">
+                <h4 className="text-2xl font-semibold text-orange-700 mb-4">Additional Information</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <p className="flex items-center text-gray-700">
+                    <FiUser className="mr-3 text-orange-500" size={24} /> Gender: {selectedCandidate.gender || 'N/A'}
+                  </p>
+                  <p className="flex items-center text-gray-700">
+                    <FiCalendar className="mr-3 text-orange-500" size={24} /> Joined: {selectedCandidate.createdAt ? new Date(selectedCandidate.createdAt).toLocaleDateString() : 'N/A'}
+                  </p>
+                  <p className="flex items-center text-gray-700">
+                    <FiCheckCircle className="mr-3 text-orange-500" size={24} /> Verified: {selectedCandidate.isVerified ? 'Yes' : 'No'}
+                  </p>
+                  {selectedCandidate.resume && (
+                    <p className="flex items-center text-gray-700">
+                      <FiFileText className="mr-3 text-orange-500" size={24} /> 
+                      <a href={selectedCandidate.resume} className="text-orange-600 hover:text-orange-800 font-semibold transition-colors" target="_blank" rel="noopener noreferrer">View Resume</a>
+                    </p>
+                  )}
                 </div>
-                
-                <div>
-                  <h4 className="text-xl font-semibold text-gray-700 mb-3">Additional Information</h4>
-                  <div className="space-y-3">
-                    <p className="flex items-center text-gray-600">
-                      <FiUser className="mr-3 text-orange-500" size={20} /> Gender: {selectedCandidate.gender || 'N/A'}
-                    </p>
-                    <p className="flex items-center text-gray-600">
-                      <FiCalendar className="mr-3 text-orange-500" size={20} /> Joined: {selectedCandidate.createdAt ? new Date(selectedCandidate.createdAt).toLocaleDateString() : 'N/A'}
-                    </p>
-                    <p className="flex items-center text-gray-600">
-                      <FiCheckCircle className="mr-3 text-orange-500" size={20} /> Verified: {selectedCandidate.isVerified ? 'Yes' : 'No'}
-                    </p>
-                    {selectedCandidate.resume && <p className="flex items-center text-gray-600">
-                      <FiFileText className="mr-3 text-orange-500 " size={20} /> <a href={selectedCandidate.resume} className='text-blue-500 cursor-pointer'  target='_blank'>View Resume</a>
-                    </p>}
-                    
-                  </div>
-                </div>
-                
-
               </div>
-            
-                <div className="flex justify-end p-6 bg-gray-50 rounded-b-3xl">
-                  <button
-                    onClick={() => initiateDelete(selectedCandidate._id)}
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition duration-300 focus:outline-none focus:shadow-outline"
-                  >
-                    Delete Candidate
-                  </button>
-                </div>
-
-             
+            </div>
+          
+            <div className="sticky bottom-0 bg-white px-8 py-6 border-t border-gray-200">
+              <div className="flex justify-end">
+                <button
+                  onClick={() => initiateDelete(selectedCandidate._id)}
+                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-xl transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 shadow-lg hover:shadow-xl"
+                >
+                  Delete Candidate
+                </button>
+              </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
+
 
         {/* Custom Delete Confirmation Modal */}
       {showDeleteModal && (

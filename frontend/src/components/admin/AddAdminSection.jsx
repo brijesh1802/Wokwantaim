@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FiUser, FiMail, FiLock, FiUserCheck } from 'react-icons/fi';
+import { motion } from 'framer-motion';
 
 const AddAdminSection = () => {
   const [newAdmin, setNewAdmin] = useState({
@@ -50,18 +51,42 @@ const AddAdminSection = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">Add New Admin</h2>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-      {success && <p className="text-green-500 mb-4">{success}</p>}
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="bg-gradient-to-br from-orange-50 to-white p-8 rounded-2xl shadow-xl max-w-md mx-auto"
+    >
+      <h2 className="text-3xl font-bold text-orange-600 mb-8">Add New Admin</h2>
+      
+      {error && (
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-red-500 mb-6 p-4 bg-red-100 rounded-lg"
+        >
+          {error}
+        </motion.p>
+      )}
+      
+      {success && (
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-green-500 mb-6 p-4 bg-green-100 rounded-lg"
+        >
+          {success}
+        </motion.p>
+      )}
+      
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="username">
             Username
           </label>
           <div className="relative">
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 pl-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="w-full py-3 px-4 pl-12 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300"
               id="username"
               type="text"
               placeholder="Enter admin username"
@@ -70,16 +95,17 @@ const AddAdminSection = () => {
               onChange={handleChange}
               required
             />
-            <FiUser className="absolute left-3 top-3 text-gray-400" />
+            <FiUser className="absolute left-4 top-1/2 transform -translate-y-1/2 text-orange-500" />
           </div>
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+        
+        <div>
+          <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="email">
             Email
           </label>
           <div className="relative">
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 pl-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="w-full py-3 px-4 pl-12 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300"
               id="email"
               type="email"
               placeholder="Enter admin email"
@@ -88,16 +114,17 @@ const AddAdminSection = () => {
               onChange={handleChange}
               required
             />
-            <FiMail className="absolute left-3 top-3 text-gray-400" />
+            <FiMail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-orange-500" />
           </div>
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+        
+        <div>
+          <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="password">
             Password
           </label>
           <div className="relative">
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 pl-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="w-full py-3 px-4 pl-12 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300"
               id="password"
               type="password"
               placeholder="Enter admin password"
@@ -106,40 +133,46 @@ const AddAdminSection = () => {
               onChange={handleChange}
               required
             />
-            <FiLock className="absolute left-3 top-3 text-gray-400" />
+            <FiLock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-orange-500" />
           </div>
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="role">
+        
+        <div>
+          <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="role">
             Role
           </label>
           <div className="relative">
-          <select
-            className="shadow appearance-none border rounded w-full py-2 px-3 pl-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="role"
-            name="role"
-            value={newAdmin.role}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Select a role</option>
-            <option value="admin">Admin</option>
-            <option value="superadmin">Super Admin</option>
-          </select>
-
-            <FiUserCheck className="absolute left-3 top-3 text-gray-400" />
+            <select
+              className="w-full py-3 px-4 pl-12 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 appearance-none"
+              id="role"
+              name="role"
+              value={newAdmin.role}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select a role</option>
+              <option value="admin">Admin</option>
+              <option value="superadmin">Super Admin</option>
+            </select>
+            <FiUserCheck className="absolute left-4 top-1/2 transform -translate-y-1/2 text-orange-500" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+              <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+              </svg>
+            </div>
           </div>
         </div>
-        <div className="flex items-center justify-between">
-          <button
-            className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit"
-          >
-            Add Admin
-          </button>
-        </div>
+        
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-xl transition-colors duration-300 shadow-lg hover:shadow-xl"
+          type="submit"
+        >
+          Add Admin
+        </motion.button>
       </form>
-    </div>
+    </motion.div>
   );
 };
 

@@ -177,14 +177,14 @@ const ViewAdminsSection = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">All Admins</h2>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white">
-          <thead>
-            <tr>
-              <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                Username
+    <div className="bg-gradient-to-br from-orange-50 to-white p-8 rounded-3xl shadow-xl">
+  <h2 className="text-4xl font-bold text-orange-600 mb-8">All Admins</h2>
+  <div className="overflow-x-auto rounded-2xl shadow-lg">
+    <table className="w-full bg-white">
+      <thead>
+        <tr className="bg-orange-100">
+          <th className="px-6 py-4 text-left text-sm font-semibold text-orange-800 uppercase tracking-wider">
+            Username
               </th>
               <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                 Email
@@ -200,14 +200,14 @@ const ViewAdminsSection = () => {
             </tr>
           </thead>
           <tbody>
-            {admins.map((admin) => (
-              <tr key={admin._id}>
-                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  <div className="flex items-center">
-                    <FiUser className="mr-2 text-gray-400" />
-                    <div className="text-sm leading-5 font-medium text-gray-900">{admin.username}</div>
-                  </div>
-                </td>
+          {admins.map((admin) => (
+          <tr key={admin._id} className="hover:bg-orange-50 transition-colors duration-200">
+            <td className="px-6 py-4 whitespace-nowrap">
+              <div className="flex items-center">
+                <FiUser className="mr-3 text-orange-500" />
+                <div className="text-sm font-medium text-gray-900">{admin.username}</div>
+              </div>
+            </td>
                 <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
                   <div className="flex items-center">
                     <FiMail className="mr-2 text-gray-400" />

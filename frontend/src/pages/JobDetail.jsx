@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { Building2, MapPin, PersonStanding, Calendar, Briefcase, HandCoins,ArrowLeft } from "lucide-react";
+import { Building2, MapPin, PersonStanding, Calendar, Briefcase, HandCoins, ArrowLeft } from "lucide-react";
 import Banner from "../components/Banner";
 import companyLogo from "../assets/comlogo-1.png";
 import { motion } from "framer-motion";
@@ -25,9 +25,16 @@ const JobDetail = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { userType } = useContext(AuthContext);
-  const jobId = location.state?.jobId;
+  const jobId = location.state?.jobId; // Use optional chaining to avoid undefined
   const [showAlert, setShowAlert] = useState(false);
   const [isApplied, setIsApplied] = useState(false);
+
+  // Handle invalid jobId
+  useEffect(() => {
+    if (!jobId) {
+      navigate('/joblist');
+    }
+  }, [jobId, navigate]);
 
   const onHandleClick = () => {
     if (userType !== "candidate") {
@@ -42,11 +49,12 @@ const JobDetail = () => {
   };
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/jobs/${jobId}`)
+    if (!jobId) return; // Avoid fetch if jobId is not available
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/jobs/getJob/${jobId}`)
       .then((response) => response.json())
       .then((data) => setJob(data))
       .catch((error) => console.error("Error fetching job details:", error));
-  }, [jobId, navigate]);
+  }, [jobId]);
 
   if (!job) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
@@ -58,7 +66,7 @@ const JobDetail = () => {
 
       <div className="container mx-auto px-4 py-8">
 
-      <motion.button
+        <motion.button
           onClick={() => navigate('/joblist')}
           className="mb-4 flex items-center text-orange-600 hover:text-orange-700 transition-colors duration-300"
           whileHover={{ x: -5 }}
@@ -101,7 +109,7 @@ const JobDetail = () => {
               </div>
               <div className="flex items-center">
                 <HandCoins size={18} className="mr-2 text-orange-500" />
-                <span>₹{job.salary.toLocaleString()} PM</span>
+                <span>₹{job.salary/10000}K PM</span>
               </div>
               <div className="flex items-center">
                 <Calendar size={18} className="mr-2 text-orange-500" />

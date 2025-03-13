@@ -1,30 +1,92 @@
 
 const Job = require('../models/job.model');
+const Company = require('../models/jobSettings/company.model');
+const ExperienceLevel = require('../models/jobSettings/experience.model');
+const JobType = require('../models/jobSettings/jobType.model');
+const Industry = require('../models/jobSettings/industry.model');
+
+
 const {uploadToCloudinary, deleteFromCloudinary} = require('../middleware/upload')
 const Application  =  require('../models/application.model');
 
-const getAllJobs = async (req, res) => {    
-    try{
+const getAllJobs = async (req, res) => {
+    try {
         const jobs = await Job.find();
-        res.json(jobs);
+        const jobData = await Promise.all(
+            jobs.map(async (job) => {
+                const company = await Company.findById(job.company._id);
+                const experienceLevel = await ExperienceLevel.findById(job.experienceLevel._id);
+                const jobType = await JobType.findById(job.jobType._id);
+                const industry = await Industry.findById(job.industry._id);
+
+                return {
+                     job : {
+                        id: job._id,
+                        title: job.title,
+                        companyLogo: company.logo,
+                        company: company.name,
+                        location: job.location,
+                        description: job.description,
+                        requirements: job.requirements,
+                        salary: job.salary,
+                        jobType: jobType.name,
+                        experienceLevel: experienceLevel.name,
+                        skills: job.skills,
+                        industry: industry.name,
+                        applicationDeadline: job.applicationDeadline,
+                        applicationPostedDate: job.applicationPostedDate
+                     }
+                };
+            })
+        );
+
+        res.json(jobData);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
     }
-    catch(err){
-        res.status(400).json(err);
-    }
-}
+};
 
 
 const getJobById = async (req, res) => {
     try {
+        // Fetch the job by ID
         const job = await Job.findById(req.params.id);
+        
         if (!job) {
             return res.status(404).json({ message: 'Job not found' });
         }
-        res.json(job);
+
+        // Fetch related data
+        const company = await Company.findById(job.company._id);
+        const experienceLevel = await ExperienceLevel.findById(job.experienceLevel._id);
+        const jobType = await JobType.findById(job.jobType._id);
+        const industry = await Industry.findById(job.industry._id);
+
+        // Return the job data with related information
+        const jobData = {
+            id: job._id,
+            title: job.title,
+            companyLogo: company.logo,
+            company: company.name,
+            location: job.location,
+            description: job.description,
+            requirements: job.requirements,
+            salary: job.salary,
+            jobType: jobType.name,
+            experienceLevel: experienceLevel.name,
+            skills: job.skills,
+            industry: industry.name,
+            applicationDeadline: job.applicationDeadline,
+            applicationPostedDate: job.applicationPostedDate
+        };
+
+        res.json(jobData);
     } catch (err) {
-        res.status(400).json(err);
+        console.error(err);
+        res.status(400).json({ message: "Error fetching job data", error: err });
     }
-}
+};
+
 
 
 const getLimitedJobs = async (req, res) => {    
@@ -36,35 +98,64 @@ const getLimitedJobs = async (req, res) => {
     }
 }
 
-const addJob = async (req, res) => {    
-    const { title, company, location, description, requirements, salary, jobType, experienceLevel, skills, industry, applicationDeadline } = req.body;  
-    const companyLogo = req.files['companyLogo'][0].buffer;
-    const companyLogoUpload = await uploadToCloudinary(companyLogo, 'uploads/companyLogos','image');
-
+const addJob = async (req, res) => {
     try {
-        const job = new Job(
-            {
-            companyLogo: companyLogoUpload.url,
-            title,
-            company,
-            location,
-            description,
-            requirements,
-            salary,
-            jobType,
-            experienceLevel,
-            skills,
-            industry,
-            applicationDeadline
-            }
-        );
+      const {
+        title,
+        company,
+        location,
+        description,
+        requirements,
+        salary,
+        jobType,
+        experienceLevel,
+        skills,
+        industry,
+        applicationDeadline,
+        applicationPostedDate
+      } = req.body;
+  
+      // Validate required fields
+      if (!title || !company || !location || !description || !salary || !jobType || !experienceLevel || !industry || !applicationDeadline || !applicationPostedDate) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
 
-        await job.save();
-        res.status(201).json("Job added successfully");
-        } catch (err) {
-            res.status(500).json({ message: 'Internal Server Error', details: err.message });
-        }
-}
+      if(salary < 0){
+        return res.status(400).json({ message: "Please enter valid salary" });
+      }
+
+    if(applicationDeadline < applicationPostedDate){
+        return res.status(400).json({ message: "Application Deadline Date not valid" });
+    }
+    
+
+  
+      // Create a new job instance
+      const newJob = new Job({
+        title,
+        company,
+        location,
+        description,
+        requirements,
+        salary: parseFloat(salary),
+        jobType,
+        experienceLevel,
+        skills,
+        industry,
+        applicationDeadline: new Date(applicationDeadline),
+        applicationPostedDate: new Date(applicationPostedDate)
+      });
+  
+      // Save job to database
+      const savedJob = await newJob.save();
+      
+      res.status(201).json({ message: "Job created successfully", job: savedJob });
+    } catch (error) {
+      console.error("Error adding job:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  };
+  
 
 const deleteJob = async (req, res) => {
     try {

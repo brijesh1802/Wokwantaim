@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { FaMapMarkerAlt, FaSearch } from "react-icons/fa"; // For Icons
-import { RefreshCcw } from "lucide-react";
 import Banner from "../components/Banner";
 import JobFilter from "../components/JobFilter";
 import JobResults from "../components/JobResults";
@@ -40,7 +37,7 @@ const JobList = () => {
 
     const filtered = jobRole.filter((role) => role.toLowerCase().includes(value.toLowerCase()));
     setFilteredSearchJob(filtered);
-    setShowDropdown(filtered.length > 0);
+    setShowDropDown(filtered.length > 0);
   };
 
   const handleDropdownSelect = (jobTitle) => {
@@ -92,8 +89,7 @@ const JobList = () => {
 
         const matchDate =
           !currentJobRole.DatePosted.length ||
-          (currentJobRole.DatePosted.includes("Last 24 hours") &&
-            daysAgo <= 1) ||
+          (currentJobRole.DatePosted.includes("Last 24 hours") && daysAgo <= 1) ||
           (currentJobRole.DatePosted.includes("Last Week") && daysAgo <= 7) ||
           (currentJobRole.DatePosted.includes("Last Month") && daysAgo <= 30) ||
           (currentJobRole.DatePosted.includes("Older") && daysAgo > 30);
@@ -138,9 +134,9 @@ const JobList = () => {
         return (
           matchDate &&
           matchIndustry &&
-          matchExperience &&
           matchJobRole &&
           matchSalary &&
+          matchExperience &&
           matchTitleAndCompany
         );
       })
@@ -164,17 +160,15 @@ const JobList = () => {
             {showDropdown && (
               <div className="absolute left-0 w-full md:w-1/3 bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto z-50 top-full mt-1">
                 {filteredSearchJob.map((jobTitle, index) => (
-                  <motion.div
+                  <div
                     key={index}
                     className="p-2 cursor-pointer hover:bg-gray-200"
                     onClick={() => handleDropdownSelect(jobTitle)}
-                    whileHover={{ backgroundColor: "rgba(249, 250, 251, 0.8)" }}
-                    transition={{ duration: 0.1 }}
                   >
                     {jobTitle}
-                  </motion.div>
+                  </div>
                 ))}
-              </motion.div>
+              </div>
             )}
             <select
               className="flex-1 w-full p-3 border border-gray-300 rounded-md cursor-pointer md:w-1/4"
@@ -214,25 +208,19 @@ const JobList = () => {
             </button>
           </div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Job Listings and Filters */}
-      <div className="container mx-auto px-4 mt-8 flex">
+      <div className="flex flex-col lg:flex-row mt-16 lg:p-3">
+        {/* Filter Section */}
         <JobFilter
           industry={industry}
-          location={jobcountry}
-          jobTypes={jobTypes}
           jobRole={jobRole}
           handleJobRoleChange={handleJobRoleChange}
-          selectedRadio={selectedRadio}
-          checkedOptions={checkedOptions}
-          activeFilter={activeFilter}
-          setActiveFilter={setActiveFilter}
         />
         {/* Job Results */}
-        <JobResults filteredJob={filteredJobRole} handleClick={handleJobClick} />
+        <JobResults filteredJob={filteredJobRole} handleClick={handleClick} />
       </div>
-    </motion.div>
+    </div>
   );
 };
 

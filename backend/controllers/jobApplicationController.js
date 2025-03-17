@@ -228,7 +228,10 @@ const CandidateProfile = require('../models/candidate.profile.model');
 const applyJob = async (req, res) => {
     try {
         console.log("Job ID:", req.params.id);
-        const job = await Job.findById(req.params.id);
+        //const job = await Job.findById(req.params.id);
+        const job = await Job.findById(req.params.id).populate("company", "name");
+         console.log("Company Name:", job.company.name);
+
 
         if (!job) {
             console.log("Job not found");
@@ -278,7 +281,7 @@ const applyJob = async (req, res) => {
 
         const matchingSkills = job.skills.filter(skill => candidateProfile.skills.includes(skill));
         console.log("Matching Skills:", matchingSkills);
-
+        console.log(job)
         const application = new Application({
             jobId: job._id,
             candidateId: candidate._id,
@@ -286,12 +289,12 @@ const applyJob = async (req, res) => {
             status: "pending",
             dateApplied: new Date(),
             jobName:job.title,
-            companyName:job.company,
+            companyName:job.company.name,
             resume:candidate.resume,
         });
-
         await application.save();
         console.log("Application saved successfully");
+        console.log("job details : ",job.company)
 
         job.applicationCount++;
         job.viewCount++;

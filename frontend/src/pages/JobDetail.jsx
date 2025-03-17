@@ -294,9 +294,11 @@ const JobDetail = () => {
 
   useEffect(() => {
     if (!jobId) return; // Avoid fetch if jobId is not available
+    
     fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/jobs/getJob/${jobId}`)
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         setJob(data);
         setDeadlineDate(new Date(data.applicationDeadline));
       })

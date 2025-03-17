@@ -4,12 +4,22 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const token = localStorage.getItem("authToken");
+  const [selectedEducation, setSelectedEducation] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData((prevData) => ({
       ...prevData,
       [name]: value,
+    }));
+  };
+
+  const handleEducationChange = (e) => {
+    const selectedValue = e.target.value;
+    setSelectedEducation(selectedValue);
+    setData((prevData) => ({
+      ...prevData,
+      degree: selectedValue, // Update degree field
     }));
   };
 
@@ -40,8 +50,14 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
         !data.startDate?.trim() ||
         (!data.isCurrentJob && !data.endDate?.trim()) ||
         (data.startDate > data.endDate && !data.isCurrentJob) ||
-        !data.description?.trim())) ||
-    !data.description?.trim();
+        !data.description?.trim()));
+  // (type === "education" &&
+  //   (!data.institution?.trim() ||
+  //     !data.degree?.trim() ||
+  //     !data.grade?.trim() ||
+  //     !data.startDate?.trim() ||
+  //     !data.endDate?.trim() ||
+  //     !data.description?.trim()));
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -132,6 +148,20 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
                 },
               ]
             : existingData.workExperience,
+        // education:
+        //   type === "education"
+        //     ? [
+        //         ...(existingData.education || []),
+        //         {
+        //           institution: data.institution,
+        //           degree: data.degree,
+        //           grade: data.grade,
+        //           startDate: data.startDate,
+        //           endDate: data.endDate,
+        //           description: data.description,
+        //         },
+        //       ]
+        //     : existingData.education,
       };
       console.log(payload);
 
@@ -224,7 +254,7 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
             <input
               type="text"
               name="title"
-              value={data.title || ""} // Updated to use data.title
+              value={data.title || ""}
               onChange={handleChange}
               placeholder="Enter certification name"
               className="w-full p-2 border border-gray-300 rounded mb-4"
@@ -241,7 +271,7 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
             <label className="block mb-2">Issued Date:</label>
             <input
               type="date"
-              name="issueDate" // Updated to use issueDate
+              name="issueDate"
               value={data.issueDate || ""}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded mb-4"
@@ -274,8 +304,8 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
         );
       case "workExperience":
         return (
-          <div className="max-w-4xl mx-auto bg-white rounded-lg overflow-x-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5  max-h-96 pb-4">
+          <div className="max-w-4xl mx-auto bg-white rounded-lg overflow-x-auto p-4">
+            <div className="flex flex-wrap gap-5 max-h-96 pb-4">
               {[
                 {
                   label: "Job Title",
@@ -309,7 +339,7 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
                   disabled: data.isCurrentJob,
                 },
               ].map(({ label, name, type, placeholder, disabled }) => (
-                <div key={name}>
+                <div key={name} className="flex-1 min-w-[250px]">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     {label}:
                   </label>
@@ -346,7 +376,7 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
                 </label>
               </div>
 
-              <div className="md:col-span-2 lg:col-span-3">
+              <div className="w-full">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Description:
                 </label>
@@ -413,6 +443,78 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
             />
           </>
         );
+      // case "education":
+        return (
+          <div className="p-5 bg-white rounded-lg shadow-lg max-w-md">
+            <h2 className="text-lg font-semibold mb-3">
+              Select Education Level
+            </h2>
+
+            {/* Dropdown List */}
+            <select
+              name="educationType"
+              value={selectedEducation}
+              onChange={handleEducationChange}
+              className="w-full p-2 border-2 rounded-lg  mb-4"
+            >
+              <option value="">Select Education Level</option>
+              <option value="SSLC">SSLC</option>
+              <option value="PUC">PUC</option>
+              <option value="Degree">Degree</option>
+              <option value="Masters">Masters</option>
+            </select>
+
+            {/* Dynamic Form */}
+            <div className="space-y-3">
+              <input
+                type="text"
+                name="institution"
+                value={data.institution || ""}
+                onChange={handleChange}
+                placeholder="Institution Name"
+                className="w-full p-2 border border-gray-300 rounded mb-4"
+                required
+              />
+
+              <input
+                type="date"
+                name="startDate"
+                value={data.startDate || ""}
+                onChange={handleChange}
+                className="w-full p-2 border border-gray-300 rounded mb-4"
+                required
+              />
+
+              <input
+                type="date"
+                name="endDate"
+                value={data.endDate || ""}
+                onChange={handleChange}
+                className="w-full p-2 border border-gray-300 rounded mb-4"
+              />
+
+              {selectedEducation !== "SSLC" && selectedEducation !== "PUC" && (
+                <input
+                  type="text"
+                  name="grade"
+                  value={data.grade || ""}
+                  onChange={handleChange}
+                  placeholder="Grade (Optional)"
+                  className="w-full p-2 border border-gray-300 rounded mb-4"
+                />
+              )}
+
+              <textarea
+                name="description"
+                value={data.description || ""}
+                onChange={handleChange}
+                placeholder="Description (Optional)"
+                className="w-full p-2 border border-gray-300 rounded mb-4"
+              />
+            </div>
+          </div>
+        );
+
       default:
         return null;
     }

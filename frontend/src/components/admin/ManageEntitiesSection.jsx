@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { FiBriefcase, FiTool, FiFile, FiPlus, FiSearch, FiTrash2, FiUser, FiAlertTriangle, FiX, FiUpload } from 'react-icons/fi';
+import { FiBriefcase, FiTool, FiFile, FiPlus, FiSearch, FiTrash2, FiUser, FiAlertTriangle, FiX, FiUpload, FiLoader, FiClock, FiTrendingUp, FiInbox } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ManageEntitiesSection = () => {
@@ -145,7 +145,8 @@ const ManageEntitiesSection = () => {
             setError(err.message);
         }
     };
-
+    
+  
     const getIcon = (entity) => {
         switch (entity) {
             case 'company': return <FiBriefcase className="mr-2" size={20} />;
@@ -178,93 +179,131 @@ const ManageEntitiesSection = () => {
     };
 
     return (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          className="bg-gray-50 p-8 rounded-3xl shadow-lg flex flex-col h-full"
-        >
-          <h2 className="text-3xl font-extrabold text-gray-900 mb-8">Manage Entities</h2>
-    
+      <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7 }}
+      className="bg-gradient-to-br from-gray-50 to-white p-10 rounded-3xl shadow-xl flex flex-col h-full"
+    >
+      <h2 className="text-4xl font-extrabold text-gray-900 mb-10">Manage Entities</h2>
+      
           {/* Top Navigation */}
-          <div className="flex space-x-6 mb-10">
+          <div className="flex flex-wrap justify-center gap-4 mb-12">
             {['company', 'industry', 'jobType', 'experienceLevel'].map(entity => (
               <motion.button
                 key={entity}
-                className={`py-3 px-6 rounded-full font-semibold transition-all duration-300
-                          ${activeEntity === entity
-                            ? 'bg-orange-500 text-white shadow-md'
-                            : 'bg-white text-gray-700 hover:bg-gray-200 shadow-sm'
-                          }`}
+                className={`
+                  py-3 px-6 rounded-full font-medium text-sm transition-all duration-300
+                  flex items-center space-x-2
+                  ${activeEntity === entity
+                    ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-100 hover:text-orange-500 shadow-sm'
+                  }
+                `}
                 onClick={() => setActiveEntity(entity)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
               >
-                {getIcon(entity)}
-                {entityNameMap[entity]}
+                <span className="text-lg">{getIcon(entity)}</span>
+                <span>{entityNameMap[entity]}</span>
               </motion.button>
             ))}
           </div>
+
     
           {/* Search and Add Section */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="relative flex-1 mr-4">
-              <input
-                type="text"
-                placeholder={`Search ${entityNameMap[activeEntity]}...`}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full py-4 px-6 border-2 border-gray-300 rounded-full shadow-inner text-gray-700 transition-all duration-300 pl-12"
-              />
-              <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            </div>
-            <motion.button
-              onClick={() => setShowAddModal(true)}
-              className="bg-orange-500 text-white px-6 py-3 rounded-full hover:bg-orange-600 transition-colors shadow-md"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <FiPlus className="inline-block mr-2" /> Add {entityNameMap[activeEntity]}
-            </motion.button>
+          <div className="flex flex-col md:flex-row items-center justify-between mb-8 space-y-4 md:space-y-0 md:space-x-4">
+          <div className="relative flex-1 w-full md:w-auto">
+            <input
+              type="text"
+              placeholder={`Search ${entityNameMap[activeEntity]}...`}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full py-4 px-6 bg-white border-2 border-gray-200 rounded-full shadow-sm text-gray-700 transition-all duration-300 pl-12 focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-none"
+            />
+            <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl" />
           </div>
+          <motion.button
+            onClick={() => setShowAddModal(true)}
+            className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-8 py-4 rounded-full transition-all duration-300 shadow-md flex items-center justify-center space-x-2 w-full md:w-auto"
+            whileHover={{ scale: 1.03, boxShadow: "0 4px 20px rgba(234, 88, 12, 0.3)" }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <FiPlus className="text-xl" />
+            <span>Add {entityNameMap[activeEntity]}</span>
+          </motion.button>
+        </div>
+
     
-          {/* Entity List */}
-          {loading ? (
-            <div className="text-center text-gray-500 flex-grow flex items-center justify-center">Loading...</div>
-          ) : error ? (
-            <div className="text-center text-red-500 flex-grow flex items-center justify-center">{error}</div>
-          ) : filteredEntities.length === 0 ? (
-            <div className="text-center text-gray-500 flex-grow flex items-center justify-center">No data to show.</div>
-          ) : (
-            <motion.ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 flex-grow overflow-y-auto" layout>
-              {filteredEntities.map(entity => (
-                <motion.li
-                  key={entity._id}
-                  className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 p-4 flex flex-col items-center text-center"
-                  layout
-                  whileHover={{ scale: 1.05 }}
-                >
-                  {activeEntity === 'company' &&
-                    <motion.img
-                      src={entity.logo || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyWN150bkFW7HuP4a7uuf9yb8fIIM7CXEv9g&s'}
-                      alt={entity.name}
-                      className="w-24 h-24 object-cover rounded-full mb-3"
-                      style={{ maxWidth: '150px', maxHeight: '150px' }}
-                    />
-                  }
-                  <span className="text-lg font-semibold text-gray-800">{entity.name}</span>
-                  <motion.button
-                    onClick={() => openDeleteConfirmation(entity._id)}
-                    className="mt-3 text-red-500 hover:text-red-700 transition-colors p-2 rounded-full"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+        {/* Entity List */}
+        {loading ? (
+          <div className="text-center text-gray-500 flex-grow flex items-center justify-center">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            >
+              <FiLoader className="text-4xl text-orange-500" />
+            </motion.div>
+          </div>
+        ) : error ? (
+          <div className="text-center text-red-500 flex-grow flex items-center justify-center">
+            <FiAlertCircle className="text-4xl mr-2" />
+            {error}
+          </div>
+        ) : filteredEntities.length === 0 ? (
+          <div className="text-center text-gray-500 flex-grow flex items-center justify-center">
+            <FiInbox className="text-4xl mr-2" />
+            No data to show.
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
+              <thead className="bg-orange-100">
+                <tr>
+                  {activeEntity === 'company' && <th className="px-6 py-3 text-left text-xs font-medium text-orange-800 uppercase tracking-wider">Logo</th>}
+                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-800 uppercase tracking-wider">Name</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-800 uppercase tracking-wider">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {filteredEntities.map(entity => (
+                  <motion.tr 
+                    key={entity._id}
+                    className="hover:bg-orange-50 transition-colors duration-200"
+                    whileHover={{ y: -2 }}
                   >
-                    <FiTrash2 size={20} />
-                  </motion.button>
-                </motion.li>
-              ))}
-            </motion.ul>
-          )}
+                    {activeEntity === 'company' && (
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <img 
+                          src={entity.logo || 'https://via.placeholder.com/150'} 
+                          alt={entity.name}
+                          className="h-10 w-10 rounded-full object-cover"
+                        />
+                      </td>
+                    )}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">{entity.name}</div>
+                    </td>
+
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <motion.button
+                        onClick={() => openDeleteConfirmation(entity._id)}
+                        className="text-red-500 hover:text-red-700 transition-colors"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
+                        <FiTrash2 size={20} />
+                      </motion.button>
+                    </td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+
+
     
           <AnimatePresence>
             {showDeleteModal && (

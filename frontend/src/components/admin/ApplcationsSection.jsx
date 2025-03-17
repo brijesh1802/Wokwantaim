@@ -4,12 +4,38 @@ import { FiUser, FiBriefcase, FiCalendar, FiCheckCircle, FiClock, FiEye } from '
 
 
 const ApplicationsSection = () => {
-  const [applications, setApplications] = useState([
-    { id: 1, name: 'Alice Johnson', job: 'Frontend Developer', date: '2023-05-15', status: 'Pending' },
-    { id: 2, name: 'Bob Smith', job: 'Backend Developer', date: '2023-05-14', status: 'Reviewed' },
-    { id: 3, name: 'Charlie Brown', job: 'UI/UX Designer', date: '2023-05-13', status: 'Interviewed' },
-    // Add more dummy data as needed
-  ]);
+  const [applications, setApplications] = useState([]);
+  useEffect(() => {
+      const fetchApplications = async () => {
+        try {
+          const token = localStorage.getItem("adminToken");
+          const response = await fetch(
+            `${import.meta.env.VITE_BASE_URL}/api/v1/applications/getAllApplications`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+  
+          if (!response.ok) {
+            throw new Error("Failed to fetch user applications");
+          }
+  
+          const data = await response.json();
+
+
+          setApplications(data);
+        } catch (error) {
+          console.error("Error fetching user applications:", error);
+        }
+      };
+  
+      fetchApplications();
+    }, []);
+
 
   return (
     <motion.div 

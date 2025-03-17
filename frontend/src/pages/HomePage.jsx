@@ -16,53 +16,89 @@ import JobInterviews from "./JobInterviews";
 import FeaturedJobCategories from "../components/Home/Featured/FeaturedJobCategories";
 
 function HomePage() {
-  const { userType, handleJobRoleChange, jobRole,companyRole} = useContext(AuthContext);
+  const AlertBox = ({ message, onClose }) => {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+        <div className="w-full max-w-sm p-5 bg-white rounded-md shadow-lg">
+          <h3 className="text-lg text-center text-orange-600">{message}</h3>
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={onClose}
+              className="px-6 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const { userType, handleJobRoleChange, jobRole, companyRole } =
+    useContext(AuthContext);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredSearchJob, setFilteredSearchJob] = useState("");
-  const [showDropdown,setShowDropDown]=useState(false)
- 
-  const navigate=useNavigate();
-  const handleSearch=()=>{
-    navigate('/joblist')
-  }
+  const [showDropdown, setShowDropDown] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    if (searchTerm.trim() === "") {
+      setShowAlert(true);
+    } else {
+      navigate("/joblist");
+    }
+  };
+  const closeAlert = () => {
+    setShowAlert(false);
+  };
+  useEffect(() => {
+    console.log("searchTerm : ", searchTerm);
+  }, [searchTerm]);
+
   const handleSearchChange = (e) => {
-    
     const value = e.target.value;
     setSearchTerm(value);
 
-    if(value.trim()==="")
-    {
-      setFilteredSearchJob([])
-      setShowDropDown(false)
-      return
+    if (value.trim() === "") {
+      setFilteredSearchJob([]);
+      setShowDropDown(false);
+      return;
     }
-    const filteredJobRole = jobRole.filter((role) => role.toLowerCase().includes(value.toLowerCase()));
-    const filteredCompanyRole=companyRole.filter((role)=>role.toLowerCase().includes(value.toLowerCase()))
-    const combinedFilteredRole=Array.from(new Set([...filteredJobRole,...filteredCompanyRole]))
-    console.log(combinedFilteredRole.length)
+    const filteredJobRole = jobRole.filter((role) =>
+      role.toLowerCase().includes(value.toLowerCase())
+    );
+    const filteredCompanyRole = companyRole.filter((role) =>
+      role.toLowerCase().includes(value.toLowerCase())
+    );
+    const combinedFilteredRole = Array.from(
+      new Set([...filteredJobRole, ...filteredCompanyRole])
+    );
+    console.log(combinedFilteredRole.length);
     setFilteredSearchJob(combinedFilteredRole);
     setShowDropDown(combinedFilteredRole.length > 0);
   };
 
+
   const handleSuggestionClick = (title) => {
     setSearchTerm(title);
     setFilteredSearchJob([]);
-    setShowDropDown(false)
-    console.log(searchTerm)
-
-   
+    setShowDropDown(false);
+    console.log(searchTerm);
   };
   useEffect(() => {
     if (searchTerm) {
-      handleJobRoleChange({ target: { name: "TitleAndCompany", value:searchTerm, type: "text" } })
+      handleJobRoleChange({
+        target: { name: "TitleAndCompany", value: searchTerm, type: "text" },
+      });
     }
   }, [searchTerm]);
   useEffect(() => {
     console.log("Search Term Updated:", searchTerm);
     console.log("Filtered Jobs:", filteredSearchJob);
     console.log("Dropdown State:", showDropdown);
-  }, [searchTerm, filteredSearchJob, showDropdown]); 
-
+  }, [searchTerm, filteredSearchJob, showDropdown]);
 
   const StatItem = ({ icon, value, label }) => (
     <div className="flex flex-col items-center p-8 bg-white bg-opacity-10 rounded-2xl backdrop-blur-sm shadow-lg transition-all duration-300 hover:bg-opacity-20 hover:transform hover:scale-105 w-64">
@@ -180,12 +216,10 @@ function HomePage() {
       {/* Featured Categories */}
       <section className="py-5 px-5 bg-gradient-to-b from-orange-50 to-white">
         <FeaturedJobCategories sectionTitle="Featured Job Categories" />
-        
       </section>
 
       <section className="py-16 bg-gradient-to-b from-orange-50 to-white">
         {userType === "candidate" ? <JobInterviews /> : null}
-     
       </section>
 
       {/* Statistics Section */}

@@ -149,8 +149,8 @@ const JobList = () => {
 
 
   return (
-    <div>
-      <div className="gap-4">
+    <motion.div>
+      <motion.div className="gap-4">
         {/* Banner Section */}
         <Banner />
         <div className="px-4 py-8 -mt-10 bg-gray-100 rounded-md lg:mx-8 lg:-mt-16">
@@ -162,7 +162,7 @@ const JobList = () => {
               onChange={handleSearchTitleChange}
             />
             {showDropdown && (
-              <div className="absolute left-0 w-full md:w-1/3 bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto z-50 top-full mt-1">
+              <motion.div className="absolute left-0 w-full md:w-1/3 bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto z-50 top-full mt-1">
                 {filteredSearchJob.map((jobTitle, index) => (
                   <motion.div
                     key={index}
@@ -220,19 +220,18 @@ const JobList = () => {
       <div className="container mx-auto px-4 mt-8 flex">
         <JobFilter
           industry={industry}
-          location={jobcountry}
+          location={jobCountry}
           jobTypes={jobTypes}
           jobRole={jobRole}
           handleJobRoleChange={handleJobRoleChange}
-          selectedRadio={selectedRadio}
-          checkedOptions={checkedOptions}
-          activeFilter={activeFilter}
-          setActiveFilter={setActiveFilter}
+        
+          // activeFilter={activeFilter}
+          // setActiveFilter={setActiveFilter}
         />
        {/* Job Results */}
        {
         filteredJobRole.length>0?
-        <JobResults filteredJob={filteredJobRole} handleClick={handleJobClick} />:<p className="text-gray-600 text-center w-full mt-20"> No jobs found</p>
+        <JobResults filteredJob={filteredJobRole} handleClick={handleClick} />:<p className="text-gray-600 text-center w-full mt-20"> No jobs found</p>
 }
       </div>
     </motion.div>

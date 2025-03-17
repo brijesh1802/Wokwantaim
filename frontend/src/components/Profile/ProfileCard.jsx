@@ -26,7 +26,7 @@ const ProfileCard = ({ user }) => {
     profilePhoto: user.profilePhoto || default_image,
     resume: user.resume || "",
   });
- 
+
   const [tempFormData, setTempFormData] = useState({ ...formData });
 
   const handleChange = (e, field) => {
@@ -251,7 +251,7 @@ const ProfileCard = ({ user }) => {
                       className="w-full py-2 pl-10 pr-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                       required
                     />
-                    <User className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2" />
+                    <User className="absolute w-5 h-5 text-orange-500 -translate-y-1/2 left-3 top-1/2" />
                   </div>
                   <label className="block mb-2 text-left">Last Name:</label>
                   <div className="relative">
@@ -261,7 +261,7 @@ const ProfileCard = ({ user }) => {
                       onChange={(e) => handleChange(e, "lastName")}
                       className="w-full py-2 pl-10 pr-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                     />
-                    <User className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2"></User>
+                    <User className="absolute w-5 h-5 text-orange-500 -translate-y-1/2 left-3 top-1/2"></User>
                   </div>
                   <label className="block mb-2 text-left">Phone Number:</label>
                   <div className="relative">
@@ -271,7 +271,7 @@ const ProfileCard = ({ user }) => {
                       onChange={(e) => handleChange(e, "phoneNumber")}
                       className="w-full py-2 pl-10 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                     />
-                    <Phone className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2" />
+                    <Phone className="absolute w-5 h-5 text-orange-500 -translate-y-1/2 left-3 top-1/2" />
                   </div>
                   <label className="block mb-2 text-left">Gender:</label>
                   <div className="relative">
@@ -287,7 +287,7 @@ const ProfileCard = ({ user }) => {
                       <option value="Female">Female</option>
                       <option value="Other">Other</option>
                     </select>
-                    <User className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2" />
+                    <User className="absolute w-5 h-5 text-orange-500 -translate-y-1/2 left-3 top-1/2" />
                   </div>
                   <label className="block mb-2 text-left">
                     Experience Level:
@@ -306,7 +306,7 @@ const ProfileCard = ({ user }) => {
                       <option value="Mid-Level">Mid Level</option>
                       <option value="Senior-Level">Senior Level</option>
                     </select>
-                    <Briefcase className="absolute w-5 h-5  -translate-y-1/2  top-1/2 left-3 text-gray-300"></Briefcase>
+                    <Briefcase className="absolute w-5 h-5  -translate-y-1/2  top-1/2 left-3 text-orange-500"></Briefcase>
                   </div>
                   <label className="block mb-2 text-left">Job Type:</label>
                   <div className="relative">
@@ -323,31 +323,32 @@ const ProfileCard = ({ user }) => {
                       <option value="Internship">Internship</option>
                       <option value="Contract">Contract</option>
                     </select>
-                    <Briefcase className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2" />
+                    <Briefcase className="absolute w-5 h-5  -translate-y-1/2  top-1/2 left-3 text-orange-500"/>
                   </div>
 
-                  <label className="block mb-2 text-left">Upload CV:</label>
+                  <label className="block mb-2 text-left">Upload CV: </label>
                   <input
                     type="file"
                     accept="application/pdf"
                     onChange={(e) => handleChange(e, "resume")}
-                    className="w-full p-2 border border-gray-300 rounded mb-4"
+                    className="w-full p-2 border border-gray-300 rounded mb-4 text-"
                   />
+                 
                 </div>
                 <div className="flex justify-between mt-4">
                   <button
                     onClick={handleClosePopup}
-                    className="px-4 py-2 bg-gray-500 text-white rounded"
+                    className="px-4 py-2  bg-orange-500 text-white rounded"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSave}
                     disabled={isSaveDisabled}
-                    className={`px-4 py-2 rounded ${
+                    className={`px-4 py-2 w-24 rounded ${
                       isSaveDisabled
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                        : "bg-blue-500 text-white"
+                        : "bg-orange-500 text-white"
                     }`}
                   >
                     {loading ? <Loader2 className="animate-spin" /> : "Save"}

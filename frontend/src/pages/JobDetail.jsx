@@ -21,7 +21,6 @@ const AlertBox = ({ message, onClose }) => (
 );
 
 const JobDetail = () => {
-  const [loading, setLoading] = useState(false);
   const [job, setJob] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -37,67 +36,13 @@ const JobDetail = () => {
     }
   }, [jobId, navigate]);
 
-  const onHandleClick = async () => {
-    setShowApplied(false);
+  const onHandleClick = () => {
     if (userType !== "candidate") {
-        setShowAlert(true);
-        setMessage("Login to apply");
-        return;
+      setShowAlert(true);
+    } else {
+      setIsApplied(true);
     }
-
-    const currentDate = new Date();
-    if (deadlineDate && currentDate > deadlineDate) {
-        setShowApplied(true);
-        setMessage("Application is closed!");
-        return;
-    }
-
-    setLoading(true);
-    try {
-        const token = localStorage.getItem("authToken");
-        const checkResponse = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/applications/apply/${jobId}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        const existingApplications = await checkResponse.json();
-
-        if (checkResponse.ok && existingApplications.length > 0) {
-            setMessage("You have already applied for this job");
-            setLoading(false);
-            return;
-        }
-        
-        // 2. If no existing application, proceed with applying
-        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/applications/apply/${jobId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-            setIsApplied(true);
-            setShowApplied(true);
-            setMessage("Application Submitted");
-        } else {
-            setShowAlert(true);
-            setMessage(result.message || "Failed to apply");
-        }
-    } catch (error) {
-        console.error("Error applying for job:", error);
-        setShowAlert(true);
-        setMessage("An error occurred. Please try again.");
-    } finally {
-        setLoading(false);
-    }
-};
+  };
 
   const closeAlert = () => {
     setShowAlert(false);
@@ -107,10 +52,7 @@ const JobDetail = () => {
     if (!jobId) return; // Avoid fetch if jobId is not available
     fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/jobs/getJob/${jobId}`)
       .then((response) => response.json())
-      .then((data) => {
-        setJob(data);
-        setDeadlineDate(new Date(data.applicationDeadline));
-      })
+      .then((data) => setJob(data))
       .catch((error) => console.error("Error fetching job details:", error));
   }, [jobId]);
 
@@ -232,15 +174,15 @@ const JobDetail = () => {
                 Apply Now
               </button>
             </div>
-            {showApplied &&(
-              <div className={`mt-4 text-center ${isApplied?'text-green-600 bg-green-100':'text-red-600 bg-red-100'} font-semibold  p-3 rounded-lg`}>
-                {message}
+            {isApplied && (
+              <div className="mt-4 text-center text-green-600 font-semibold bg-green-100 p-3 rounded-lg">
+                You have successfully applied for this job!
               </div>
             )}
           </div>
         </div>
       </div>
-      {showAlert && <AlertBox message={message} onClose={closeAlert} />}
+      {showAlert && <AlertBox message="Please Login to Apply for the Job" onClose={closeAlert} />}
     </div>
   );
 };

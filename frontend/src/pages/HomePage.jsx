@@ -58,7 +58,8 @@ function HomePage() {
   }, [searchTerm]);
 
   const handleSearchChange = (e) => {
-    const value = e.target.value;
+    const value = (e.target.value || "").toLowerCase();
+
     setSearchTerm(value);
 
     if (value.trim() === "") {
@@ -66,11 +67,13 @@ function HomePage() {
       setShowDropDown(false);
       return;
     }
+    console.log("Hello");
     const filteredJobRole = jobRole.filter((role) =>
-      role.toLowerCase().includes(value.toLowerCase())
+      role.toLowerCase().includes(value)
     );
+
     const filteredCompanyRole = companyRole.filter((role) =>
-      role.toLowerCase().includes(value.toLowerCase())
+      role.toLowerCase().includes(value)
     );
     const combinedFilteredRole = Array.from(
       new Set([...filteredJobRole, ...filteredCompanyRole])
@@ -150,6 +153,7 @@ function HomePage() {
         "Apply to your dream jobs with just a click and track your application status in real-time.",
     },
   ];
+
 
   return (
     <div>

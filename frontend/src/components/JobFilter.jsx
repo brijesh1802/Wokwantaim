@@ -6,29 +6,18 @@ import {
   HandCoins,
   Building2,
   PersonStanding,
+  ChevronUp,
   ChevronDown,
 } from "lucide-react";
 
-const FilterSection = ({
-  id,
-  label,
-  icon,
-  options,
-  type,
-  handleJobRoleChange,
-  selectedRadio,
-  checkedOptions,
-  activeFilter,
-  setActiveFilter,
-}) => {
-  const isOpen = activeFilter === id;
+const FilterSection = ({ id, label, icon, options, type, handleJobRoleChange }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const [showAll, setShowAll] = useState(false);
 
-  const toggleSection = () => {
-    setActiveFilter(isOpen ? null : id);
-  };
+  const toggleSection = () => setIsOpen(!isOpen);
+  const toggleShowAll = () => setShowAll(!showAll);
 
-  const visibleOptions = showAll ? options || [] : (options || []).slice(0, 4);
+  const visibleOptions = showAll ? options : options.slice(0, 4);
 
   return (
     <div className="mb-4 bg-white rounded-lg shadow-md overflow-hidden">
@@ -63,15 +52,7 @@ const FilterSection = ({
                   type={type}
                   name={id}
                   value={option}
-                  checked={
-                    type === "radio"
-                      ? selectedRadio?.[id] === option
-                      : type === "checkbox"
-                      ? Boolean(checkedOptions?.[option])
-                      : false
-                  }
                   onChange={handleJobRoleChange}
-                  autoComplete="false"
                   className="form-checkbox text-orange-500 rounded focus:ring-orange-500"
                 />
                 <span className="text-gray-700">{option}</span>
@@ -80,7 +61,7 @@ const FilterSection = ({
             {options.length > 4 && (
               <button
                 className="mt-2 text-sm text-orange-500 hover:text-orange-600 focus:outline-none"
-                onClick={() => setShowAll(!showAll)}
+                onClick={toggleShowAll}
               >
                 {showAll ? "Show less" : "Show more"}
               </button>
@@ -92,19 +73,7 @@ const FilterSection = ({
   );
 };
 
-const JobFilter = ({
-  industry,
-  location,
-  jobTypes,
-  handleJobRoleChange,
-  selectedRadio,
-  checkedOptions = {},
-  jobRole,
-  activeFilter,
-  setActiveFilter
-}) => {
-  // const [activeFilter, setActiveFilter] = useState(null);
-
+const JobFilter = ({ industry, jobRole, handleJobRoleChange }) => {
   const filters = [
     {
       id: "DatePosted",
@@ -151,10 +120,6 @@ const JobFilter = ({
           key={filter.id}
           {...filter}
           handleJobRoleChange={handleJobRoleChange}
-          selectedRadio={selectedRadio}
-          checkedOptions={checkedOptions}
-          activeFilter={activeFilter}
-          setActiveFilter={setActiveFilter}
         />
       ))}
     </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { FiBriefcase, FiTool, FiFile, FiPlus, FiSearch, FiTrash2, FiUser, FiAlertTriangle, FiX, FiUpload, FiLoader, FiClock, FiTrendingUp, FiInbox } from 'react-icons/fi';
+import { FiBriefcase, FiTool, FiFile, FiPlus, FiSearch, FiTrash2, FiAlertCircle,FiUser, FiAlertTriangle, FiX, FiUpload, FiLoader, FiClock, FiTrendingUp, FiInbox } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ManageEntitiesSection = () => {
@@ -359,7 +359,7 @@ const ManageEntitiesSection = () => {
                 >
                   <div className="flex justify-between items-center mb-6">
                     <h3 className="text-2xl font-bold text-gray-800">Add {entityNameMap[activeEntity].slice(0, -1)}</h3>
-                    <button onClick={() => setShowAddModal(false)} className="text-gray-500 hover:text-gray-700">
+                    <button onClick={() => {setShowAddModal(false);setNewEntityName("")}} className="text-gray-500 hover:text-gray-700">
                       <FiX size={24} />
                     </button>
                   </div>

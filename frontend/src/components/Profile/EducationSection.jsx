@@ -268,7 +268,7 @@ const EducationSection = ({ educations, setEducations }) => {
   // );
   
   return (
-    <div className="mt-6 flex flex-col gap-6">
+    <div className="mt-6 flex flex-col gap-6 overflow-y-auto h-[300px]">
       {educations.length > 0 ? (
         educations.map((education, index) => (
           <motion.div
@@ -312,7 +312,7 @@ const EducationSection = ({ educations, setEducations }) => {
                 </>
               )}
             </div>
-  
+
             {/* Editable Form */}
             {editStates[index] ? (
               <div className="grid grid-cols-1 gap-4">
@@ -329,7 +329,7 @@ const EducationSection = ({ educations, setEducations }) => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                   />
                 </div>
-  
+
                 {/* Institution */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
@@ -343,7 +343,7 @@ const EducationSection = ({ educations, setEducations }) => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                   />
                 </div>
-  
+
                 {/* Start Year */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
@@ -363,7 +363,7 @@ const EducationSection = ({ educations, setEducations }) => {
                     ))}
                   </select>
                 </div>
-  
+
                 {/* End Year */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
@@ -383,7 +383,7 @@ const EducationSection = ({ educations, setEducations }) => {
                     ))}
                   </select>
                 </div>
-  
+
                 {/* Grade */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
@@ -397,7 +397,7 @@ const EducationSection = ({ educations, setEducations }) => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                   />
                 </div>
-  
+
                 {/* Field of Study */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
@@ -413,35 +413,45 @@ const EducationSection = ({ educations, setEducations }) => {
                 </div>
               </div>
             ) : (
-              <>
+              <div>
                 {/* Display Education Details */}
                 <h3 className="text-xl font-semibold text-gray-900">
                   {education.degree}
                 </h3>
-  
+
                 {/* Grid Layout for Details */}
                 <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-[10px] text-gray-[600] text-sm">
                   {/* Institution */}
                   <p className="font-medium text-gray-[800]">Institution:</p>
                   <p>{education.institution}</p>
-  
+
                   {/* Start Year */}
                   <p className="font-medium text-gray-[800]">Start Year:</p>
-                  <p>{education.startDate ? new Date(education.startDate).getFullYear() : "N/A"}</p>
-  
+                  <p>
+                    {education.startDate
+                      ? new Date(education.startDate).getFullYear()
+                      : "N/A"}
+                  </p>
+
                   {/* End Year */}
                   <p className="font-medium text-gray-[800]">End Year:</p>
-                  <p>{education.endDate ? new Date(education.endDate).getFullYear() : "N/A"}</p>
-  
+                  <p>
+                    {education.endDate
+                      ? new Date(education.endDate).getFullYear()
+                      : "N/A"}
+                  </p>
+
                   {/* Grade */}
-                  <p className="font-medium text-gray-[800]">Percentage/CGPA:</p>
+                  <p className="font-medium text-gray-[800]">
+                    Percentage/CGPA:
+                  </p>
                   <p>{education.grade}</p>
-  
+
                   {/* Field of Study */}
                   <p className="font-medium text-gray-[800]">Field Of Study:</p>
                   <p>{education.description}</p>
                 </div>
-              </>
+              </div>
             )}
           </motion.div>
         ))

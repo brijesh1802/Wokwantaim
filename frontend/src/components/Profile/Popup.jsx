@@ -520,31 +520,66 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
     }
   };
 
+  // return (
+  //   <div className="popup-overlay fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+  //     <div className="popup-content bg-white p-6 rounded-md shadow-lg w-96">
+  //       <h3 className="text-xl font-semibold mb-4">{type} Details</h3>
+
+  //       <form onSubmit={handleSave}>
+  //         {renderFormFields()}
+
+  //         {error && <div className="text-red-500 mb-4">{error}</div>}
+
+  //         <div className="flex justify-between">
+  //           <button
+  //             type="button"
+  //             onClick={togglePopup}
+  //             className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+  //           >
+  //             Cancel
+  //           </button>
+  //           <button
+  //             type="submit"
+  //             disabled={isSaveDisabled || loading}
+  //             className={`px-4 py-2 rounded transition-colors ${
+  //               isSaveDisabled || loading
+  //                 ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+  //                 : "bg-blue-500 text-white hover:bg-blue-600"
+  //             }`}
+  //           >
+  //             {loading ? "Saving..." : "Save"}
+  //           </button>
+  //         </div>
+  //       </form>
+  //     </div>
+  //   </div>
+  // );
+
   return (
-    <div className="popup-overlay fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="popup-content bg-white p-6 rounded-md shadow-lg w-96">
-        <h3 className="text-xl font-semibold mb-4">{type} Details</h3>
-
-        <form onSubmit={handleSave}>
+    <div className="popup-overlay fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 transition-opacity duration-300">
+      <div className="popup-content bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
+        <h3 className="text-2xl font-bold text-gray-800 mb-6">{type} Details</h3>
+  
+        <form onSubmit={handleSave} className="space-y-4">
           {renderFormFields()}
-
-          {error && <div className="text-red-500 mb-4">{error}</div>}
-
-          <div className="flex justify-between">
+  
+          {error && <div className="text-sm text-red-500">{error}</div>}
+  
+          <div className="flex justify-between items-center space-x-4">
             <button
               type="button"
               onClick={togglePopup}
-              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+              className="w-full py-2 px-4 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors duration-300"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSaveDisabled || loading}
-              className={`px-4 py-2 rounded transition-colors ${
+              className={`w-full py-2 px-4 text-sm font-medium rounded-lg transition-colors duration-300 ${
                 isSaveDisabled || loading
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-blue-500 text-white hover:bg-blue-600"
+                  : "bg-blue-600 text-white hover:bg-blue-700"
               }`}
             >
               {loading ? "Saving..." : "Save"}
@@ -554,6 +589,8 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
       </div>
     </div>
   );
+  
+
 };
 
 export default Popup;

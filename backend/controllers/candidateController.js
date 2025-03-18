@@ -263,6 +263,7 @@ const update = async (req, res) => {
     try {
         const updates = { ...req.body }; // Ensure updates is an object
         const user = await Candidate.findOne({ email: req.user.email });
+        console.log(updates);
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });

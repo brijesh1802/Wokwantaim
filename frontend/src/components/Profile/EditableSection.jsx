@@ -77,35 +77,78 @@ const EditableSection = ({ title, user }) => {
     setIsEditing(false);
   };
 
+  // return (
+  //   <div className="w-full p-6 mt-0 bg-white rounded-lg shadow-lg">
+  //     <div className="flex items-center justify-between w-full">
+  //       <h2 className="text-xl font-semibold">{title}</h2>
+  //       {!isEditing && (
+  //         <button
+  //           onClick={() => setIsEditing(true)}
+  //           className="p-1 bg-gradient-to-r text-blue-500 border-2 border-blue-300  hover:from-blue-600 hover:to-blue-400 hover:text-white transition"
+  //         >
+  //           ✏️ Edit
+  //         </button>
+  //       )}
+  //     </div>
+  //     {isEditing ? (
+  //       <div>
+  //         <textarea
+  //           value={text}
+  //           onChange={(e) => setText(e.target.value)}
+  //           className="w-full p-2 mt-2 border-2 border-orange-100 rounded-md focus:ring-2"
+  //         />
+  //         <div className="flex justify-end mt-3 gap-2">
+  //           <button
+  //             className="px-4 py-2 font-medium text-white bg-gradient-to-r from-orange-400 to-red-500 rounded-md shadow-sm hover:from-red-500 hover:to-orange-400 focus:ring-2 focus:ring-blue-300 transition"
+  //             onClick={handleSave}
+  //           >
+  //             Save
+  //           </button>
+  //           <button
+  //             className="px-4 py-2 font-medium bg-gradient-to-r text-gray-800 from-gray-200 to-gray-300 rounded-md shadow-md hover:from-gray-300 hover:to-gray-200"
+  //             onClick={handleClose}
+  //           >
+  //             Cancel
+  //           </button>
+  //         </div>
+  //       </div>
+  //     ) : (
+  //       <p className="p-2 mt-2 text-gray-700 border-2 border-none">
+  //         {text || `Hey there I am ${user.fullName?.firstName}`}
+  //       </p>
+  //     )}
+  //   </div>
+  // );
+
   return (
-    <div className="w-full p-6 mt-0 bg-white rounded-lg shadow-lg">
-      <div className="flex items-center justify-between w-full">
-        <h2 className="text-xl font-semibold">{title}</h2>
+    <div className="w-full p-8 mt-4 bg-white rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl">
+      <div className="flex items-center justify-between w-full mb-6">
+        <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
         {!isEditing && (
           <button
             onClick={() => setIsEditing(true)}
-            className="p-1 bg-gradient-to-r text-blue-500 border-2 border-blue-300  hover:from-blue-600 hover:to-blue-400 hover:text-white transition"
+            className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-100 rounded-full hover:bg-blue-200 transition-colors duration-300"
           >
             ✏️ Edit
           </button>
         )}
       </div>
       {isEditing ? (
-        <div>
+        <div className="space-y-4">
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            className="w-full p-2 mt-2 border-2 border-orange-100 rounded-md focus:ring-2"
+            className="w-full p-4 text-gray-700 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300"
           />
-          <div className="flex justify-end mt-3 gap-2">
+          <div className="flex justify-end gap-3">
             <button
-              className="px-4 py-2 font-medium text-white bg-gradient-to-r from-orange-400 to-red-500 rounded-md shadow-sm hover:from-red-500 hover:to-orange-400 focus:ring-2 focus:ring-blue-300 transition"
+              className="px-6 py-2 font-medium text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow-md hover:from-blue-600 hover:to-blue-700 focus:ring-2 focus:ring-blue-300 transition-all duration-300"
               onClick={handleSave}
             >
               Save
             </button>
             <button
-              className="px-4 py-2 font-medium bg-gradient-to-r text-gray-800 from-gray-200 to-gray-300 rounded-md shadow-md hover:from-gray-300 hover:to-gray-200"
+              className="px-6 py-2 font-medium text-gray-700 bg-gray-100 rounded-lg shadow-md hover:bg-gray-200 focus:ring-2 focus:ring-gray-300 transition-all duration-300"
               onClick={handleClose}
             >
               Cancel
@@ -113,12 +156,14 @@ const EditableSection = ({ title, user }) => {
           </div>
         </div>
       ) : (
-        <p className="p-2 mt-2 text-gray-700 border-2 border-none">
-          {text || `Hey there I am ${user.fullName?.firstName}`}
+        <p className="p-4 mt-2 text-gray-700 bg-gray-50 rounded-lg">
+          {text || `Hey there, I'm ${user.fullName?.firstName}`}
         </p>
       )}
     </div>
-  );
+  )
+  
+
 };
 
 export default EditableSection;

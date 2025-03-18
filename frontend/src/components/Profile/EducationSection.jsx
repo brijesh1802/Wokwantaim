@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Trash2, Pencil, Check, X } from "lucide-react";
+import { motion } from "framer-motion";
 
 const EducationSection = ({ educations, setEducations }) => {
   const [error, setError] = useState(null);
@@ -95,14 +96,189 @@ const EducationSection = ({ educations, setEducations }) => {
     return <div>Error: {error}</div>;
   }
 
+  // return (
+  //   <div className="mt-6 flex flex-col gap-6">
+  //     {educations.length > 0 ? (
+  //       educations.map((education, index) => (
+  //         <div
+  //           key={index}
+  //           className="relative w-full flex flex-col gap-4 p-6 border border-gray-200 bg-white"
+  //         >
+  //           <div className="absolute top-3 right-3 flex gap-2">
+  //             {editStates[index] ? (
+  //               <>
+  //                 <button
+  //                   onClick={() => handleSave(index)}
+  //                   className="text-gray-400 hover:text-green-500 transition"
+  //                 >
+  //                   <Check size={20} />
+  //                 </button>
+  //                 <button
+  //                   onClick={() => handleClose(index)}
+  //                   className="text-gray-400 hover:text-red-500 transition"
+  //                 >
+  //                   <X size={20} />
+  //                 </button>
+  //               </>
+  //             ) : (
+  //               <>
+  //                 <button
+  //                   onClick={() => handleEdit(index)}
+  //                   className="text-gray-400 hover:text-blue-500 transition"
+  //                 >
+  //                   <Pencil size={20} />
+  //                 </button>
+  //                 <button
+  //                   onClick={() => handleDelete(index)}
+  //                   className="text-gray-400 hover:text-red-500 transition"
+  //                 >
+  //                   <Trash2 size={20} />
+  //                 </button>
+  //               </>
+  //             )}
+  //           </div>
+
+  //           {editStates[index] ? (
+  //             <div className="grid grid-cols-1 gap-4">
+  //               <div>
+  //                 <label className="block text-sm font-medium text-gray-700">
+  //                   Degree:
+  //                 </label>
+  //                 <input
+  //                   type="text"
+  //                   name="degree"
+  //                   value={editStates[index].degree}
+  //                   onChange={(e) => handleChange(index, e)}
+  //                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+  //                 />
+  //               </div>
+  //               <div>
+  //                 <label className="block text-sm font-medium text-gray-700">
+  //                   Institution:
+  //                 </label>
+  //                 <input
+  //                   type="text"
+  //                   name="institution"
+  //                   value={editStates[index].institution}
+  //                   onChange={(e) => handleChange(index, e)}
+  //                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+  //                 />
+  //               </div>
+  //               <div>
+  //                 <label className="block text-sm font-medium text-gray-700">
+  //                   Start Year:
+  //                 </label>
+  //                 <select
+  //                   name="startDate"
+  //                   value={new Date(editStates[index].startDate).getFullYear()}
+  //                   onChange={(e) => handleChange(index, e)}
+  //                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+  //                 >
+  //                   <option value="">Select Year</option>
+  //                   {years.map((year) => (
+  //                     <option key={year} value={year}>
+  //                       {year}
+  //                     </option>
+  //                   ))}
+  //                 </select>
+  //               </div>
+  //               <div>
+  //                 <label className="block text-sm font-medium text-gray-700">
+  //                   End Year:
+  //                 </label>
+  //                 <select
+  //                   name="endDate"
+  //                   value={new Date(editStates[index].endDate).getFullYear()}
+  //                   onChange={(e) => handleChange(index, e)}
+  //                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+  //                 >
+  //                   <option value="">Select Year</option>
+  //                   {years.map((year) => (
+  //                     <option key={year} value={year}>
+  //                       {year}
+  //                     </option>
+  //                   ))}
+  //                 </select>
+  //               </div>
+  //               <div>
+  //                 <label className="block text-sm font-medium text-gray-700">
+  //                   Percentage/CGPA:
+  //                 </label>
+  //                 <input
+  //                   type="text"
+  //                   name="grade"
+  //                   value={editStates[index].grade}
+  //                   onChange={(e) => handleChange(index, e)}
+  //                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+  //                 />
+  //               </div>
+  //               <div>
+  //                 <label className="block text-sm font-medium text-gray-700">
+  //                   Field Of Study:
+  //                 </label>
+  //                 <input
+  //                   type="text"
+  //                   name="description"
+  //                   value={editStates[index].description}
+  //                   onChange={(e) => handleChange(index, e)}
+  //                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+  //                 />
+  //               </div>
+  //             </div>
+  //           ) : (
+  //             <>
+  //               <h3 className="text-xl font-semibold text-gray-900">
+  //                 {education.degree}
+  //               </h3>
+
+  //               <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-gray-600 text-sm">
+  //                 <p className="font-medium text-gray-800">Institution:</p>
+  //                 <p>{education.institution}</p>
+
+  //                 <p className="font-medium text-gray-800">Start Year:</p>
+  //                 <p>
+  //                   {education.startDate
+  //                     ? new Date(education.startDate).getFullYear()
+  //                     : "N/A"}
+  //                 </p>
+
+  //                 <p className="font-medium text-gray-800">End Year:</p>
+  //                 <p>
+  //                   {education.endDate
+  //                     ? new Date(education.endDate).getFullYear()
+  //                     : "N/A"}
+  //                 </p>
+
+  //                 <p className="font-medium text-gray-800">Percentage/CGPA:</p>
+  //                 <p>{education.grade}</p>
+
+  //                 <p className="font-medium text-gray-800">Field Of Study:</p>
+  //                 <p className="text-justify">{education.description}</p>
+  //               </div>
+  //             </>
+  //           )}
+  //         </div>
+  //       ))
+  //     ) : (
+  //       <p className="text-gray-500 text-center col-span-full">
+  //         Add your Educational Qualification here
+  //       </p>
+  //     )}
+  //   </div>
+  // );
+  
   return (
     <div className="mt-6 flex flex-col gap-6">
       {educations.length > 0 ? (
         educations.map((education, index) => (
-          <div
+          <motion.div
             key={index}
-            className="relative w-full flex flex-col gap-4 p-6 border border-gray-200 bg-white"
+            className="relative w-full flex flex-col gap-4 p-6 border border-gray-200 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
           >
+            {/* Action Buttons */}
             <div className="absolute top-3 right-3 flex gap-2">
               {editStates[index] ? (
                 <>
@@ -136,9 +312,11 @@ const EducationSection = ({ educations, setEducations }) => {
                 </>
               )}
             </div>
-
+  
+            {/* Editable Form */}
             {editStates[index] ? (
               <div className="grid grid-cols-1 gap-4">
+                {/* Degree */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Degree:
@@ -148,9 +326,11 @@ const EducationSection = ({ educations, setEducations }) => {
                     name="degree"
                     value={editStates[index].degree}
                     onChange={(e) => handleChange(index, e)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                   />
                 </div>
+  
+                {/* Institution */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Institution:
@@ -160,9 +340,11 @@ const EducationSection = ({ educations, setEducations }) => {
                     name="institution"
                     value={editStates[index].institution}
                     onChange={(e) => handleChange(index, e)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                   />
                 </div>
+  
+                {/* Start Year */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Start Year:
@@ -171,7 +353,7 @@ const EducationSection = ({ educations, setEducations }) => {
                     name="startDate"
                     value={new Date(editStates[index].startDate).getFullYear()}
                     onChange={(e) => handleChange(index, e)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                   >
                     <option value="">Select Year</option>
                     {years.map((year) => (
@@ -181,6 +363,8 @@ const EducationSection = ({ educations, setEducations }) => {
                     ))}
                   </select>
                 </div>
+  
+                {/* End Year */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     End Year:
@@ -189,7 +373,7 @@ const EducationSection = ({ educations, setEducations }) => {
                     name="endDate"
                     value={new Date(editStates[index].endDate).getFullYear()}
                     onChange={(e) => handleChange(index, e)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                   >
                     <option value="">Select Year</option>
                     {years.map((year) => (
@@ -199,6 +383,8 @@ const EducationSection = ({ educations, setEducations }) => {
                     ))}
                   </select>
                 </div>
+  
+                {/* Grade */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Percentage/CGPA:
@@ -208,9 +394,11 @@ const EducationSection = ({ educations, setEducations }) => {
                     name="grade"
                     value={editStates[index].grade}
                     onChange={(e) => handleChange(index, e)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                   />
                 </div>
+  
+                {/* Field of Study */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Field Of Study:
@@ -220,51 +408,61 @@ const EducationSection = ({ educations, setEducations }) => {
                     name="description"
                     value={editStates[index].description}
                     onChange={(e) => handleChange(index, e)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                   />
                 </div>
               </div>
             ) : (
               <>
+                {/* Display Education Details */}
                 <h3 className="text-xl font-semibold text-gray-900">
                   {education.degree}
                 </h3>
-
-                <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-gray-600 text-sm">
-                  <p className="font-medium text-gray-800">Institution:</p>
+  
+                {/* Grid Layout for Details */}
+                <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-[10px] text-gray-[600] text-sm">
+                  {/* Institution */}
+                  <p className="font-medium text-gray-[800]">Institution:</p>
                   <p>{education.institution}</p>
-
-                  <p className="font-medium text-gray-800">Start Year:</p>
-                  <p>
-                    {education.startDate
-                      ? new Date(education.startDate).getFullYear()
-                      : "N/A"}
-                  </p>
-
-                  <p className="font-medium text-gray-800">End Year:</p>
-                  <p>
-                    {education.endDate
-                      ? new Date(education.endDate).getFullYear()
-                      : "N/A"}
-                  </p>
-
-                  <p className="font-medium text-gray-800">Percentage/CGPA:</p>
+  
+                  {/* Start Year */}
+                  <p className="font-medium text-gray-[800]">Start Year:</p>
+                  <p>{education.startDate ? new Date(education.startDate).getFullYear() : "N/A"}</p>
+  
+                  {/* End Year */}
+                  <p className="font-medium text-gray-[800]">End Year:</p>
+                  <p>{education.endDate ? new Date(education.endDate).getFullYear() : "N/A"}</p>
+  
+                  {/* Grade */}
+                  <p className="font-medium text-gray-[800]">Percentage/CGPA:</p>
                   <p>{education.grade}</p>
-
-                  <p className="font-medium text-gray-800">Field Of Study:</p>
-                  <p className="text-justify">{education.description}</p>
+  
+                  {/* Field of Study */}
+                  <p className="font-medium text-gray-[800]">Field Of Study:</p>
+                  <p>{education.description}</p>
                 </div>
               </>
             )}
-          </div>
+          </motion.div>
         ))
       ) : (
-        <p className="text-gray-500 text-center col-span-full">
+        /* No Education Placeholder */
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-center col-span-full text-gray-[600]"
+        >
           Add your Educational Qualification here
-        </p>
+        </motion.p>
       )}
     </div>
   );
+  
+  
+  
+
+
 };
 
 export default EducationSection;

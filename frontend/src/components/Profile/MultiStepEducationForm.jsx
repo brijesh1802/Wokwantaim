@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const EDUCATION_LEVELS = {
   SSLC: "SSLC/10th",
@@ -16,7 +16,6 @@ const MultiStepEducationForm = ({
   const [loading, setLoading] = useState(false);
   const [qualifications, setQualifications] = useState([]);
   const token = localStorage.getItem("authToken");
-  const [confirmOverride, setConfirmOverride] = useState(false);
   const [error, setError] = useState(null);
 
   const [currentQualification, setCurrentQualification] = useState({
@@ -34,41 +33,85 @@ const MultiStepEducationForm = ({
     (currentYear - i).toString()
   );
 
+  // Fetch existing education data on load
+  useEffect(() => {
+    const loadEducationData = async () => {
+      const existingEducation = await fetchExistingEducation();
+      setQualifications(existingEducation);
+    };
+
+    loadEducationData();
+  }, []);
+
+  // Handle form input changes
   const handleInputChange = (field, value) => {
-    setCurrentQualification((prev) => ({ ...prev, [field]: value }));
+    setCurrentQualification({ ...currentQualification, [field]: value });
     setError(null);
   };
 
+  // Validate qualification dates and order
   const validateDates = (newQualification) => {
-    if (
-      parseInt(newQualification.yearOfStart) >=
-      parseInt(newQualification.yearOfCompletion)
-    ) {
-      return "Start year must be less than end year";
+    const { yearOfStart, yearOfCompletion, level } = newQualification;
+  
+    const startYear = parseInt(yearOfStart);
+    const endYear = parseInt(yearOfCompletion);
+  
+    // 1️⃣ Validate start year < completion year
+    if (startYear >= endYear) {
+      return "Start year must be less than completion year.";
     }
-
+  
+    // 2️⃣ Enforce correct duration for each education level
+    const durationMap = {
+      SSLC: 1,
+      PUC: 2,
+      BACHELORS: 2, // Some bachelor's programs can be 2 years (like diploma)
+      MASTERS: 2,
+    };
+  
+    const requiredDuration = durationMap[level];
+  
+    if (endYear - startYear !== requiredDuration) {
+      return `${EDUCATION_LEVELS[level]} should be exactly ${requiredDuration} year(s) long.`;
+    }
+  
+    // 3️⃣ Enforce chronological order and correct level order
     const orderedLevels = ["SSLC", "PUC", "BACHELORS", "MASTERS"];
-
-    // Add new qualification and sort based on start year
     const allQualifications = [...qualifications, newQualification].sort(
       (a, b) => parseInt(a.yearOfStart) - parseInt(b.yearOfStart)
     );
-
+  
     let prevCompletionYear = 0;
-
+    let prevLevelIndex = -1;
+  
     for (let i = 0; i < allQualifications.length; i++) {
-      let current = allQualifications[i];
-
-      if (parseInt(current.yearOfStart) < prevCompletionYear) {
-        return `Start year of ${current.level} (${current.yearOfStart}) must be after completion of a previous degree (${prevCompletionYear})`;
+      const current = allQualifications[i];
+      const currentLevelIndex = orderedLevels.indexOf(current.level);
+      const currentStartYear = parseInt(current.yearOfStart);
+      const currentEndYear = parseInt(current.yearOfCompletion);
+  
+      // Check if start year is before previous qualification's completion year
+      if (currentStartYear < prevCompletionYear) {
+        return `Start year of ${EDUCATION_LEVELS[current.level]} (${currentStartYear}) must be after completion of the previous qualification (${prevCompletionYear}).`;
       }
-
-      prevCompletionYear = parseInt(current.yearOfCompletion);
+  
+      // Check if the current level is out of order
+      if (currentLevelIndex < prevLevelIndex) {
+        return `You cannot add ${EDUCATION_LEVELS[current.level]} after ${
+          EDUCATION_LEVELS[allQualifications[i - 1].level]
+        }. Please maintain the correct order of qualifications.`;
+      }
+  
+      // Update previous values for the next iteration
+      prevCompletionYear = currentEndYear;
+      prevLevelIndex = currentLevelIndex;
     }
-
-    return null;
+  
+    return null; // No errors if everything is valid
   };
+  
 
+  // Fetch existing education data
   const fetchExistingEducation = async () => {
     try {
       const response = await fetch(
@@ -91,7 +134,11 @@ const MultiStepEducationForm = ({
     }
   };
 
-  const addQualification = async () => {
+  // Save or update qualification on button click
+  const handleSave = async () => {
+    setError(null);
+
+    // Check if all fields are filled
     if (
       !currentQualification.level ||
       !currentQualification.institution ||
@@ -100,36 +147,57 @@ const MultiStepEducationForm = ({
       !currentQualification.yearOfStart ||
       !currentQualification.yearOfCompletion
     ) {
-      setError("Please fill in all required fields");
+      setError("Please fill in all required fields.");
       return;
     }
 
-    // Fetch latest education records from the database
-    const existingEducation = await fetchExistingEducation();
-
-    // Check if the qualification already exists
-    if (
-      existingEducation.some((q) => q.degree === currentQualification.level)
-    ) {
-      setError(
-        `You've already added ${
-          EDUCATION_LEVELS[currentQualification.level]
-        } qualification`
-      );
-      return;
-    }
-
+    // Validate date logic
     const validationError = validateDates(currentQualification);
     if (validationError) {
       setError(validationError);
       return;
     }
 
-    setQualifications([
-      ...qualifications,
-      { ...currentQualification, id: Date.now().toString() },
-    ]);
+    const existingEducation = await fetchExistingEducation();
+    const duplicateQualification = existingEducation.find(
+      (q) => q.degree === currentQualification.level
+    );
 
+    let updatedEducation;
+
+    if (duplicateQualification) {
+      // Override duplicate and update entry
+      updatedEducation = existingEducation.map((q) =>
+        q.degree === currentQualification.level
+          ? {
+              ...q,
+              institution: currentQualification.institution,
+              grade: currentQualification.percentage,
+              startDate: currentQualification.yearOfStart,
+              endDate: currentQualification.yearOfCompletion,
+              description: currentQualification.fieldOfStudy,
+            }
+          : q
+      );
+    } else {
+      // Add new qualification
+      updatedEducation = [
+        ...existingEducation,
+        {
+          institution: currentQualification.institution,
+          degree: currentQualification.level,
+          grade: currentQualification.percentage,
+          startDate: currentQualification.yearOfStart,
+          endDate: currentQualification.yearOfCompletion,
+          description: currentQualification.fieldOfStudy,
+        },
+      ];
+    }
+
+    await submitUpdatedEducation(updatedEducation);
+    setQualifications(updatedEducation);
+
+    // Clear form after save
     setCurrentQualification({
       id: "",
       level: "",
@@ -141,52 +209,11 @@ const MultiStepEducationForm = ({
     });
   };
 
-  const removeQualification = (id) => {
-    setQualifications(qualifications.filter((q) => q.id !== id));
-  };
-
-  const handleSave = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    const existingEducation = await fetchExistingEducation();
-
-    const newEducation = qualifications.map((q) => ({
-      institution: q.institution,
-      degree: q.level,
-      grade: q.percentage,
-      startDate: q.yearOfStart,
-      endDate: q.yearOfCompletion,
-      description: q.fieldOfStudy,
-    }));
-
-    const existingLevels = existingEducation.map((edu) => edu.degree);
-    const newLevels = newEducation.map((edu) => edu.degree);
-    const duplicateLevels = newLevels.filter((level) =>
-      existingLevels.includes(level)
-    );
-
-    if (duplicateLevels.length > 0 && !confirmOverride) {
-      setError(
-        `The following qualification(s) already exist: ${duplicateLevels.join(
-          ", "
-        )}. Clicking save again will override the data.`
-      );
-      setConfirmOverride(true);
-      setLoading(false);
-      return;
-    }
-
-    const filteredOldEducation = existingEducation.filter(
-      (edu) => !newLevels.includes(edu.degree)
-    );
-
-    const updatedEducation = [...filteredOldEducation, ...newEducation];
-
+  // Submit updated education to the backend
+  const submitUpdatedEducation = async (education) => {
     const payload = {
       ...data,
-      education: updatedEducation,
+      education: education,
     };
 
     try {
@@ -206,48 +233,21 @@ const MultiStepEducationForm = ({
       if (!response.ok) throw new Error("Failed to update education");
 
       const updatedData = await response.json();
-      setData((prevData) => ({ ...prevData, education: updatedEducation }));
-
+      setData((prevData) => ({ ...prevData, education }));
       updateParentState(updatedData);
-      toggleForm();
-      setConfirmOverride(false);
     } catch (error) {
-      setError("Failed to update education");
-    } finally {
-      setLoading(false);
+      console.error("Error updating education:", error);
+      setError("Failed to update education.");
     }
   };
+
 
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-md shadow-lg w-96">
         <h3 className="text-xl font-semibold mb-4">Education Details</h3>
         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
-        {qualifications.length > 0 && (
-          <div className="space-y-4 mb-4">
-            {qualifications.map((q) => (
-              <div
-                key={q.id}
-                className="p-4 border rounded-md shadow-md flex justify-between items-center"
-              >
-                <div>
-                  <p className="font-semibold">{EDUCATION_LEVELS[q.level]}</p>
-                  <p>Institution : {q.institution}</p>
-                  <p>Field : {q.fieldOfStudy}</p>
-                  <p>Start : {q.yearOfStart}</p>
-                  <p>End : {q.yearOfCompletion}</p>
-                  <p>Percentage : {q.percentage}</p>
-                </div>
-                <button
-                  className="text-red-500"
-                  onClick={() => removeQualification(q.id)}
-                >
-                  X
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
+
         <div className="space-y-2">
           <select
             className="border p-2 w-full"
@@ -261,6 +261,7 @@ const MultiStepEducationForm = ({
               </option>
             ))}
           </select>
+
           <input
             className="border p-2 w-full"
             type="text"
@@ -275,6 +276,7 @@ const MultiStepEducationForm = ({
             value={currentQualification.fieldOfStudy}
             onChange={(e) => handleInputChange("fieldOfStudy", e.target.value)}
           />
+
           <select
             className="border p-2 w-full"
             value={currentQualification.yearOfStart}
@@ -287,6 +289,7 @@ const MultiStepEducationForm = ({
               </option>
             ))}
           </select>
+
           <select
             className="border p-2 w-full"
             value={currentQualification.yearOfCompletion}
@@ -301,6 +304,7 @@ const MultiStepEducationForm = ({
               </option>
             ))}
           </select>
+
           <input
             className="border p-2 w-full"
             type="text"
@@ -309,21 +313,15 @@ const MultiStepEducationForm = ({
             onChange={(e) => handleInputChange("percentage", e.target.value)}
           />
         </div>
+
+        {/* Save and Cancel Buttons */}
         <button
-          className="w-full bg-blue-500 text-white p-2 rounded-md mt-4"
-          onClick={addQualification}
+          className="w-full bg-green-500 text-white p-2 rounded-md mt-4"
+          onClick={handleSave}
         >
-          Add Qualification
+          Save
         </button>
 
-        {qualifications.length > 0 && (
-          <button
-            className="w-full bg-green-500 text-white p-2 rounded-md mt-4"
-            onClick={handleSave}
-          >
-            Submit All
-          </button>
-        )}
         <button
           className="w-full bg-gray-400 text-white p-2 rounded-md mt-4"
           onClick={toggleForm}

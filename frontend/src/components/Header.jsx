@@ -102,12 +102,12 @@ function Header() {
         //     ? `${import.meta.env.VITE_BASE_URL}/api/v1/candidates/profile`
         //     : `${import.meta.env.VITE_BASE_URL}/api/v1/employers/profile`;
 
-        let url
-        if(userType === "candidate"){
-          url = `${import.meta.env.VITE_BASE_URL}/api/v1/candidates/profile`
-        } else if(userType === "employer"){
-          url = `${import.meta.env.VITE_BASE_URL}/api/v1/employers/profile`
-        } 
+        let url;
+        if (userType === "candidate") {
+          url = `${import.meta.env.VITE_BASE_URL}/api/v1/candidates/profile`;
+        } else if (userType === "employer") {
+          url = `${import.meta.env.VITE_BASE_URL}/api/v1/employers/profile`;
+        }
 
         const response = await fetch(url, {
           headers: { Authorization: `Bearer ${token}` },
@@ -414,82 +414,86 @@ function Header() {
                         className="flex flex-col ml-2 text-sm hover:cursor-pointer"
                         onClick={() => {
                           navigate("/profile");
-                            setNavOpen(false);
-                          }}
-                          whileHover={{ scale: 1.05 }}
-                          transition={{ duration: 0.2 }}
-                          >
-                          <img
-                            src={userData.profilePhoto || default_img}
-                            className="object-cover w-10 h-10 rounded-full"
-                          />
-                          <span className="flex items-start">
-                            {userData?.fullName?.firstName ||
+                          setNavOpen(false);
+                        }}
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <img
+                          src={userData.profilePhoto || default_img}
+                          className="object-cover w-10 h-10 rounded-full"
+                        />
+                        <span className="flex items-start">
+                          {userData?.fullName?.firstName ||
                             userData?.name ||
                             "Unknown"}
-                          </span>
-                          <span>{userData?.email || "No email provided"}</span>
-                          <hr className="w-full my-2 border-gray-300" />
-                          </motion.div>
-                        ) : null}
-
-                        <NavLink
-                          to="/"
-                          className="py-2 text-lg hover:text-orange-500"
-                          onClick={() => setNavOpen(false)}
-                        >
-                          Home
-                        </NavLink>
-
-                        <NavLink
-                          to="/about"
-                          className="py-2 text-lg hover:text-orange-500"
-                          onClick={() => setNavOpen(false)}
-                        >
-                          About Us
-                        </NavLink>
-
-                        {userType === "candidate" && userData != null ? (
-                          <NavLink
-                          to="/applications"
-                          className="py-2 text-lg hover:text-orange-500"
-                          onClick={() => setNavOpen(false)}
-                          >
-                          My Application
-                          </NavLink>
-                        ) : null}
-
-                        <NavLink
-                          to={
-                          userType === "candidate" || userType === null ? "/joblist" : "/addjobs"
-                          }
-                          className="py-2 text-lg hover:text-orange-500"
-                          onClick={() => setNavOpen(false)}
-                        >
-                          {userType === "candidate" || userType === null ?  "Job List" : "Add Jobs"}
-                        </NavLink>
-
+                        </span>
+                        <span>{userData?.email || "No email provided"}</span>
                         <hr className="w-full my-2 border-gray-300" />
+                      </motion.div>
+                    ) : null}
 
-                        <motion.button
-                          className="flex items-center justify-between w-full py-2 text-lg hover:text-orange-500"
-                          onClick={() => setMoreOpen(!moreOpen)}
-                          whileHover={{ scale: 1.05 }}
-                          transition={{ duration: 0.2 }}
+                    <NavLink
+                      to="/"
+                      className="py-2 text-lg hover:text-orange-500"
+                      onClick={() => setNavOpen(false)}
+                    >
+                      Home
+                    </NavLink>
+
+                    <NavLink
+                      to="/about"
+                      className="py-2 text-lg hover:text-orange-500"
+                      onClick={() => setNavOpen(false)}
+                    >
+                      About Us
+                    </NavLink>
+
+                    {userType === "candidate" && userData != null ? (
+                      <NavLink
+                        to="/applications"
+                        className="py-2 text-lg hover:text-orange-500"
+                        onClick={() => setNavOpen(false)}
+                      >
+                        My Application
+                      </NavLink>
+                    ) : null}
+
+                    <NavLink
+                      to={
+                        userType === "candidate" || userType === null
+                          ? "/joblist"
+                          : "/addjobs"
+                      }
+                      className="py-2 text-lg hover:text-orange-500"
+                      onClick={() => setNavOpen(false)}
+                    >
+                      {userType === "candidate" || userType === null
+                        ? "Job List"
+                        : "Add Jobs"}
+                    </NavLink>
+
+                    <hr className="w-full my-2 border-gray-300" />
+
+                    <motion.button
+                      className="flex items-center justify-between w-full py-2 text-lg hover:text-orange-500"
+                      onClick={() => setMoreOpen(!moreOpen)}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      More {moreOpen ? <FaChevronUp /> : <FaChevronDown />}
+                    </motion.button>
+
+                    <AnimatePresence>
+                      {moreOpen && (
+                        <motion.div
+                          className="pl-4"
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.5, ease: "easeInOut" }}
                         >
-                          More {moreOpen ? <FaChevronUp /> : <FaChevronDown />}
-                        </motion.button>
-
-                        <AnimatePresence>
-                          {moreOpen && (
-                          <motion.div
-                            className="pl-4"
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.5, ease: "easeInOut" }}
-                          >
-                            <NavLink
+                          <NavLink
                             to="/safety"
                             className="block py-2 text-lg hover:text-orange-500"
                             onClick={() => {
@@ -560,7 +564,7 @@ function Header() {
 
                     <hr className="w-full my-2 border-gray-300" />
 
-                    {userType ? (
+                    {userType && userData ? (
                       <motion.button
                         onClick={handleLogoutClick}
                         className="py-2 text-lg hover:text-orange-400 bg-orange-500 text-white rounded-md p-3"

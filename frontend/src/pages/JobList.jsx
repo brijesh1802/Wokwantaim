@@ -92,8 +92,7 @@ const JobList = () => {
 
         const matchDate =
           !currentJobRole.DatePosted.length ||
-          (currentJobRole.DatePosted.includes("Last 24 hours") &&
-            daysAgo <= 1) ||
+          (currentJobRole.DatePosted.includes("Last 24 hours") && daysAgo <= 1) ||
           (currentJobRole.DatePosted.includes("Last Week") && daysAgo <= 7) ||
           (currentJobRole.DatePosted.includes("Last Month") && daysAgo <= 30) ||
           (currentJobRole.DatePosted.includes("Older") && daysAgo > 30);
@@ -138,9 +137,9 @@ const JobList = () => {
         return (
           matchDate &&
           matchIndustry &&
-          matchExperience &&
           matchJobRole &&
           matchSalary &&
+          matchExperience &&
           matchTitleAndCompany
         );
       })
@@ -216,23 +215,15 @@ const JobList = () => {
         </div>
       </motion.div>
 
-      {/* Job Listings and Filters */}
-      <div className="container mx-auto px-4 mt-8 flex">
+      <div className="flex flex-col lg:flex-row mt-16 lg:p-3">
+        {/* Filter Section */}
         <JobFilter
           industry={industry}
-          location={jobCountry}
-          jobTypes={jobTypes}
           jobRole={jobRole}
           handleJobRoleChange={handleJobRoleChange}
-        
-          // activeFilter={activeFilter}
-          // setActiveFilter={setActiveFilter}
         />
-       {/* Job Results */}
-       {
-        filteredJobRole.length>0?
-        <JobResults filteredJob={filteredJobRole} handleClick={handleClick} />:<p className="text-gray-600 text-center w-full mt-20"> No jobs found</p>
-}
+        {/* Job Results */}
+        <JobResults filteredJob={filteredJobRole} handleClick={handleClick} />
       </div>
     </motion.div>
   );

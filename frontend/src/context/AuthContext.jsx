@@ -300,8 +300,8 @@ export const AuthProvider = ({ children }) => {
   const [companyRole, setCompanyRole] = useState([]);
 
   useEffect(() => {
-    const jobRoles = jobsInfo.map((jobData) => jobData.job.title); // Changed to jobData.job.title
-    const companies = jobsInfo.map((jobData) => jobData.job.company.name); // Changed to jobData.job.company.name
+    const jobRoles = jobsInfo.map((jobData) => jobData.job.title);
+    const companies = jobsInfo.map((jobData) => jobData.job.company); 
     const uniqueJobRolesSet = new Set(jobRoles);
     const uniqueCompanySet = new Set(companies);
 

@@ -176,7 +176,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="mx-auto mt-12 px-4 flex flex-col lg:flex-row h-full w-full mb-2 sm:ml-4">
+    <div className="mx-auto mt-12 flex flex-col lg:flex-row h-full w-full mb-2 sm:ml-4 ">
       <div className="flex flex-col items-center xl:items-start xl:ml-2 xl:px-5 lg:w-max xl:w-1/3 mt-10 xl:mt-5">
         <ProfileCard user={user} className="xl:ml-2 xl:mr-2" />
       </div>

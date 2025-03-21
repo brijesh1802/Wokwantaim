@@ -24,14 +24,10 @@ const candidateSchema = new Schema({
     experienceLevel: {
         type: String,
         required: false,
-        default: 'Fresher',
-        enum: ['Fresher', 'Mid-Level', 'Senior-Level', 'Entry-Level']
     },
     jobType: {
         type: String,
         required: false,
-        default: 'Full-time',
-        enum: ['Full-time', 'Part-time', 'Contract', 'Internship']
     },
     profilePhoto: {
         type: String,

@@ -66,6 +66,15 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
 
       const existingData = await fetchResponse.json();
 
+      if (type === "Skills") {
+        const existingSkills = existingData.skills || [];
+        if (existingSkills.includes(data.skill)) {
+          setError("Skill already exists");
+          setLoading(false);
+          return;
+        }
+      }
+
       const payload = {
         ...existingData,
         ...data,
@@ -214,6 +223,7 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
               placeholder="Enter your skill"
               className="w-full p-2 border border-gray-300 rounded mb-4"
             />
+            {error && <></>}
           </>
         );
       case "certifications":
@@ -455,13 +465,15 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
   return (
     <div className="popup-overlay fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 transition-opacity duration-300">
       <div className="popup-content bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
-        <h3 className="text-2xl font-bold text-gray-800 mb-6">{type} Details</h3>
-  
+        <h3 className="text-2xl font-bold text-gray-800 mb-6">
+          {type} Details
+        </h3>
+
         <form onSubmit={handleSave} className="space-y-4">
           {renderFormFields()}
-  
+
           {error && <div className="text-sm text-red-500">{error}</div>}
-  
+
           <div className="flex justify-between items-center space-x-4">
             <button
               type="button"
@@ -486,8 +498,6 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
       </div>
     </div>
   );
-  
-
 };
 
 export default Popup;

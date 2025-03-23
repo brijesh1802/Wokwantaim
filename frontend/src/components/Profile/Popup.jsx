@@ -235,7 +235,7 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
         );
       case "certifications":
         return (
-          <>
+          <div className="max-w-4xl mx-auto bg-white rounded-lg overflow-x-auto max-h-[450px] p-4">
             <label className="block mb-2">Certification Title:</label>
             <input
               type="text"
@@ -286,7 +286,7 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded mb-4"
             />
-          </>
+          </div>
         );
       case "workExperience":
         return (
@@ -380,7 +380,7 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
         );
       case "personalProjects":
         return (
-          <>
+           <div className="max-w-4xl mx-auto bg-white rounded-lg overflow-x-auto max-h-[450px] p-4">
             <label className="block mb-2">Project Title:</label>
             <input
               type="text"
@@ -427,7 +427,7 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
               placeholder="https://github.com/username/repo"
               className="w-full p-2 border border-gray-300 rounded mb-4"
             />
-          </>
+          </div>
         );
       default:
         return null;

@@ -66,14 +66,21 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
 
       const existingData = await fetchResponse.json();
 
-      if (type === "Skills") {
+      if (type.toLowerCase() === "skills") {
         const existingSkills = existingData.skills || [];
-        if (existingSkills.includes(data.skill)) {
-          setError("Skill already exists");
+
+        // Convert all existing skills to lowercase for case-insensitive comparison
+        const normalizedSkills = existingSkills.map((skill) =>
+          skill.toLowerCase()
+        );
+
+        if (normalizedSkills.includes(data.skill.toLowerCase())) {
+          setError("Skill already exists.");
           setLoading(false);
           return;
         }
       }
+
 
       const payload = {
         ...existingData,

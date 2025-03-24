@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { Pencil, Trash2 } from "lucide-react";
 const Certifications = ({ certifications, setCertifications }) => {
   const [error, setError] = useState(null);
   const token = localStorage.getItem("authToken");
@@ -101,16 +101,16 @@ const Certifications = ({ certifications, setCertifications }) => {
                 {!isEditing && (
                   <>
                     <button
-                      className="text-blue-600 "
+                      className="text-gray-400 hover:text-blue-500 transition"
                       onClick={() => handleEdit(index)}
                     >
-                      ✏️
+                      <Pencil size={20} />
                     </button>
                     <button
-                      className="text-red-600 "
+                      className="text-gray-400 hover:text-red-500 transition"
                       onClick={() => handleDelete(index)}
                     >
-                      ❌
+                      <Trash2 size={20} />
                     </button>
                   </>
                 )}

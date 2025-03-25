@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { Pencil, Trash2, X, Check } from "lucide-react";
 const Certifications = ({ certifications, setCertifications }) => {
   const [error, setError] = useState(null);
   const token = localStorage.getItem("authToken");
@@ -88,7 +88,7 @@ const Certifications = ({ certifications, setCertifications }) => {
   if (error) return <div className="text-red-500">Error: {error}</div>;
 
   return (
-    <div className="mt-10 space-y-6">
+    <div className="overflow-y-auto max-h-[380px]  mt-5 space-y-6">
       {certifications.length > 0 ? (
         certifications.map((cert, index) => {
           const isEditing = editStates[index] !== undefined;
@@ -101,67 +101,82 @@ const Certifications = ({ certifications, setCertifications }) => {
                 {!isEditing && (
                   <>
                     <button
-                      className="text-blue-600 "
+                      className="text-gray-400 hover:text-blue-500 transition"
                       onClick={() => handleEdit(index)}
                     >
-                      ✏️
+                      <Pencil size={20} />
                     </button>
                     <button
-                      className="text-red-600 "
+                      className="text-gray-400 hover:text-red-500 transition"
                       onClick={() => handleDelete(index)}
                     >
-                      ❌
+                      <Trash2 size={20} />
                     </button>
                   </>
                 )}
               </div>
               {isEditing ? (
-                <div className="space-y-4 bg-white p-6 rounded-xl">
+                <div className="relative space-y-4 bg-white p-6 rounded-xl">
                   {[
                     "title",
                     "issuingOrganization",
                     "credentialId",
                     "credentialURL",
                   ].map((field) => (
-                    <input
-                      key={field}
-                      type="text"
-                      name={field}
-                      value={editStates[index]?.[field] || ""}
-                      onChange={(e) => handleChange(index, e)}
-                      className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-300 
-                 focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
-                      placeholder={field.replace(/([A-Z])/g, " $1").trim()}
-                    />
+                    <div key={field} className="relative">
+                      <label
+                        htmlFor={field}
+                        className="absolute top-2 left-4 text-gray-500 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base"
+                      >
+                        {field.replace(/([A-Z])/g, " $1").trim()}
+                      </label>
+                      <input
+                        id={field}
+                        type="text"
+                        name={field}
+                        value={editStates[index]?.[field] || ""}
+                        onChange={(e) => handleChange(index, e)}
+                        className="w-full px-4 pt-6 pb-2 rounded-lg bg-gray-50 border border-gray-300 
+                     focus:ring-2 focus:ring-blue-400 focus:outline-none transition peer"
+                        placeholder=" " // Keep placeholder empty for floating effect
+                      />
+                    </div>
                   ))}
                   {["issueDate", "expirationDate"].map((field) => (
-                    <input
-                      key={field}
-                      type="date"
-                      name={field}
-                      value={editStates[index]?.[field] || ""}
-                      onChange={(e) => handleChange(index, e)}
-                      className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-300
-               focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
-                    />
+                    <div key={field} className="relative">
+                      <label
+                        htmlFor={field}
+                        className="absolute top-2 left-4 text-gray-500 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base"
+                      >
+                        {field.replace(/([A-Z])/g, " $1").trim()}
+                      </label>
+                      <input
+                        id={field}
+                        type="date"
+                        name={field}
+                        value={editStates[index]?.[field] || ""}
+                        onChange={(e) => handleChange(index, e)}
+                        className="w-full px-4 pt-6 pb-2 rounded-lg bg-gray-50 border border-gray-300
+                     focus:ring-2 focus:ring-blue-400 focus:outline-none transition peer"
+                      />
+                    </div>
                   ))}
 
-                  <div className="flex space-x-3 pt-2">
+                  <div className="flex absolute space-x-2 pt-2 -top-7 right-1">
                     <button
                       onClick={() => handleSave(index)}
                       disabled={isSaveDisabled(index)}
-                      className={`px-5 py-2 rounded-lg text-white bg-gradient-to-r from-orange-500 to-orange-600 
-  hover:from-orange-600 hover:to-orange-500 ${
-    isSaveDisabled(index) ? "cursor-not-allowed" : ""
-  }`}
+                      className={`text-gray-400 hover:text-green-500 transition ${
+                        isSaveDisabled(index) ? "cursor-not-allowed" : ""
+                      }`}
                     >
-                      Save
+                      <Check size={20} />
                     </button>
                     <button
                       onClick={() => handleClose(index)}
-                      className="px-5 py-2 rounded-lg text-white bg-gradient-to-r from-gray-400 to-gray-500 hover:from-gray-500 hover:to-gray-400"
+                      className="text-gray-400 hover:text-red-500 transition"
                     >
-                      Close
+                      <X size={20} />
                     </button>
                   </div>
                 </div>
@@ -207,7 +222,7 @@ const Certifications = ({ certifications, setCertifications }) => {
           );
         })
       ) : (
-        <p className="text-gray-500">
+        <p className="text-gray-500 italic col-span-full text-center">
           No certifications added yet. Add yours now!
         </p>
       )}

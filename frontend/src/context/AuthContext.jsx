@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
   const [isTitleEmpty, setIsTitleEmpty] = useState(false);
   const storedUserType = localStorage.getItem("userType");
   const [isAdmin, setIsAdmin] = useState(localStorage.getItem('adminToken') !== null);
-
+  const [applied,setApplied]=useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -162,7 +162,9 @@ export const AuthProvider = ({ children }) => {
         selectedRadio,
         setSelectedRadio,
         setIsTitleEmpty,
-        isTitleEmpty
+        isTitleEmpty,
+        setApplied,
+        applied
       }}
     >
       {children}

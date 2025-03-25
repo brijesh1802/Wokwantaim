@@ -66,6 +66,22 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
 
       const existingData = await fetchResponse.json();
 
+      if (type.toLowerCase() === "skills") {
+        const existingSkills = existingData.skills || [];
+
+        // Convert all existing skills to lowercase for case-insensitive comparison
+        const normalizedSkills = existingSkills.map((skill) =>
+          skill.toLowerCase()
+        );
+
+        if (normalizedSkills.includes(data.skill.toLowerCase())) {
+          setError("Skill already exists.");
+          setLoading(false);
+          return;
+        }
+      }
+
+
       const payload = {
         ...existingData,
         ...data,
@@ -214,11 +230,12 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
               placeholder="Enter your skill"
               className="w-full p-2 border border-gray-300 rounded mb-4"
             />
+            {error && <></>}
           </>
         );
       case "certifications":
         return (
-          <>
+          <div className="max-w-4xl mx-auto bg-white rounded-lg overflow-x-auto max-h-[450px] p-4">
             <label className="block mb-2">Certification Title:</label>
             <input
               type="text"
@@ -269,7 +286,7 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded mb-4"
             />
-          </>
+          </div>
         );
       case "workExperience":
         return (
@@ -363,7 +380,7 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
         );
       case "personalProjects":
         return (
-          <>
+           <div className="max-w-4xl mx-auto bg-white rounded-lg overflow-x-auto max-h-[450px] p-4">
             <label className="block mb-2">Project Title:</label>
             <input
               type="text"
@@ -410,7 +427,7 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
               placeholder="https://github.com/username/repo"
               className="w-full p-2 border border-gray-300 rounded mb-4"
             />
-          </>
+          </div>
         );
       default:
         return null;
@@ -455,13 +472,15 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
   return (
     <div className="popup-overlay fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 transition-opacity duration-300">
       <div className="popup-content bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
-        <h3 className="text-2xl font-bold text-gray-800 mb-6">{type} Details</h3>
-  
+        <h3 className="text-2xl font-bold text-gray-800 mb-6">
+          {type} Details
+        </h3>
+
         <form onSubmit={handleSave} className="space-y-4">
           {renderFormFields()}
-  
+
           {error && <div className="text-sm text-red-500">{error}</div>}
-  
+
           <div className="flex justify-between items-center space-x-4">
             <button
               type="button"
@@ -486,8 +505,6 @@ const Popup = ({ type, data, setData, togglePopup, updateParentState }) => {
       </div>
     </div>
   );
-  
-
 };
 
 export default Popup;

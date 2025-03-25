@@ -23,12 +23,11 @@ const candidateSchema = new Schema({
     },
     experienceLevel: {
         type: String,
-        required: false,
+        required: true,
     },
     jobType: {
         type: String,
-        required: false,
-        
+        required: true,
     },
     profilePhoto: {
         type: String,

@@ -97,7 +97,7 @@ const EducationSection = ({ educations, setEducations }) => {
   }
 
   return (
-    <div className="mt-6 flex flex-col gap-6 overflow-y-auto h-[300px]">
+    <div className="overflow-y-auto max-h-[380px]  mt-5 space-y-6">
       {educations.length > 0 ? (
         educations.map((education, index) => (
           <motion.div
@@ -285,23 +285,19 @@ const EducationSection = ({ educations, setEducations }) => {
           </motion.div>
         ))
       ) : (
-        /* No Education Placeholder */
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="text-center col-span-full text-gray-[600]"
-        >
-          Add your Educational Qualification here
-        </motion.p>
+        <div className="h-[200]">
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="text-gray-500 italic col-span-full text-center"
+          >
+            Add your Educational Qualification here
+          </motion.p>
+        </div>
       )}
     </div>
   );
-  
-  
-  
-
-
 };
 
 export default EducationSection;

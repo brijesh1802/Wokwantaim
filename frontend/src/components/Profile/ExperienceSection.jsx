@@ -90,7 +90,7 @@ const ExperienceSection = ({ workExperience, setWorkExperience }) => {
       [index]: { ...workExperience[index] },
     }));
   };
-
+ 
   // Handle input changes while editing
   const handleChange = (index, e) => {
     const { name, value, type, checked } = e.target;
@@ -107,7 +107,7 @@ const ExperienceSection = ({ workExperience, setWorkExperience }) => {
 
   // Save updated experience
   const handleSave = async (index) => {
-    console.log("clicked", editStates[index]);
+    console.log("clicked" ,editStates[index]);
     const updatedExperience = editStates[index];
     if (!updatedExperience) return;
 
@@ -153,6 +153,7 @@ const ExperienceSection = ({ workExperience, setWorkExperience }) => {
       setError(error.message || "Error saving experience.");
     }
   };
+
 
   // Close editing mode
   const handleClose = (index) => {

@@ -89,7 +89,7 @@ const ApplicationsSection = () => {
                   <div className="flex items-center">
                     <FiBriefcase className="text-orange-500 mr-3" />
                     <span className="text-sm text-gray-600">
-                      {application.job}
+                      {application.jobName}
                     </span>
                   </div>
                 </td>
@@ -97,7 +97,7 @@ const ApplicationsSection = () => {
                   <div className="flex items-center">
                     <FiCalendar className="text-orange-500 mr-3" />
                     <span className="text-sm text-gray-600">
-                      {application.date}
+                      {new Date(application.dateApplied).toLocaleDateString()}
                     </span>
                   </div>
                 </td>

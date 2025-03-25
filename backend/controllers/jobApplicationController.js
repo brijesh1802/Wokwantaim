@@ -280,7 +280,12 @@ const applyJob = async (req, res) => {
         console.log("Job Skills:", job.skills);
 
         const matchingSkills = job.skills.filter(skill => candidateProfile.skills.includes(skill));
-        console.log("Matching Skills:", matchingSkills);
+        console.log("Matching Skills :", matchingSkills);
+        if (!matchingSkills || matchingSkills.length==0) {
+            console.log("Matching skills not found");
+            return res.status(400).json({ message: "Your skills don’t align with the job requirements" });
+        }
+        
         console.log(job)
         const application = new Application({
             jobId: job._id,

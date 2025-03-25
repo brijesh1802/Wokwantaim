@@ -223,6 +223,7 @@ function SignupForm({ userType }) {
     setFormData({
       ...formData,
       [name]: value,
+      
     });
   };
 
@@ -237,7 +238,7 @@ function SignupForm({ userType }) {
       [name]: files[0] ? files[0].name : null,
     });
   };;
-
+   console.log("options : ",jobTypeOptions);
   const fetchExperienceLevels = async () => {
     try {
       const url = `${import.meta.env.VITE_BASE_URL}/api/v1/admin/getExperienceLevels`;

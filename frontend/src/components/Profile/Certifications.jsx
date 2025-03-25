@@ -88,7 +88,7 @@ const Certifications = ({ certifications, setCertifications }) => {
   if (error) return <div className="text-red-500">Error: {error}</div>;
 
   return (
-    <div className="overflow-y-auto max-h-[380px]  mt-10 space-y-6">
+    <div className="overflow-y-auto max-h-[380px]  mt-5 space-y-6">
       {certifications.length > 0 ? (
         certifications.map((cert, index) => {
           const isEditing = editStates[index] !== undefined;
@@ -222,7 +222,7 @@ const Certifications = ({ certifications, setCertifications }) => {
           );
         })
       ) : (
-        <p className="text-gray-500">
+        <p className="text-gray-500 italic col-span-full text-center">
           No certifications added yet. Add yours now!
         </p>
       )}

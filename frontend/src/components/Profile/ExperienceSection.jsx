@@ -344,7 +344,9 @@ const ExperienceSection = ({ workExperience, setWorkExperience }) => {
           );
         })
       ) : (
-        <p className="text-gray-500 italic">Add your work experience here</p>
+        <p className="text-gray-500 italic col-span-full text-center">
+          Add your work experience here
+        </p>
       )}
     </div>
   );

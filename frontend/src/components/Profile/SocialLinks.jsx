@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { LinkedinIcon, GithubIcon, Globe } from "lucide-react";
+import { LinkedinIcon, GithubIcon, Globe,Pencil,X } from "lucide-react";
 
 const SocialLinks = ({ socialLinks, setSocialLinks }) => {
   const [error, setError] = useState(null);
@@ -108,10 +108,10 @@ const SocialLinks = ({ socialLinks, setSocialLinks }) => {
     <div className="relative">
       <div className="absolute top-0 right-0 space-x-2">
         <button onClick={onEdit} className="text-gray-400 hover:text-blue-500">
-          <EditIcon />
+          <Pencil size={20}/>
         </button>
         <button onClick={onDelete} className="text-gray-400 hover:text-red-500">
-          <DeleteIcon />
+          <X size={20} />
         </button>
       </div>
       {Object.entries(link).map(([platform, url]) => url && (

@@ -35,6 +35,8 @@ const JobList = () => {
 
   const [visibleSection, setVisibleSection] = useState({});
 
+  const [combinedJobs,setCombinedJobs]=useState([])
+
   const handleClick = (jobsInfo) => {
     navigate("/jobdetail", { state: { jobsInfo } });
   };
@@ -60,23 +62,6 @@ const JobList = () => {
     setTitle(jobTitle);
     setFilteredSearchJob([]);
     setShowDropDown(false);
-  };
-
-  const handleSearchChange = () => {
-    const filteredJobs = jobsInfo.filter((data) => {
-      const matchTitle = title
-        ? data.job.title.toLowerCase().includes(title.toLowerCase())
-        : true;
-      const matchLocation = location
-        ? data.job.location.toLowerCase().includes(location.toLowerCase())
-        : true;
-      const matchJobType = jobType
-        ? data.job.jobType.toLowerCase().includes(jobType.toLowerCase())
-        : true;
-
-      return matchTitle && matchLocation && matchJobType;
-    });
-    setFilteredJobRole(filteredJobs);
   };
   const handleRefresh = () => {
     setSelectedRadio("");
@@ -107,6 +92,36 @@ const JobList = () => {
     );
   };
 
+  const handleSearchChange = () => {
+    setCurrentJobRole({
+      DatePosted: [],
+      Industry: [],
+      JobRoles: [],
+      Salary: [],
+      Experience: [],
+      Title: [],
+      Location: [],
+      JobType: [],
+      TitleAndCompany: [],
+    });
+    const filteredJobs = jobsInfo.filter((data) => {
+      const matchTitle = title
+        ? data.job.title.toLowerCase().includes(title.toLowerCase())
+        : true;
+      const matchLocation = location
+        ? data.job.location.toLowerCase().includes(location.toLowerCase())
+        : true;
+      const matchJobType = jobType
+        ? data.job.jobType.toLowerCase().includes(jobType.toLowerCase())
+        : true;
+
+      return matchTitle && matchLocation && matchJobType;
+    });
+    setCombinedJobs(filteredJobs);
+  
+  };
+
+
   useEffect(() => {
     const industries = jobsInfo.map((job) => job.job.industry);
     const countries = jobsInfo.map((job) => job.job.location);
@@ -134,7 +149,7 @@ const JobList = () => {
     };
 
     setFilteredJobRole(
-      jobsInfo.filter((job) => {
+     (title||location||jobType?combinedJobs:jobsInfo) .filter((job) => {
         const daysAgo = getDaysDifference(job.job.applicationPostedDate);
 
         const matchDate =
@@ -190,9 +205,11 @@ const JobList = () => {
         );
       })
     );
-  }, [currentJobRole, jobsInfo]);
+  }, [currentJobRole, jobsInfo,combinedJobs]);
 console.log("Current jobRole",currentJobRole);
 console.log("Filtered jobRole",filteredJobRole);
+console.log("Combined Jobs",combinedJobs);
+
 
   return (
     <motion.div>

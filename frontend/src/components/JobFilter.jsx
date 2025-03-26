@@ -15,7 +15,7 @@ const FilterSection = ({ id, label, icon, options, type, handleJobRoleChange ,vi
   const [showAll, setShowAll] = useState(false);
 
   const toggleSection = () => {
-    setVisibleSection(isOpen ? null : id); // Close if already open, open otherwise
+    setVisibleSection(isOpen ? null : id); 
   };
   const toggleShowAll = () => setShowAll(!showAll);
 

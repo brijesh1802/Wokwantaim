@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const CandidateProfile  = require('./candidate.profile.model');
+const Application = require('./application.model');
 
 const Schema = mongoose.Schema;
 
@@ -87,6 +89,21 @@ const candidateSchema = new Schema({
     timestamps: true
 });
 
+candidateSchema.pre('findOneAndDelete', async function (next) {
+    const candidate = await this.model.findOne(this.getQuery()); // Get the candidate document
+    if (candidate) {
+        await CandidateProfile.deleteMany({ candidateId: candidate._id });
+        await Application.deleteMany({ candidateId: candidate._id });
+    }
+    next();
+});
+
+
+
+  
+
 const Candidate = mongoose.model('Candidate', candidateSchema);
+
+
 
 module.exports = Candidate;

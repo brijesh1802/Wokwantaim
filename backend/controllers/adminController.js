@@ -173,19 +173,19 @@ const getAdmin = async (req, res) => {
 
 const deleteCandidate = async (req, res) => {
     try {
-        const candidate = await Candidate.findById(req.params.id);
+        const candidate = await Candidate.findOneAndDelete({ _id: req.params.id });
+        
         if (!candidate) {
-            return res.status(404).json({ message: 'Admin not found' });
+            return res.status(404).json({ message: 'Candidate not found' });
         }
 
-        await candidate.deleteOne();
         res.json({ message: 'Candidate deleted successfully' });
 
     } catch (error) {
         console.error('Error in deleting candidate:', error);
         res.status(500).json({ message: 'An error occurred while deleting candidate' });
     }
-}
+};
 
 
 const getPublicIdFromUrl = (url) => {
@@ -226,7 +226,7 @@ const addCompany = async (req, res) => {
 
 const deleteCompany = async (req, res) => {
     try {
-        const company = await Company.findById(req.params.id);
+        const company = await Company.findOneAndDelete({ _id: req.params.id });
         if (!company) {
             return res.status(404).json({ message: 'Company not found' });
         }

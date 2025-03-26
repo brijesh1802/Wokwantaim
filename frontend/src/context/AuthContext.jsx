@@ -4,14 +4,16 @@ import { isTokenExpired } from "./auth";
 
 export const AuthContext = createContext();
 
-const publicRoutes = ['/login', '/signup', '/admin/login', '/','/joblist']; // Added home route '/'
+const publicRoutes = ["/login", "/signup", "/admin/login", "/", "/joblist"]; // Added home route '/'
 
 export const AuthProvider = ({ children }) => {
   const [industry, setIndustry] = useState([]);
   const [isTitleEmpty, setIsTitleEmpty] = useState(false);
   const storedUserType = localStorage.getItem("userType");
-  const [isAdmin, setIsAdmin] = useState(localStorage.getItem('adminToken') !== null);
-  const [applied,setApplied]=useState(false);
+  const [isAdmin, setIsAdmin] = useState(
+    localStorage.getItem("adminToken") !== null
+  );
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -31,9 +33,13 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const currentPath = location.pathname;
-    const adminToken = localStorage.getItem('adminToken');
-    
-    if (!publicRoutes.includes(currentPath) && !adminToken && isTokenExpired()) {
+    const adminToken = localStorage.getItem("adminToken");
+
+    if (
+      !publicRoutes.includes(currentPath) &&
+      !adminToken &&
+      isTokenExpired()
+    ) {
       console.log("Token Expired, Logging out");
       logout();
     } else {
@@ -43,18 +49,22 @@ export const AuthProvider = ({ children }) => {
     // Fetch jobs info
     const fetchJobsInfo = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/jobs/getAll`);
+        const response = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/api/v1/jobs/getAll`
+        );
         const data = await response.json();
         setJobsInfo(data);
       } catch (error) {
         console.error("Error fetching jobsinfo:", error);
       }
     };
-    
+
     fetchJobsInfo();
   }, [navigate, location]);
 
-  const [userType, setUserType] = useState(storedUserType ? storedUserType : null);
+  const [userType, setUserType] = useState(
+    storedUserType ? storedUserType : null
+  );
 
   const login = (type, isAdminLogin = false) => {
     setUserType(type);
@@ -81,15 +91,12 @@ export const AuthProvider = ({ children }) => {
   const [selectedRadio, setSelectedRadio] = useState({});
   const [checkedOptions, setCheckedOptions] = useState({});
 
-
-
-
   const handleJobRoleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setCurrentJobRole((prev) => ({
       ...prev,
       [name]:
-        type === "checkbox" || type === "radio"
+        type === "checkbox" 
           ? checked
             ? [...(prev[name] || []), value]
             : (prev[name] || []).filter((v) => v !== value)
@@ -132,15 +139,19 @@ export const AuthProvider = ({ children }) => {
 
   const [jobRole, setJobRole] = useState([]);
   const [companyRole, setCompanyRole] = useState([]);
-
+const [experienceRole,setExperienceRole]=useState([]);
   useEffect(() => {
     const jobRoles = jobsInfo.map((jobData) => jobData.job.title);
-    const companies = jobsInfo.map((jobData) => jobData.job.company); 
+    const companies = jobsInfo.map((jobData) => jobData.job.company);
+    const experience = jobsInfo.map((jobData) => jobData.job.experienceLevel);
+
     const uniqueJobRolesSet = new Set(jobRoles);
     const uniqueCompanySet = new Set(companies);
+    const uniqueExperienceSet = new Set(experience);
 
     setJobRole(Array.from(uniqueJobRolesSet));
     setCompanyRole(Array.from(uniqueCompanySet));
+    setExperienceRole(Array.from(uniqueExperienceSet));
   }, [jobsInfo]);
 
   return (
@@ -156,6 +167,7 @@ export const AuthProvider = ({ children }) => {
         showScroll,
         jobRole,
         companyRole,
+        experienceRole,
         isAdmin,
         checkedOptions,
         setCheckedOptions,
@@ -163,8 +175,7 @@ export const AuthProvider = ({ children }) => {
         setSelectedRadio,
         setIsTitleEmpty,
         isTitleEmpty,
-        setApplied,
-        applied
+        setCurrentJobRole,
       }}
     >
       {children}

@@ -153,4 +153,5 @@ const candidateProfileSchema = new Schema({
 
 const CandidateProfile = mongoose.model('candidateProfiles', candidateProfileSchema);
 
+
 module.exports = CandidateProfile;

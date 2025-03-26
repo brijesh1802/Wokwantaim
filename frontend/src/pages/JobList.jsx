@@ -1,12 +1,24 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaMapMarkerAlt, FaSearch } from "react-icons/fa"; // For Icons
+import { RefreshCcw } from "lucide-react";
 import Banner from "../components/Banner";
 import JobFilter from "../components/JobFilter";
 import JobResults from "../components/JobResults";
 import { AuthContext } from "../context/AuthContext";
 
 const JobList = () => {
-  const { handleJobRoleChange, currentJobRole, jobsInfo, jobRole } = useContext(AuthContext);
+  const {
+    handleJobRoleChange,
+    currentJobRole,
+    jobsInfo,
+    jobRole,
+    setCurrentJobRole,
+    setSelectedRadio,
+    setCheckedOptions,
+    experienceRole
+  } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [industry, setIndustry] = useState([]);
@@ -20,6 +32,8 @@ const JobList = () => {
 
   const [filteredSearchJob, setFilteredSearchJob] = useState([]);
   const [showDropdown, setShowDropDown] = useState(false);
+
+  const [visibleSection, setVisibleSection] = useState({});
 
   const handleClick = (jobsInfo) => {
     navigate("/jobdetail", { state: { jobsInfo } });
@@ -35,7 +49,9 @@ const JobList = () => {
       return;
     }
 
-    const filtered = jobRole.filter((role) => role.toLowerCase().includes(value.toLowerCase()));
+    const filtered = jobRole.filter((role) =>
+      role.toLowerCase().includes(value.toLowerCase())
+    );
     setFilteredSearchJob(filtered);
     setShowDropDown(filtered.length > 0);
   };
@@ -48,13 +64,47 @@ const JobList = () => {
 
   const handleSearchChange = () => {
     const filteredJobs = jobsInfo.filter((data) => {
-      const matchTitle = title ? data.job.title.toLowerCase().includes(title.toLowerCase()) : true;
-      const matchLocation = location ? data.job.location.toLowerCase().includes(location.toLowerCase()) : true;
-      const matchJobType = jobType ? data.job.jobType.toLowerCase().includes(jobType.toLowerCase()) : true;
+      const matchTitle = title
+        ? data.job.title.toLowerCase().includes(title.toLowerCase())
+        : true;
+      const matchLocation = location
+        ? data.job.location.toLowerCase().includes(location.toLowerCase())
+        : true;
+      const matchJobType = jobType
+        ? data.job.jobType.toLowerCase().includes(jobType.toLowerCase())
+        : true;
 
       return matchTitle && matchLocation && matchJobType;
     });
     setFilteredJobRole(filteredJobs);
+  };
+  const handleRefresh = () => {
+    setSelectedRadio("");
+    setCheckedOptions({});
+    setFilteredJobRole(jobsInfo);
+    setFilteredSearchJob("");
+    // setIsTitleEmpty(false);
+    setTitle("");
+    setLocation("");
+    setJobType("");
+    setShowDropDown(false);
+    // setLoading(false);
+
+    setCurrentJobRole({
+      DatePosted: [],
+      Industry: [],
+      JobRoles: [],
+      Salary: [],
+      Experience: [],
+      Title: [],
+      Location: [],
+      JobType: [],
+      TitleAndCompany: [],
+    });
+
+    setVisibleSection((prev) =>
+      Object.fromEntries(Object.keys(prev).map((key) => [key, false]))
+    );
   };
 
   useEffect(() => {
@@ -89,25 +139,31 @@ const JobList = () => {
 
         const matchDate =
           !currentJobRole.DatePosted.length ||
-          (currentJobRole.DatePosted.includes("Last 24 hours") && daysAgo <= 1) ||
+          (currentJobRole.DatePosted.includes("Last 24 hours") &&
+            daysAgo <= 1) ||
           (currentJobRole.DatePosted.includes("Last Week") && daysAgo <= 7) ||
           (currentJobRole.DatePosted.includes("Last Month") && daysAgo <= 30) ||
           (currentJobRole.DatePosted.includes("Older") && daysAgo > 30);
 
         const matchIndustry =
-          !currentJobRole.Industry.length || currentJobRole.Industry.includes(job.job.industry);
+          !currentJobRole.Industry.length ||
+          currentJobRole.Industry.includes(job.job.industry);
 
         const matchJobRole =
-          !currentJobRole.JobRoles.length || currentJobRole.JobRoles.some((role) =>
+          !currentJobRole.JobRoles.length ||
+          currentJobRole.JobRoles.some((role) =>
             job.job.title.toLowerCase().includes(role.toLowerCase())
           );
 
         const matchSalary =
           !currentJobRole.Salary.length ||
           currentJobRole.Salary.some((range) => {
-            if (range === "₹10,000 - ₹20,000") return job.job.salary >= 10000 && job.job.salary < 20000;
-            if (range === "₹20,000 - ₹30,000") return job.job.salary >= 20000 && job.job.salary < 30000;
-            if (range === "₹30,000 - ₹50,000") return job.job.salary >= 30000 && job.job.salary <= 50000;
+            if (range === "₹10,000 - ₹20,000")
+              return job.job.salary >= 10000 && job.job.salary < 20000;
+            if (range === "₹20,000 - ₹30,000")
+              return job.job.salary >= 20000 && job.job.salary < 30000;
+            if (range === "₹30,000 - ₹50,000")
+              return job.job.salary >= 30000 && job.job.salary <= 50000;
             if (range === "Above ₹50,000") return job.job.salary > 50000;
             return false;
           });
@@ -121,15 +177,8 @@ const JobList = () => {
           );
 
         const matchExperience =
-          !currentJobRole.Experience.length ||
-          currentJobRole.Experience.some((range) => {
-            if (range === "0-2 years")
-              return job.job.experienceYearsMin >= 0 && job.job.experienceYearsMax <= 2;
-            if (range === "3-5 years")
-              return job.job.experienceYearsMin >= 2 && job.job.experienceYearsMax <= 5;
-            if (range === "5+ years") return job.job.experienceYearsMax >= 5;
-            return false;
-          });
+        !currentJobRole.Experience.length ||
+        currentJobRole.Experience.includes(job.job.experienceLevel);
 
         return (
           matchDate &&
@@ -142,11 +191,12 @@ const JobList = () => {
       })
     );
   }, [currentJobRole, jobsInfo]);
-
+console.log("Current jobRole",currentJobRole);
+console.log("Filtered jobRole",filteredJobRole);
 
   return (
-    <div>
-      <div className="gap-4">
+    <motion.div>
+      <motion.div className="gap-4">
         {/* Banner Section */}
         <Banner />
         <div className="px-4 py-8 -mt-10 bg-gray-100 rounded-md lg:mx-8 lg:-mt-16">
@@ -158,21 +208,23 @@ const JobList = () => {
               onChange={handleSearchTitleChange}
             />
             {showDropdown && (
-              <div className="absolute left-0 w-full md:w-1/3 bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto z-50 top-full mt-1">
+              <motion.div className="absolute left-0 w-full md:w-1/3 bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto z-50 top-full mt-1">
                 {filteredSearchJob.map((jobTitle, index) => (
-                  <div
+                  <motion.div
                     key={index}
                     className="p-2 cursor-pointer hover:bg-gray-200"
                     onClick={() => handleDropdownSelect(jobTitle)}
+                    whileHover={{ backgroundColor: "rgba(249, 250, 251, 0.8)" }}
+                    transition={{ duration: 0.1 }}
                   >
                     {jobTitle}
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             )}
             <select
               className="flex-1 w-full p-3 border border-gray-300 rounded-md cursor-pointer md:w-1/4"
-              defaultValue=""
+              value={location}
               onChange={(e) => setLocation(e.target.value)}
             >
               <option value="" disabled>
@@ -186,7 +238,7 @@ const JobList = () => {
             </select>
             <select
               className="flex-1 w-full p-3 border border-gray-300 rounded-md md:w-1/4"
-              defaultValue=""
+              value={jobType}
               onChange={(e) => setJobType(e.target.value)}
             >
               <option value="" disabled>
@@ -199,16 +251,22 @@ const JobList = () => {
               ))}
             </select>
           </div>
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center mt-4 gap-2">
             <button
               className="w-full p-3 text-white transition-all bg-orange-500 rounded-md md:w-1/3 hover:bg-orange-600"
               onClick={handleSearchChange}
             >
               Find Jobs
             </button>
+            <button
+              className="p-3  rounded-md hover:bg-orange-300 flex items-center justify-center"
+              onClick={handleRefresh} // Or use window.location.reload() for a hard refresh
+            >
+              <RefreshCcw className="w-5 h-5 text-orange-500" />
+            </button>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       <div className="flex flex-col lg:flex-row mt-16 lg:p-3">
         {/* Filter Section */}
@@ -216,11 +274,20 @@ const JobList = () => {
           industry={industry}
           jobRole={jobRole}
           handleJobRoleChange={handleJobRoleChange}
+          visibleSection={visibleSection}
+          setVisibleSection={setVisibleSection}
+          experienceRole={experienceRole}
         />
         {/* Job Results */}
-        <JobResults filteredJob={filteredJobRole} handleClick={handleClick} />
+        {
+        filteredJobRole.length>0?
+        (<JobResults filteredJob={filteredJobRole} handleClick={handleClick} />):(
+          <div className="flex justify-center items-center w-full h-64 text-gray-500 text-lg">
+            <p>No jobs found</p>
+          </div>)
+}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

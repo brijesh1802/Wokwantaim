@@ -650,6 +650,7 @@ const JobDetail = () => {
     const currentDate = new Date();
     if (deadlineDate && currentDate > deadlineDate) {
       setShowApplied(true);
+      setShowAlert(true);
       setMessage("Application is closed!");
       return;
     }

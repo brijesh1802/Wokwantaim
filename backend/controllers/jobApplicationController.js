@@ -561,7 +561,7 @@ const applyJob = async (req, res) => {
             jobId: job._id,
             candidateId: candidate._id,
             skillsMatching: matchingSkills,
-            status: "Pending",
+            status: "pending",
             dateApplied: new Date(),
             jobName:job.title,
             companyName:job.company.name,

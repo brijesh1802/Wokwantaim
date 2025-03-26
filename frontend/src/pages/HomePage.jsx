@@ -47,9 +47,19 @@ function HomePage() {
     if (searchTerm.trim() === "") {
       setShowAlert(true);
     } else {
+      const filteredResults = filteredSearchJob.filter(job =>
+        job.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      if (filteredResults.length > 0) {
+        setSearchTerm(filteredResults[0]); 
+      }
+      setFilteredSearchJob(filteredResults); 
+      console.log("Filtered results:", filteredResults);
       navigate("/joblist");
     }
   };
+  
+
   const closeAlert = () => {
     setShowAlert(false);
   };
@@ -75,7 +85,7 @@ function HomePage() {
     const combinedFilteredRole = Array.from(
       new Set([...filteredJobRole, ...filteredCompanyRole])
     );
-    console.log(combinedFilteredRole.length);
+    console.log("length",combinedFilteredRole.length);
     setFilteredSearchJob(combinedFilteredRole);
     setShowDropDown(combinedFilteredRole.length > 0);
   };

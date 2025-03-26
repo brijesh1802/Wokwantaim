@@ -35,6 +35,8 @@ const JobList = () => {
 
   const [visibleSection, setVisibleSection] = useState({});
 
+  const [combinedJobs,setCombinedJobs]=useState([])
+
   const handleClick = (jobsInfo) => {
     navigate("/jobdetail", { state: { jobsInfo } });
   };
@@ -76,7 +78,7 @@ const JobList = () => {
 
       return matchTitle && matchLocation && matchJobType;
     });
-    setFilteredJobRole(filteredJobs);
+    setCombinedJobs(filteredJobs);
   };
   const handleRefresh = () => {
     setSelectedRadio("");
@@ -134,7 +136,7 @@ const JobList = () => {
     };
 
     setFilteredJobRole(
-      jobsInfo.filter((job) => {
+     (title||location||jobType?combinedJobs:jobsInfo) .filter((job) => {
         const daysAgo = getDaysDifference(job.job.applicationPostedDate);
 
         const matchDate =
@@ -190,7 +192,7 @@ const JobList = () => {
         );
       })
     );
-  }, [currentJobRole, jobsInfo]);
+  }, [currentJobRole, jobsInfo,combinedJobs]);
 console.log("Current jobRole",currentJobRole);
 console.log("Filtered jobRole",filteredJobRole);
 

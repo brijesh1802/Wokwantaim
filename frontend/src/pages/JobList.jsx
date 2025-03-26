@@ -63,23 +63,6 @@ const JobList = () => {
     setFilteredSearchJob([]);
     setShowDropDown(false);
   };
-
-  const handleSearchChange = () => {
-    const filteredJobs = jobsInfo.filter((data) => {
-      const matchTitle = title
-        ? data.job.title.toLowerCase().includes(title.toLowerCase())
-        : true;
-      const matchLocation = location
-        ? data.job.location.toLowerCase().includes(location.toLowerCase())
-        : true;
-      const matchJobType = jobType
-        ? data.job.jobType.toLowerCase().includes(jobType.toLowerCase())
-        : true;
-
-      return matchTitle && matchLocation && matchJobType;
-    });
-    setCombinedJobs(filteredJobs);
-  };
   const handleRefresh = () => {
     setSelectedRadio("");
     setCheckedOptions({});
@@ -108,6 +91,36 @@ const JobList = () => {
       Object.fromEntries(Object.keys(prev).map((key) => [key, false]))
     );
   };
+
+  const handleSearchChange = () => {
+    setCurrentJobRole({
+      DatePosted: [],
+      Industry: [],
+      JobRoles: [],
+      Salary: [],
+      Experience: [],
+      Title: [],
+      Location: [],
+      JobType: [],
+      TitleAndCompany: [],
+    });
+    const filteredJobs = jobsInfo.filter((data) => {
+      const matchTitle = title
+        ? data.job.title.toLowerCase().includes(title.toLowerCase())
+        : true;
+      const matchLocation = location
+        ? data.job.location.toLowerCase().includes(location.toLowerCase())
+        : true;
+      const matchJobType = jobType
+        ? data.job.jobType.toLowerCase().includes(jobType.toLowerCase())
+        : true;
+
+      return matchTitle && matchLocation && matchJobType;
+    });
+    setCombinedJobs(filteredJobs);
+  
+  };
+
 
   useEffect(() => {
     const industries = jobsInfo.map((job) => job.job.industry);
@@ -195,6 +208,8 @@ const JobList = () => {
   }, [currentJobRole, jobsInfo,combinedJobs]);
 console.log("Current jobRole",currentJobRole);
 console.log("Filtered jobRole",filteredJobRole);
+console.log("Combined Jobs",combinedJobs);
+
 
   return (
     <motion.div>

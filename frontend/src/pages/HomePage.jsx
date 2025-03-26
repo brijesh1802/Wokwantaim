@@ -86,6 +86,7 @@ function HomePage() {
     setFilteredSearchJob([]);
     setShowDropDown(false);
     console.log(searchTerm);
+    navigate("/joblist");
   };
   useEffect(() => {
     if (searchTerm) {

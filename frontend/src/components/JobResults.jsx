@@ -38,7 +38,7 @@ const JobResults = ({ filteredJob }) => {
   
     return (
       <motion.div
-        className="bg-white p-4 sm:p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100"
+        className="bg-white p-4 sm:p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 ml-2"
         whileHover={{ scale: 1.01 }}
         onClick={() => handleJobClick(job.job.id)}
       >
@@ -102,7 +102,7 @@ const JobResults = ({ filteredJob }) => {
 
   return (
     <div className="flex flex-col space-y-6 lg:w-3/4 mt-9 lg:mt-0">
-      <div className="flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-100 rounded-lg">
+      <div className="flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-100 rounded-lg ml-2">
         <p className="text-sm text-gray-600 mb-2 sm:mb-0">
           Showing <span className="font-semibold">{indexOfFirstJob + 1}-{Math.min(indexOfLastJob, sortedJobs.length)}</span> of <span className="font-semibold">{sortedJobs.length}</span> Job Results
         </p>

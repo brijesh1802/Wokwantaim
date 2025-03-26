@@ -10,11 +10,13 @@ import {
   ChevronDown,
 } from "lucide-react";
 
-const FilterSection = ({ id, label, icon, options, type, handleJobRoleChange }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const FilterSection = ({ id, label, icon, options, type, handleJobRoleChange ,visibleSection,setVisibleSection}) => {
+  const isOpen = visibleSection === id;
   const [showAll, setShowAll] = useState(false);
 
-  const toggleSection = () => setIsOpen(!isOpen);
+  const toggleSection = () => {
+    setVisibleSection(isOpen ? null : id); // Close if already open, open otherwise
+  };
   const toggleShowAll = () => setShowAll(!showAll);
 
   const visibleOptions = showAll ? options : options.slice(0, 4);
@@ -73,7 +75,7 @@ const FilterSection = ({ id, label, icon, options, type, handleJobRoleChange }) 
   );
 };
 
-const JobFilter = ({ industry, jobRole, handleJobRoleChange }) => {
+const JobFilter = ({ industry, jobRole, handleJobRoleChange,setVisibleSection,visibleSection,experienceRole }) => {
   const filters = [
     {
       id: "DatePosted",
@@ -107,7 +109,7 @@ const JobFilter = ({ industry, jobRole, handleJobRoleChange }) => {
       id: "Experience",
       label: "Experience",
       icon: <PersonStanding />,
-      options: ["0-2 years", "3-5 years", "5+ years"],
+      options:experienceRole,
       type: "checkbox",
     },
   ];
@@ -120,6 +122,8 @@ const JobFilter = ({ industry, jobRole, handleJobRoleChange }) => {
           key={filter.id}
           {...filter}
           handleJobRoleChange={handleJobRoleChange}
+          visibleSection={visibleSection}
+          setVisibleSection={setVisibleSection}
         />
       ))}
     </div>

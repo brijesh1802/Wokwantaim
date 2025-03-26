@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { LinkedinIcon, GithubIcon, Globe,Pencil,X } from "lucide-react";
+import {
+  LinkedinIcon,
+  GithubIcon,
+  Globe,
+  Pencil,
+  X,
+  Check,
+  ChartCandlestick,
+} from "lucide-react";
 
 const SocialLinks = ({ socialLinks, setSocialLinks }) => {
   const [error, setError] = useState(null);
@@ -9,7 +17,9 @@ const SocialLinks = ({ socialLinks, setSocialLinks }) => {
 
   const updateSocialLinks = async (updatedLinks) => {
     try {
-      const url = `${import.meta.env.VITE_BASE_URL}/api/v1/candidates/info/update`;
+      const url = `${
+        import.meta.env.VITE_BASE_URL
+      }/api/v1/candidates/info/update`;
       const response = await fetch(url, {
         method: "PATCH",
         headers: {
@@ -32,11 +42,23 @@ const SocialLinks = ({ socialLinks, setSocialLinks }) => {
     }
   };
 
-  const handleDelete = async (index) => {
-    const updatedSocialLinks = socialLinks.filter((_, i) => i !== index);
+  // ✅ Updated delete function to remove only a specific link
+  const handleDelete = async (index, platform) => {
+    const updatedSocialLinks = socialLinks
+      .map((link, i) => {
+        if (i === index) {
+          const newLink = { ...link };
+          delete newLink[platform]; // Remove only the selected platform link
+
+          return Object.keys(newLink).length > 0 ? newLink : null; // Remove empty objects
+        }
+        return link;
+      })
+      .filter(Boolean); // Remove null entries
+
     const success = await updateSocialLinks(updatedSocialLinks);
     if (success) {
-      console.log("Social Link deleted successfully");
+      console.log(`Deleted ${platform} link successfully`);
     }
   };
 
@@ -69,85 +91,104 @@ const SocialLinks = ({ socialLinks, setSocialLinks }) => {
     return <div>Error: {error}</div>;
   }
 
-  const isSaveDisabled = !Object.values(editLink).some(value => value?.trim());
+  const isSaveDisabled = !Object.values(editLink).some((value) =>
+    value?.trim()
+  );
 
   const EditForm = ({ link, onChange, onSave, onCancel, isSaveDisabled }) => (
-    <div className="space-y-3">
-      {['linkedin', 'github', 'portfolio'].map(platform => (
+    <div className="relative space-y-3 ">
+      {["linkedin", "github", "portfolio"].map((platform) => (
         <input
           key={platform}
           type="text"
           name={platform}
           value={link[platform] || ""}
           onChange={onChange}
-          placeholder={`${platform.charAt(0).toUpperCase() + platform.slice(1)} URL`}
-          className="w-full p-2 border border-gray-200 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder={`${
+            platform.charAt(0).toUpperCase() + platform.slice(1)
+          } URL`}
+          className="mt-4 w-full p-2 border border-gray-200 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       ))}
-      <div className="flex justify-end space-x-2">
+      <div className="absolute -top-7 right-4 flex justify-end space-x-2 ">
         <button
           onClick={onSave}
           disabled={isSaveDisabled}
           className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
-            isSaveDisabled ? "bg-gray-200 text-gray-400" : "bg-blue-600 text-white hover:bg-blue-700"
+            isSaveDisabled
+              ? "bg-gray-200 text-gray-400"
+              : "text-gray-400 hover:text-green-500 transition"
           }`}
         >
-          Save
+          <Check size={20} />
         </button>
         <button
           onClick={onCancel}
-          className="px-4 py-2 rounded text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200"
+          className="text-gray-400 hover:text-red-500 transition"
         >
-          Cancel
-        </button>
-      </div>
-    </div>
-  );
-  
-  const DisplayLinks = ({ link, onEdit, onDelete }) => (
-    <div className="relative">
-      <div className="absolute top-0 right-0 space-x-2">
-        <button onClick={onEdit} className="text-gray-400 hover:text-blue-500">
-          <Pencil size={20}/>
-        </button>
-        <button onClick={onDelete} className="text-gray-400 hover:text-red-500">
           <X size={20} />
         </button>
       </div>
-      {Object.entries(link).map(([platform, url]) => url && (
-        <a
-          key={platform}
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center space-x-2 mb-2 text-gray-700 hover:text-blue-600"
-        >
-          <PlatformIcon platform={platform} />
-          <span className="truncate">{url}</span>
-        </a>
-      ))}
     </div>
   );
-  
-  const EditIcon = () => (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-    </svg>
+
+  const platformColors = {
+    linkedin: "bg-blue-100",
+    github: "bg-gray-100",
+    portfolio: "bg-green-100",
+  };
+
+  const DisplayLinks = ({ link, index, onEdit, onDelete }) => (
+    <div className="relative py-3 -mt-6">
+      {/* Pencil Icon - Positioned properly */}
+      <button
+        onClick={onEdit}
+        className="absolute top-2 right-2 flex items-center space-x-1 text-gray-400 hover:text-blue-500"
+      >
+        <span>Add/Edit</span>
+        <Pencil size={18} />
+      </button>
+
+      {/* Social Links */}
+      <div className="space-y-2 mt-6">
+        {Object.entries(link).map(
+          ([platform, url]) =>
+            url && (
+              <div
+                key={platform}
+                className={`flex flex-row items-center justify-between  px-2 rounded-full py-1 w-full max-w-[450px] ${
+                  platformColors[platform] || "bg-gray-200"
+                }`}
+              >
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-2 text-gray-700 hover:text-blue-600"
+                >
+                  <PlatformIcon platform={platform} />
+                  <span className="truncate">{url}</span>
+                </a>
+                <button
+                  onClick={() => onDelete(index, platform)}
+                  className="text-gray-400 hover:text-red-500"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+            )
+        )}
+      </div>
+    </div>
   );
-  
-  const DeleteIcon = () => (
-    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-    </svg>
-  );
-  
+
   const PlatformIcon = ({ platform }) => {
     switch (platform) {
-      case 'linkedin':
+      case "linkedin":
         return <LinkedinIcon className="w-5 h-5" />;
-      case 'github':
+      case "github":
         return <GithubIcon className="w-5 h-5" />;
-      case 'portfolio':
+      case "portfolio":
         return <Globe className="w-5 h-5" />;
       default:
         return null;
@@ -158,26 +199,32 @@ const SocialLinks = ({ socialLinks, setSocialLinks }) => {
     <div className="space-y-4">
       {socialLinks.length > 0 ? (
         socialLinks.map((link, index) => (
-          <div key={index} className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+          <div
+            key={index}
+            className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
+          >
             {editIndex === index ? (
-              <EditForm 
-                link={editLink} 
-                onChange={handleChange} 
-                onSave={handleSave} 
-                onCancel={() => setEditIndex(null)} 
-                isSaveDisabled={isSaveDisabled} 
+              <EditForm
+                link={editLink}
+                onChange={handleChange}
+                onSave={handleSave}
+                onCancel={() => setEditIndex(null)}
+                isSaveDisabled={isSaveDisabled}
               />
             ) : (
-              <DisplayLinks 
-                link={link} 
-                onEdit={() => handleEdit(index)} 
-                onDelete={() => handleDelete(index)} 
+              <DisplayLinks
+                link={link}
+                index={index}
+                onEdit={() => handleEdit(index)}
+                onDelete={handleDelete}
               />
             )}
           </div>
         ))
       ) : (
-        <p className="text-gray-500 text-center py-4">Add your Social Profiles here</p>
+        <p className="text-gray-500 text-center py-4">
+          Add your Social Profiles here
+        </p>
       )}
     </div>
   );

@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronDown, Calendar } from "lucide-react";
 
 const getStatusStyle = (status) => {
+
   switch (status) {
-    case "Not selected":
+    case "rejected":
       return "bg-red-100 text-red-700 border border-red-400";
     case "pending":
       return "bg-yellow-100 text-yellow-700 border border-yellow-600";
-    case "selected":
+    case "accepted":
       return "bg-green-100 text-green-700 border border-green-600";
     default:
       return "bg-gray-100 text-gray-700 border border-gray-600";
@@ -92,7 +93,8 @@ const JobApplications = () => {
       {/* Filter UI */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex space-x-2">
-          {["", "Not selected", "pending", "selected"].map((status) => (
+          
+          {["", "Pending", "Interview", "Accepted","Rejected"].map((status) => (
             <button
               key={status}
               onClick={() => setStatusFilter(status)}

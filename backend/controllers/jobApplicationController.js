@@ -561,7 +561,7 @@ const applyJob = async (req, res) => {
             jobId: job._id,
             candidateId: candidate._id,
             skillsMatching: matchingSkills,
-            status: "pending",
+            status: "Pending",
             dateApplied: new Date(),
             jobName:job.title,
             companyName:job.company.name,
@@ -619,6 +619,56 @@ const getAllApplications = async (req, res) => {
     }
 };
 
+const editApplication = async (req, res) => {
+    try {
+        const { applicationId } = req.params; // Get application ID from request params
+        const { status } = req.body; // Assuming the user is updating the status
 
+        console.log("Received Request to Edit Application");
+        console.log("Application ID:", applicationId);
+        console.log("New Status:", status);
 
-module.exports = { applyJob,getMyApplications,getAllApplications};
+        if (!applicationId) {
+            return res.status(400).json({ message: "Application ID is required" });
+        }
+
+        if (!status) {
+            return res.status(400).json({ message: "Status field is required" });
+        }
+
+        const application = await Application.findById(applicationId);
+        if (!application) {
+            console.log("Application not found");
+            return res.status(404).json({ message: "Application not found" });
+        }
+
+        application.status = status; // Update status
+        await application.save();
+        console.log("Application updated successfully");
+
+        res.json({ message: "Application updated successfully", application });
+
+    } catch (error) {
+        console.error("Error updating application:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+const deleteApplication = async (req, res) => {
+    try {
+        const { applicationId } = req.params;
+        
+        // Find and delete the application
+        const deletedApplication = await Application.findByIdAndDelete(applicationId);
+        
+        if (!deletedApplication) {
+            return res.status(404).json({ message: "Application not found" });
+        }
+
+        res.status(200).json({ message: "Application deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting application:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+module.exports = { applyJob, getMyApplications, getAllApplications, editApplication,deleteApplication };

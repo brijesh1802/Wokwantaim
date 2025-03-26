@@ -40,7 +40,7 @@ const SkillSection = ({ skills, setSkills }) => {
   }
 
   return (
-    <div className="mt-6 flex flex-wrap gap-3">
+    <div className="mt-2 flex flex-wrap gap-3 mb-2">
       {skills.length > 0 ? (
         skills.map((skill, index) => (
           <div
@@ -53,19 +53,29 @@ const SkillSection = ({ skills, setSkills }) => {
               onClick={() => handleDelete(index)}
               aria-label="Delete skill"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
         ))
       ) : (
-        <p className="text-gray-500 italic">Add your skills here</p>
+        <p className="text-gray-500 italic col-span-full flex items-center justify-center text-center w-full">
+          Add your skills here
+        </p>
       )}
     </div>
   );
-  
-
 };
 
 export default SkillSection;

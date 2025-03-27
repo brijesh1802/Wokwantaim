@@ -154,8 +154,9 @@ const EducationSection = ({ educations, setEducations }) => {
                     type="text"
                     name="degree"
                     value={editStates[index].degree}
-                    onChange={(e) => handleChange(index, e)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    // onChange={(e) => handleChange(index, e)}
+                    disabled
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 cursor-not-allowed"
                   />
                 </div>
 
@@ -169,7 +170,7 @@ const EducationSection = ({ educations, setEducations }) => {
                     name="institution"
                     value={editStates[index].institution}
                     onChange={(e) => handleChange(index, e)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300"
                   />
                 </div>
 
@@ -182,7 +183,7 @@ const EducationSection = ({ educations, setEducations }) => {
                     name="startDate"
                     value={new Date(editStates[index].startDate).getFullYear()}
                     onChange={(e) => handleChange(index, e)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300"
                   >
                     <option value="">Select Year</option>
                     {years.map((year) => (
@@ -202,7 +203,7 @@ const EducationSection = ({ educations, setEducations }) => {
                     name="endDate"
                     value={new Date(editStates[index].endDate).getFullYear()}
                     onChange={(e) => handleChange(index, e)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300"
                   >
                     <option value="">Select Year</option>
                     {years.map((year) => (
@@ -223,7 +224,7 @@ const EducationSection = ({ educations, setEducations }) => {
                     name="grade"
                     value={editStates[index].grade}
                     onChange={(e) => handleChange(index, e)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300"
                   />
                 </div>
 
@@ -237,7 +238,7 @@ const EducationSection = ({ educations, setEducations }) => {
                     name="description"
                     value={editStates[index].description}
                     onChange={(e) => handleChange(index, e)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300"
                   />
                 </div>
               </div>

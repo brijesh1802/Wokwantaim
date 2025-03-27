@@ -5,6 +5,10 @@ const Certifications = ({ certifications, setCertifications }) => {
   const token = localStorage.getItem("authToken");
   const [editStates, setEditStates] = useState({});
 
+  const formatDate = (date) => {
+    return date ? new Date(date).toISOString().split("T")[0] : "";
+  };
+
   const handleDelete = async (index) => {
     const updatedCertification = certifications.filter((_, i) => i !== index);
     try {
@@ -27,7 +31,10 @@ const Certifications = ({ certifications, setCertifications }) => {
   };
 
   const handleEdit = (index) => {
-    setEditStates((prev) => ({ ...prev, [index]: certifications[index] }));
+    setEditStates((prev) => ({
+      ...prev,
+      [index]: { ...certifications[index] } || {},
+    }));
   };
 
   const handleChange = (index, e) => {
@@ -116,7 +123,7 @@ const Certifications = ({ certifications, setCertifications }) => {
                 )}
               </div>
               {isEditing ? (
-                <div className="relative space-y-4 bg-white p-6 rounded-xl">
+                <div className="relative space-y-4  p-6 rounded-xl">
                   {[
                     "title",
                     "issuingOrganization",
@@ -126,9 +133,10 @@ const Certifications = ({ certifications, setCertifications }) => {
                     <div key={field} className="relative">
                       <label
                         htmlFor={field}
-                        className="absolute top-2 left-4 text-gray-500 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base"
+                        className="top-2 left-4 text-gray-[800] text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base"
                       >
-                        {field.replace(/([A-Z])/g, " $1").trim()}
+                        {/* {field.replace(/([A-Z])/g, " $1").trim()} */}
+                        {field.charAt(0).toUpperCase() + field.slice(1)}
                       </label>
                       <input
                         id={field}
@@ -136,8 +144,8 @@ const Certifications = ({ certifications, setCertifications }) => {
                         name={field}
                         value={editStates[index]?.[field] || ""}
                         onChange={(e) => handleChange(index, e)}
-                        className="w-full px-4 pt-6 pb-2 rounded-lg bg-gray-50 border border-gray-300 
-                     focus:ring-2 focus:ring-blue-400 focus:outline-none transition peer"
+                        className="w-full px-4 pt-2 pb-2 rounded-lg border border-gray-300 
+                     focus:ring-2 focus:ring-orange-300 focus:outline-none transition peer"
                         placeholder=" " // Keep placeholder empty for floating effect
                       />
                     </div>
@@ -146,18 +154,20 @@ const Certifications = ({ certifications, setCertifications }) => {
                     <div key={field} className="relative">
                       <label
                         htmlFor={field}
-                        className="absolute top-2 left-4 text-gray-500 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base"
+                        className="top-2 left-4 text-gray-[800] text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base"
                       >
-                        {field.replace(/([A-Z])/g, " $1").trim()}
+                        {/* {field.replace(/([A-Z])/g, " $1").trim()} */}
+                        {field.charAt(0).toUpperCase() + field.slice(1)}
                       </label>
                       <input
                         id={field}
                         type="date"
                         name={field}
-                        value={editStates[index]?.[field] || ""}
+                        value={formatDate(editStates[index]?.[field]) || ""}
                         onChange={(e) => handleChange(index, e)}
-                        className="w-full px-4 pt-6 pb-2 rounded-lg bg-gray-50 border border-gray-300
-                     focus:ring-2 focus:ring-blue-400 focus:outline-none transition peer"
+                        className="w-full px-4 pt-2 pb-2 rounded-lg border border-gray-300
+                     focus:ring-2 focus:ring-orange-300
+                     focus:outline-none transition peer"
                       />
                     </div>
                   ))}

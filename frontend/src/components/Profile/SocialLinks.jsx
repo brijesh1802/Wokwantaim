@@ -98,17 +98,27 @@ const SocialLinks = ({ socialLinks, setSocialLinks }) => {
   const EditForm = ({ link, onChange, onSave, onCancel, isSaveDisabled }) => (
     <div className="relative space-y-3 ">
       {["linkedin", "github", "portfolio"].map((platform) => (
-        <input
-          key={platform}
-          type="text"
-          name={platform}
-          value={link[platform] || ""}
-          onChange={onChange}
-          placeholder={`${
-            platform.charAt(0).toUpperCase() + platform.slice(1)
-          } URL`}
-          className="mt-4 w-full p-2 border border-gray-200 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        />
+        <div key={platform} className="relative">
+          <label
+            htmlFor={platform}
+            className="top-2 left-4 text-gray-[800] text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base"
+          >
+            {/* {field.replace(/([A-Z])/g, " $1").trim()} */}
+            {platform.charAt(0).toUpperCase() + platform.slice(1)}
+          </label>
+          <input
+            id={platform}
+            type="text"
+            name={platform}
+            value={link[platform] || ""}
+            onChange={onChange}
+            placeholder={`${
+              platform.charAt(0).toUpperCase() + platform.slice(1)
+            } URL`}
+            className="w-full px-4 pt-2 pb-2 rounded-lg border border-gray-300 
+            focus:ring-2 focus:ring-orange-300 focus:outline-none transition peer"
+          />
+        </div>
       ))}
       <div className="absolute -top-7 right-4 flex justify-end space-x-2 ">
         <button

@@ -40,13 +40,8 @@ const ExperienceSection = ({ workExperience, setWorkExperience }) => {
       !isCurrentJob &&
       new Date(startDate) >= new Date(endDate)
     ) {
-      return "From date must be before the to date.";
+      return "Start date must be before the End date.";
     }
-
-    if (description?.length < 10) {
-      return "Description must be at least 10 characters.";
-    }
-
     return null;
   };
 
@@ -90,7 +85,7 @@ const ExperienceSection = ({ workExperience, setWorkExperience }) => {
       [index]: { ...workExperience[index] },
     }));
   };
- 
+
   // Handle input changes while editing
   const handleChange = (index, e) => {
     const { name, value, type, checked } = e.target;
@@ -107,21 +102,31 @@ const ExperienceSection = ({ workExperience, setWorkExperience }) => {
 
   // Save updated experience
   const handleSave = async (index) => {
-    console.log("clicked" ,editStates[index]);
-    const updatedExperience = editStates[index];
-    if (!updatedExperience) return;
+    console.log("Save button clicked for index:", index); // Debugging
 
+    const updatedExperience = editStates[index];
+    if (!updatedExperience) {
+      console.error("No updated experience found for index:", index);
+      setError("No updated experience found.");
+      return;
+    }
+
+    // Validate the experience
     const validationError = validateExperience(updatedExperience);
     if (validationError) {
       setError(validationError);
+      console.error("Validation error:", validationError);
       return;
     }
 
+    // Check for duplicate entries
     if (isDuplicateEntry(updatedExperience, index)) {
       setError("Duplicate work experience detected.");
+      console.error("Duplicate entry detected for:", updatedExperience);
       return;
     }
 
+    // Prepare the updated work experience array
     const updatedWorkExperience = workExperience.map((exp, i) =>
       i === index ? updatedExperience : exp
     );
@@ -130,6 +135,11 @@ const ExperienceSection = ({ workExperience, setWorkExperience }) => {
       const url = `${
         import.meta.env.VITE_BASE_URL
       }/api/v1/candidates/info/update`;
+      console.log(
+        "Sending updated work experience to API:",
+        updatedWorkExperience
+      ); // Debugging
+
       const response = await fetch(url, {
         method: "PATCH",
         headers: {
@@ -139,21 +149,25 @@ const ExperienceSection = ({ workExperience, setWorkExperience }) => {
         body: JSON.stringify({ workExperience: updatedWorkExperience }),
       });
 
-      const result = await response.json();
       if (!response.ok) {
-        console.error("API Error:", result);
-        throw new Error(result.message || "Failed to update experience.");
+        const errorMessage = `Failed to update experience. Status: ${response.status}`;
+        console.error(errorMessage);
+        setError(errorMessage);
+        throw new Error(errorMessage);
       }
 
-      console.log("API Response:", result);
+      const result = await response.json();
+      console.log("API response:", result); // Debugging
 
-      setWorkExperience([...updatedWorkExperience]); // Ensure state updates
-      handleClose(index);
+      // Update the state with the new work experience
+      setWorkExperience([...updatedWorkExperience]);
+      handleClose(index); // Close the editing mode
+      setError(null); // Clear any previous errors
     } catch (error) {
+      console.error("Error saving experience:", error);
       setError(error.message || "Error saving experience.");
     }
   };
-
 
   // Close editing mode
   const handleClose = (index) => {
@@ -195,22 +209,24 @@ const ExperienceSection = ({ workExperience, setWorkExperience }) => {
 
               {/* Editing Mode */}
               {isEditing ? (
-                <div className="relative space-y-6 p-6 bg-white rounded-xl shadow-lg border border-gray-200">
+                <div className="relative space-y-6 p-6 bg-white">
+                  {error && <p className="text-red-500">{error}</p>}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {["company", "jobTitle", "industry", "location"].map(
                       (field) => (
                         <div key={field} className="relative mt-5">
+                          <label className="absolute left-0 -top-3.5 text-sm text-gray-[800px] transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-blue-600">
+                            {field.charAt(0).toUpperCase() + field.slice(1)}
+                          </label>
                           <input
                             type="text"
                             name={field}
                             value={editStates[index]?.[field] || ""}
                             onChange={(e) => handleChange(index, e)}
-                            className="peer w-full px-3 py-2 text-sm border-b-2 border-gray-300 focus:border-blue-500 outline-none transition-all"
+                            className="w-full px-4 pt-2 mt-2 pb-2 rounded-lg border border-gray-300 
+                     focus:ring-2 focus:ring-orange-300 focus:outline-none transition peer"
                             placeholder=" "
                           />
-                          <label className="absolute left-0 -top-3.5 text-sm text-gray-600 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-blue-600">
-                            {field.charAt(0).toUpperCase() + field.slice(1)}
-                          </label>
                         </div>
                       )
                     )}
@@ -221,9 +237,10 @@ const ExperienceSection = ({ workExperience, setWorkExperience }) => {
                         name="startDate"
                         value={formatDate(editStates[index]?.startDate)}
                         onChange={(e) => handleChange(index, e)}
-                        className="peer w-full px-3 py-2 text-sm border-b-2 border-gray-300 focus:border-blue-500 outline-none transition-all"
+                        className="w-full px-4 pt-2 pb-2 mt-2 rounded-lg border border-gray-300 
+                     focus:ring-2 focus:ring-orange-300 focus:outline-none transition peer"
                       />
-                      <label className="absolute left-0 -top-3.5 text-sm text-gray-600">
+                      <label className="absolute left-0 -top-3.5 text-sm text-gray-[800px]">
                         From Date
                       </label>
                     </div>
@@ -235,9 +252,10 @@ const ExperienceSection = ({ workExperience, setWorkExperience }) => {
                         value={formatDate(editStates[index]?.endDate)}
                         onChange={(e) => handleChange(index, e)}
                         disabled={editStates[index]?.isCurrentJob}
-                        className="peer w-full px-3 py-2 text-sm border-b-2 border-gray-300 focus:border-blue-500 outline-none transition-all disabled:bg-gray-100 disabled:text-gray-400"
+                        className="w-full px-4 pt-2 pb-2 mt-2 rounded-lg border border-gray-300 
+                     focus:ring-2 focus:ring-orange-300 focus:outline-none transition peer"
                       />
-                      <label className="absolute left-0 -top-3.5 text-sm text-gray-600">
+                      <label className="absolute left-0 -top-3.5 text-sm text-gray-[800px]">
                         To Date
                       </label>
                     </div>
@@ -263,7 +281,8 @@ const ExperienceSection = ({ workExperience, setWorkExperience }) => {
                       name="description"
                       value={editStates[index]?.description || ""}
                       onChange={(e) => handleChange(index, e)}
-                      className="w-full px-3 py-2 text-sm border-2 border-gray-300 rounded-lg focus:border-blue-500 outline-none transition-all resize-none"
+                      className="w-full px-4 pt-2 pb-2 rounded-lg border border-gray-300 
+                     focus:ring-2 focus:ring-orange-300 focus:outline-none transition peer"
                       rows="4"
                       placeholder=" "
                     />
@@ -273,7 +292,7 @@ const ExperienceSection = ({ workExperience, setWorkExperience }) => {
                   </div>
 
                   {/* Save and Cancel Buttons */}
-                  <div className="absolute -top-2 right-3 flex gap-2">
+                  <div className="absolute -top-6 right-1 flex gap-2">
                     <button
                       onClick={() => handleSave(index)}
                       className="text-gray-400 hover:text-green-500 transition"

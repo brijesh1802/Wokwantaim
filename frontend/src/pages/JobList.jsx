@@ -312,7 +312,7 @@
 
 
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaMapMarkerAlt, FaSearch } from "react-icons/fa"; // For Icons
 import { RefreshCcw } from "lucide-react";
@@ -354,6 +354,7 @@ const JobList = () => {
   const handleClick = (jobsInfo) => {
     navigate("/jobdetail", { state: { jobsInfo } });
   };
+
 
   const handleSearchTitleChange = (e) => {
     const value = e.target.value;

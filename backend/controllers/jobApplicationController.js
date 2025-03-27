@@ -512,7 +512,10 @@ const applyJob = async (req, res) => {
             console.log("Candidate not found");
             return res.status(404).json({ message: "Candidate not found" });
         }
-
+        if (!candidate.resume) {
+            console.log("resume not found");
+            return res.status(404).json({ message: "Resume not found" });
+        }
         console.log("Candidate ID:", candidate._id);
 
         // Check if the candidate has already applied
@@ -549,8 +552,10 @@ const applyJob = async (req, res) => {
         console.log("Candidate Profile Skills:", candidateProfile.skills);
         console.log("Job Skills:", job.skills);
 
-        const matchingSkills = job.skills.filter(skill => candidateProfile.skills.includes(skill.toLowerCase()));
+        const profileSkills = candidateProfile.skills.map(skill => skill.toLowerCase());
+        const matchingSkills = job.skills.filter(skill => profileSkills.includes(skill.toLowerCase()));
         console.log("Matching Skills :", matchingSkills);
+
         if (!matchingSkills || matchingSkills.length==0) {
             console.log("Matching skills not found");
             return res.status(400).json({ message: "Your skills don’t align with the job requirements" });

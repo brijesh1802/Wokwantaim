@@ -67,6 +67,17 @@ const JobList = () => {
   };
 
   const handleSearchChange = () => {
+    setCurrentJobRole({
+      DatePosted: [],
+      Industry: [],
+      JobRoles: [],
+      Salary: [],
+      Experience: [],
+      Title: [],
+      Location: [],
+      JobType: [],
+      TitleAndCompany: [],
+    });
     const filteredJobs = jobsInfo.filter((data) => {
       const matchTitle = title
         ? data.job.title.toLowerCase().includes(title.toLowerCase())

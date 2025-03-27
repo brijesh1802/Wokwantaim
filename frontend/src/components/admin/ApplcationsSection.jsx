@@ -147,6 +147,11 @@ const ApplicationsSection = () => {
   const [isDelete,setDelete]=useState(false);
   const [newStatus, setNewStatus] = useState("");
 
+  useEffect(()=>{
+    console.log("applications",applications);
+    
+  },[applications])
+
   useEffect(() => {
       const fetchApplications = async () => {
         try {
@@ -211,6 +216,7 @@ const ApplicationsSection = () => {
         const updatedApp = await response.json();
         setApplications((prevApps) =>
           prevApps.map((app) =>
+            
             app._id === editingApplication._id ? updatedApp.application : app
           )
         );
@@ -345,12 +351,13 @@ const ApplicationsSection = () => {
           </tbody>
         </table>
       </div>
+
     {/* Edit Modal */}
     {editingApplication && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-md ml-40 w-2/5">
             <h2 className="text-xl font-bold mb-4">Edit Application Status</h2>
-            <select onChange={(e) => setNewStatus(e.target.value)} className='w-full border-2 p-2 mt-4 mb-2' >
+            <select defaultValue={newStatus} onChange={(e) => setNewStatus(e.target.value)}  className='w-full border-2 p-2 mt-4 mb-2' >
               <option value="pending">Pending</option>
               <option value="interview">Interview</option>
               <option value="accepted">Accepted</option>

@@ -94,7 +94,7 @@ const JobApplications = () => {
       <div className="flex items-center justify-between mb-6">
         <div className="flex space-x-2">
           
-          {["", "Pending", "Interview", "Accepted","Rejected"].map((status) => (
+          {["", "pending", "interview", "accepted","rejected"].map((status) => (
             <button
               key={status}
               onClick={() => setStatusFilter(status)}

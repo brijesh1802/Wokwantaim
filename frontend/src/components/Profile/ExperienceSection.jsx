@@ -107,21 +107,31 @@ const ExperienceSection = ({ workExperience, setWorkExperience }) => {
 
   // Save updated experience
   const handleSave = async (index) => {
-    console.log("clicked" ,editStates[index]);
-    const updatedExperience = editStates[index];
-    if (!updatedExperience) return;
+    console.log("Save button clicked for index:", index); // Debugging
 
+    const updatedExperience = editStates[index];
+    if (!updatedExperience) {
+      console.error("No updated experience found for index:", index);
+      setError("No updated experience found.");
+      return;
+    }
+
+    // Validate the experience
     const validationError = validateExperience(updatedExperience);
     if (validationError) {
       setError(validationError);
+      console.error("Validation error:", validationError);
       return;
     }
 
+    // Check for duplicate entries
     if (isDuplicateEntry(updatedExperience, index)) {
       setError("Duplicate work experience detected.");
+      console.error("Duplicate entry detected for:", updatedExperience);
       return;
     }
 
+    // Prepare the updated work experience array
     const updatedWorkExperience = workExperience.map((exp, i) =>
       i === index ? updatedExperience : exp
     );
@@ -130,6 +140,11 @@ const ExperienceSection = ({ workExperience, setWorkExperience }) => {
       const url = `${
         import.meta.env.VITE_BASE_URL
       }/api/v1/candidates/info/update`;
+      console.log(
+        "Sending updated work experience to API:",
+        updatedWorkExperience
+      ); // Debugging
+
       const response = await fetch(url, {
         method: "PATCH",
         headers: {
@@ -139,17 +154,23 @@ const ExperienceSection = ({ workExperience, setWorkExperience }) => {
         body: JSON.stringify({ workExperience: updatedWorkExperience }),
       });
 
-      const result = await response.json();
       if (!response.ok) {
-        console.error("API Error:", result);
-        throw new Error(result.message || "Failed to update experience.");
+        const errorMessage = `Failed to update experience. Status: ${response.status}`;
+        console.error(errorMessage);
+        throw new Error(errorMessage);
+        setError(errorMessage);
+
       }
 
-      console.log("API Response:", result);
+      const result = await response.json();
+      console.log("API response:", result); // Debugging
 
-      setWorkExperience([...updatedWorkExperience]); // Ensure state updates
-      handleClose(index);
+      // Update the state with the new work experience
+      setWorkExperience([...updatedWorkExperience]);
+      handleClose(index); // Close the editing mode
+      setError(null); // Clear any previous errors
     } catch (error) {
+      console.error("Error saving experience:", error);
       setError(error.message || "Error saving experience.");
     }
   };
@@ -195,7 +216,7 @@ const ExperienceSection = ({ workExperience, setWorkExperience }) => {
 
               {/* Editing Mode */}
               {isEditing ? (
-                <div className="relative space-y-6 p-6 bg-white rounded-xl shadow-lg border border-gray-200">
+                <div className="relative space-y-6 p-6 bg-white">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {["company", "jobTitle", "industry", "location"].map(
                       (field) => (
@@ -273,7 +294,7 @@ const ExperienceSection = ({ workExperience, setWorkExperience }) => {
                   </div>
 
                   {/* Save and Cancel Buttons */}
-                  <div className="absolute -top-2 right-3 flex gap-2">
+                  <div className="absolute -top-6 right-1 flex gap-2">
                     <button
                       onClick={() => handleSave(index)}
                       className="text-gray-400 hover:text-green-500 transition"

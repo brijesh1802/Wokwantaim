@@ -303,7 +303,7 @@
 
 //   useEffect(() => {
 //     const checkApplicationStatus = async () => {
-      
+
 //       try {
 //         const token = localStorage.getItem("authToken");
 //         const checkResponse = await fetch(
@@ -607,7 +607,6 @@ const JobDetail = () => {
 
   useEffect(() => {
     const checkApplicationStatus = async () => {
-      
       try {
         const token = localStorage.getItem("authToken");
         const checkResponse = await fetch(
@@ -654,39 +653,38 @@ const JobDetail = () => {
       setMessage("Application is closed!");
       return;
     }
+      try {
+        const token = localStorage.getItem("authToken");
+        // 2. If no existing application, proceed with applying
+        const response = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/api/v1/applications/apply/${jobId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-    try {
-      const token = localStorage.getItem("authToken");
-      // 2. If no existing application, proceed with applying
-      const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/applications/apply/${jobId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+        const result = await response.json();
+        
+        if (response.ok) {
+          setIsApplied(true);
+          setApplied(true);
+          setShowApplied(true);
+          setMessage("Application Submitted");
+        } else {
+          setShowAlert(true);
+          setMessage(result.message || "Failed to apply");
         }
-      );
-
-      const result = await response.json();
-
-      if (response.ok) {
-        setIsApplied(true);
-        setApplied(true);
-        setShowApplied(true);
-        setMessage("Application Submitted");
-      } else {
+      } catch (error) {
+        console.error("Error applying for job:", error);
         setShowAlert(true);
-        setMessage(result.message || "Failed to apply");
+        setMessage("An error occurred. Please try again.");
       }
-    } catch (error) {
-      console.error("Error applying for job:", error);
-      setShowAlert(true);
-      setMessage("An error occurred. Please try again.");
-    }
+    
   };
-
   const closeAlert = () => {
     setShowAlert(false);
   };

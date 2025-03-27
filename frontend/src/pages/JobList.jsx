@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaMapMarkerAlt, FaSearch } from "react-icons/fa"; // For Icons
 import { RefreshCcw } from "lucide-react";
@@ -17,7 +17,10 @@ const JobList = () => {
     setCurrentJobRole,
     setSelectedRadio,
     setCheckedOptions,
-    experienceRole
+    experienceRole,
+    checkedOptions,
+    selectedRadio,
+
   } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -34,10 +37,11 @@ const JobList = () => {
   const [showDropdown, setShowDropDown] = useState(false);
 
   const [visibleSection, setVisibleSection] = useState({});
-
+  const [combinedJobs,setCombinedJobs]=useState([])
   const handleClick = (jobsInfo) => {
     navigate("/jobdetail", { state: { jobsInfo } });
   };
+
 
   const handleSearchTitleChange = (e) => {
     const value = e.target.value;
@@ -76,7 +80,7 @@ const JobList = () => {
 
       return matchTitle && matchLocation && matchJobType;
     });
-    setFilteredJobRole(filteredJobs);
+    setCombinedJobs(filteredJobs);
   };
   const handleRefresh = () => {
     setSelectedRadio("");
@@ -134,7 +138,7 @@ const JobList = () => {
     };
 
     setFilteredJobRole(
-      jobsInfo.filter((job) => {
+      (title||location||jobType?combinedJobs:jobsInfo).filter((job) => {
         const daysAgo = getDaysDifference(job.job.applicationPostedDate);
 
         const matchDate =
@@ -155,18 +159,18 @@ const JobList = () => {
             job.job.title.toLowerCase().includes(role.toLowerCase())
           );
 
-        const matchSalary =
+          const matchSalary =
           !currentJobRole.Salary.length ||
-          currentJobRole.Salary.some((range) => {
-            if (range === "₹10,000 - ₹20,000")
-              return job.job.salary >= 10000 && job.job.salary < 20000;
-            if (range === "₹20,000 - ₹30,000")
-              return job.job.salary >= 20000 && job.job.salary < 30000;
-            if (range === "₹30,000 - ₹50,000")
-              return job.job.salary >= 30000 && job.job.salary <= 50000;
-            if (range === "Above ₹50,000") return job.job.salary > 50000;
-            return false;
-          });
+          (currentJobRole.Salary === "₹10,000 - ₹20,000"
+            ? job.job.salary >= 10000 && job.job.salary < 20000
+            : currentJobRole.Salary === "₹20,000 - ₹30,000"
+            ? job.job.salary >= 20000 && job.job.salary < 30000
+            : currentJobRole.Salary === "₹30,000 - ₹50,000"
+            ? job.job.salary >= 30000 && job.job.salary <= 50000
+            : currentJobRole.Salary === "Above ₹50,000"
+            ? job.job.salary > 50000
+            : false);
+        
 
         const matchTitleAndCompany =
           !currentJobRole.TitleAndCompany.length ||
@@ -190,7 +194,7 @@ const JobList = () => {
         );
       })
     );
-  }, [currentJobRole, jobsInfo]);
+  }, [currentJobRole, jobsInfo,combinedJobs]);
 console.log("Current jobRole",currentJobRole);
 console.log("Filtered jobRole",filteredJobRole);
 
@@ -277,6 +281,8 @@ console.log("Filtered jobRole",filteredJobRole);
           visibleSection={visibleSection}
           setVisibleSection={setVisibleSection}
           experienceRole={experienceRole}
+          selectedRadio={selectedRadio}
+          checkedOptions={checkedOptions}
         />
         {/* Job Results */}
         {

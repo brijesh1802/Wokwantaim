@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar,
@@ -10,9 +10,15 @@ import {
   ChevronDown,
 } from "lucide-react";
 
-const FilterSection = ({ id, label, icon, options, type, handleJobRoleChange ,visibleSection,setVisibleSection}) => {
+const FilterSection = ({ id, label, icon, options, type, handleJobRoleChange ,visibleSection,setVisibleSection,selectedRadio,checkedOptions}) => {
   const isOpen = visibleSection === id;
   const [showAll, setShowAll] = useState(false);
+
+  useEffect(() => {
+    console.log("FilterSection - selectedRadio:", selectedRadio);
+    console.log("FilterSection - checkedOptions:", checkedOptions);
+  }, [selectedRadio, checkedOptions]);
+  
 
   const toggleSection = () => {
     setVisibleSection(isOpen ? null : id); // Close if already open, open otherwise
@@ -54,7 +60,16 @@ const FilterSection = ({ id, label, icon, options, type, handleJobRoleChange ,vi
                   type={type}
                   name={id}
                   value={option}
+                  checked={
+                    type === "radio"
+                      ? selectedRadio?.[id] === option
+                      : type === "checkbox"
+                      ? Boolean(checkedOptions?.[option] ?? false)
+                      : false
+                  }
                   onChange={handleJobRoleChange}
+                  autoComplete="off"
+
                   className="form-checkbox text-orange-500 rounded focus:ring-orange-500"
                 />
                 <span className="text-gray-700">{option}</span>
@@ -75,7 +90,7 @@ const FilterSection = ({ id, label, icon, options, type, handleJobRoleChange ,vi
   );
 };
 
-const JobFilter = ({ industry, jobRole, handleJobRoleChange,setVisibleSection,visibleSection,experienceRole }) => {
+const JobFilter = ({ industry, jobRole, handleJobRoleChange,setVisibleSection,visibleSection,experienceRole,selectedRadio,checkedOptions={} }) => {
   const filters = [
     {
       id: "DatePosted",
@@ -113,7 +128,11 @@ const JobFilter = ({ industry, jobRole, handleJobRoleChange,setVisibleSection,vi
       type: "checkbox",
     },
   ];
+  useEffect(()=>{
+    console.log("JobFilter - selectedRadio:", selectedRadio);
+    console.log("JobFilter - checkedOptions:", checkedOptions);
 
+  },[selectedRadio,checkedOptions])
   return (
     <div className="bg-gray-100 p-6 rounded-lg lg:w-1/3">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Filters</h2>
@@ -124,6 +143,8 @@ const JobFilter = ({ industry, jobRole, handleJobRoleChange,setVisibleSection,vi
           handleJobRoleChange={handleJobRoleChange}
           visibleSection={visibleSection}
           setVisibleSection={setVisibleSection}
+          selectedRadio={selectedRadio}
+          checkedOptions={checkedOptions}
         />
       ))}
     </div>

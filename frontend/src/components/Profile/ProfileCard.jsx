@@ -30,26 +30,23 @@ const ProfileCard = ({ user }) => {
   const [tempFormData, setTempFormData] = useState({ ...formData });
 
   const handleChange = (e, field) => {
-    if (field === "profilePhoto") {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setTempFormData((prevData) => ({
-            ...prevData,
-            profilePhoto: reader.result,
-          }));
-        };
-        reader.readAsDataURL(file);
-      }
-    } else if (field === "resume") {
-      const file = e.target.files[0];
-      if (file) {
+    const file = e.target.files[0];
+
+    if (field === "resume" && file) {
+      const fileURL = URL.createObjectURL(file);
+      setTempFormData((prevData) => ({
+        ...prevData,
+        resume: fileURL, // Set as object URL
+      }));
+    } else if (field === "profilePhoto" && file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
         setTempFormData((prevData) => ({
           ...prevData,
-          resume: file,
+          profilePhoto: reader.result,
         }));
-      }
+      };
+      reader.readAsDataURL(file);
     } else {
       setTempFormData((prevData) => ({
         ...prevData,
@@ -200,7 +197,7 @@ const ProfileCard = ({ user }) => {
               </div>
               {formData.resume && (
                 <motion.a
-                  href={user.resume}
+                  href={formData.resume}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center px-4 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors duration-300"
@@ -323,24 +320,38 @@ const ProfileCard = ({ user }) => {
                       <option value="Internship">Internship</option>
                       <option value="Contract">Contract</option>
                     </select>
-                    <Briefcase className="absolute w-5 h-5  -translate-y-1/2  top-1/2 left-3 text-orange-500"/>
+                    <Briefcase className="absolute w-5 h-5  -translate-y-1/2  top-1/2 left-3 text-orange-500" />
                   </div>
 
-                  <label className="block mb-2 text-left">Upload CV: </label>
+                  <label className=" -ml-44 -mr-5 text-left">
+                    Upload CV :{" "}
+                  </label>
+                  {formData.resume && (
+                    <a
+                      href={formData.resume}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ml-5 inline-flex px-2 py-1 mb-1 mt-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-300"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      Current resume
+                    </a>
+                  )}
+
                   <input
                     type="file"
                     accept="application/pdf"
                     onChange={(e) => handleChange(e, "resume")}
-                    className="w-full p-2 border border-gray-300 rounded mb-4 text-"
+                    className="w-full p-2 border border-gray-300 rounded mb-4"
                   />
-                 
                 </div>
                 <div className="flex justify-between mt-4">
                   <button
                     onClick={handleClosePopup}
                     className="px-4 py-2  bg-orange-500 text-white rounded"
                   >
-                    Cancel
+                    Close
                   </button>
                   <button
                     onClick={handleSave}
@@ -351,7 +362,11 @@ const ProfileCard = ({ user }) => {
                         : "bg-orange-500 text-white"
                     }`}
                   >
-                    {loading ? <Loader2 className="animate-spin" /> : "Save"}
+                    {loading ? (
+                      <Loader2 className="animate-spin ml-5" />
+                    ) : (
+                      "Save"
+                    )}
                   </button>
                 </div>
               </div>

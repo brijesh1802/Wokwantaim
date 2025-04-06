@@ -25,7 +25,7 @@ const SearchCandidateSection = () => {
                 const url = `${import.meta.env.VITE_BASE_URL}/api/v1/candidates/getAll`;
                 const response = await fetch(url, {
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
                     },
                     method: 'GET'
                 });
@@ -86,30 +86,7 @@ const SearchCandidateSection = () => {
 
   
 
-  const handleDelete = async () => {
-    if (candToDelete) {
-      try {
-        setError(null);
-
-        const url = `${import.meta.env.VITE_BASE_URL}/api/v1/admin/deleteCandidate/${candToDelete}`;
-        const response = await fetch(url, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-          }
-        });
-        if (!response.ok) throw new Error('Failed to delete candidate');
-        setCandidates(prev => prev.filter(candidate => candidate._id !== candToDelete));
-        setFilteredCandidates(prev => prev.filter(candidate => candidate._id !== candToDelete));
-        setShowDeleteModal(false);
-        setCandToDelete(null);
-        closeModal();
-      } catch (err) {
-        console.error('Error deleting candidate:', err);
-        setError(err.message);
-      }
-    }
-  };
+  
 
   return (
         <div className="bg-gradient-to-br from-orange-50 to-white p-10 rounded-3xl shadow-xl">
@@ -135,9 +112,9 @@ const SearchCandidateSection = () => {
                 : 'N/A';
     
               return (
-                <div key={candidate._id} className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-100 cursor-pointer" onClick={() => openModal(candidate)}>
+                <div key={candidate._id} className="bg-white p-6 overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-100 cursor-pointer" onClick={() => openModal(candidate)}>
                   <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-orange-500 font-bold text-xl mr-4">
+                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-orange-500 font-bold text-xl  mr-4">
                       {candidateName.charAt(0).toUpperCase()}
                     </div>
                     <div>
@@ -179,10 +156,10 @@ const SearchCandidateSection = () => {
         )}
 
       {selectedCandidate && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-all duration-300">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden animate-modal-appear">
+        <div className="fixed inset-0  bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-all duration-300">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-3xl md:w-200 max-h-[90vh] overflow-hidden animate-modal-appear">
             <div className="sticky top-0 bg-gradient-to-r from-orange-500 to-orange-600 z-10 px-8 py-6">
-              <div className="flex justify-between items-center">
+              <div className="flex  justify-between items-center">
                 <h3 className="text-3xl font-bold text-white">
                   {`${selectedCandidate.fullName.firstName || ''} ${selectedCandidate.fullName.lastName || ''}`}
                 </h3>
@@ -192,7 +169,7 @@ const SearchCandidateSection = () => {
               </div>
             </div>
             
-            <div className="px-8 py-6 space-y-8 overflow-y-auto max-h-[calc(90vh-180px)]">
+            <div className="px-8 py-6 mb-10 space-y-8 overflow-y-auto max-h-[calc(90vh-180px)]">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="bg-orange-50 p-6 rounded-2xl shadow-inner">
                   <h4 className="text-2xl font-semibold text-orange-700 mb-4">Contact Information</h4>
@@ -240,51 +217,9 @@ const SearchCandidateSection = () => {
                 </div>
               </div>
             </div>
-          
-            <div className="sticky bottom-0 bg-white px-8 py-6 border-t border-gray-200">
-              <div className="flex justify-end">
-                <button
-                  onClick={() => initiateDelete(selectedCandidate._id)}
-                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-xl transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 shadow-lg hover:shadow-xl"
-                >
-                  Delete Candidate
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       )}
-
-
-        {/* Custom Delete Confirmation Modal */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 max-w-sm w-full">
-            <div className="flex items-center justify-center text-red-500 mb-4">
-              <FiAlertTriangle size={48} />
-            </div>
-            <h3 className="text-xl font-bold text-center mb-4">Confirm Deletion</h3>
-            <p className="text-gray-700 text-center mb-6">
-              Are you sure you want to delete this candidate? This action cannot be undone.
-            </p>
-            <div className="flex justify-center space-x-4">
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDelete}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    
       </div>
   );
 };

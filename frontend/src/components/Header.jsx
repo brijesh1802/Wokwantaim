@@ -27,6 +27,11 @@ function Header() {
   const dropdownRef = useRef(null);
   const sideNavRef = useRef(null);
 
+  useEffect(()=>{
+    console.log("usertype",userType);
+    
+  })
+
   const handleSubmit = async () => {
     const email = userData.email;
     if (!email) return;
@@ -236,7 +241,7 @@ function Header() {
                 </NavLink>
               ) : (
                 <NavLink
-                  to="/addjobs"
+                  to="/employer/dashboard"
                   className={({ isActive }) =>
                     `text-xl ml-4 ${
                       isActive
@@ -245,7 +250,7 @@ function Header() {
                     }`
                   }
                 >
-                  Add Jobs
+                  Dashboard
                 </NavLink>
               )}
 
@@ -463,14 +468,14 @@ function Header() {
                       to={
                         userType === "candidate" || userType === null
                           ? "/joblist"
-                          : "/addjobs"
+                          : "/employer/dashboard"
                       }
                       className="py-2 text-lg hover:text-orange-500"
                       onClick={() => setNavOpen(false)}
                     >
                       {userType === "candidate" || userType === null
                         ? "Job List"
-                        : "Add Jobs"}
+                        : "Dashboard"}
                     </NavLink>
 
                     <hr className="w-full my-2 border-gray-300" />

@@ -354,8 +354,8 @@ const ApplicationsSection = () => {
 
     {/* Edit Modal */}
     {editingApplication && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-md ml-40 w-2/5">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={() => setEditingApplication(null)}>
+          <div className="bg-white p-6 rounded-lg shadow-md ml-40 w-2/5" onClick={(e) => e.stopPropagation()}>
             <h2 className="text-xl font-bold mb-4">Edit Application Status</h2>
             <select defaultValue={newStatus} onChange={(e) => setNewStatus(e.target.value)}  className='w-full border-2 p-2 mt-4 mb-2' >
               <option value="pending">Pending</option>

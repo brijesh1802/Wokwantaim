@@ -45,7 +45,7 @@ console.log("data",data);
   const handleLogout = () => {
     logout();
     localStorage.clear();
-    navigate('/');
+    navigate('/admin/login');
   };
 
   const name = profile.name ||''

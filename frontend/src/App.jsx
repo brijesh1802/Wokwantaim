@@ -22,6 +22,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import AboutUs from "./components/Home/About/AboutUs";
 import SplashScreen from "./pages/SplashScreen";
 import AdminDashboard from './pages/AdminDashboard';
+import EmployerDashboard from './pages/EmployerDashboard';
 import AdminLogin from './pages/AdminLogin';
 import { useContext } from 'react';
 
@@ -72,6 +73,8 @@ function App() {
               <Route path="/aboutus" element={<AboutUs />} />
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+              <Route path="/employer/dashboard" element={<EmployerDashboard />} />
+              
             </Routes>
           )}
         </main>

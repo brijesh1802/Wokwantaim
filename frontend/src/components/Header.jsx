@@ -27,6 +27,11 @@ function Header() {
   const dropdownRef = useRef(null);
   const sideNavRef = useRef(null);
 
+  useEffect(()=>{
+    console.log("usertype",userType);
+    
+  })
+
   const handleSubmit = async () => {
     const email = userData.email;
     if (!email) return;

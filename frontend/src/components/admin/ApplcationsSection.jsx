@@ -146,6 +146,7 @@ const ApplicationsSection = () => {
   const [applicationToDelete, setApplicationToDelete] = useState(null);
   const [isDelete,setDelete]=useState(false);
   const [newStatus, setNewStatus] = useState("");
+   const [loading, setLoading] = useState(true);
 
   useEffect(()=>{
     console.log("applications",applications);
@@ -154,6 +155,7 @@ const ApplicationsSection = () => {
 
   useEffect(() => {
       const fetchApplications = async () => {
+        setLoading(true);
         try {
           const token = localStorage.getItem("adminToken");
           const response = await fetch(
@@ -177,6 +179,9 @@ const ApplicationsSection = () => {
           setApplications(data);
         } catch (error) {
           console.error("Error fetching user applications:", error);
+        }
+        finally {
+          setLoading(false);
         }
       };
   
@@ -254,7 +259,8 @@ const ApplicationsSection = () => {
       }
     };
     
-
+    if (loading) return <div className="text-center py-10">Loading...</div>;
+   
 
   return (
     <motion.div

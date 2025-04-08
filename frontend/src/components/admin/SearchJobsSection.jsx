@@ -75,7 +75,7 @@ const SearchJobsSection = () => {
   if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
 
   return (
-    <div className="bg-gradient-to-br from-orange-50 to-white p-8 rounded-3xl shadow-xl max-h-[85vh] overflow-y-hidden">
+    <div className="bg-gradient-to-br from-orange-50 to-white p-8 rounded-3xl shadow-xl max-h-[85vh] overflow-y-hidden" >
       <h2 className="text-4xl font-bold text-orange-600 mb-8">Search Jobs</h2>
       <div className="mb-8 relative">
         <input
@@ -158,7 +158,7 @@ const SearchJobsSection = () => {
       )}
   
       {selectedJob && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"onClick={closeDetails}>
           <div className="bg-white rounded-2xl p-8 max-h-[60vh] w-[70vw] max-w-3xl overflow-y-auto relative">
             <button onClick={closeDetails} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors duration-200">
               <FiX size={28} />

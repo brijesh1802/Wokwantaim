@@ -9,8 +9,8 @@ import ManageEntitySection from '../components/Employer/ManageEntitySection';
 import SearchCandidateSection from '../components/Employer/SearchCandidateSection';
 import SearchJobSection from '../components/Employer/SearchJobSection';
 import ViewEmployersSection from '../components/Employer/ViewEmployersSection';
-//import AddJob from '../components/Employer/AddJob';
-import AddJobSection from '../components/admin/AddJobSection';
+import AddJob from '../components/Employer/AddJob';
+//import AddJobSection from '../components/admin/AddJobSection';
 
 const EmployerDashboard = () => {
   const [activeTab, setActiveTab] = useState('profile');
@@ -33,7 +33,7 @@ const EmployerDashboard = () => {
       case 'profile':
         return <EmployerProfileSection />;
       case 'addJob':
-        return <AddJobSection />;
+        return <AddJob />;
       case 'applications':
         return <ApplicationSection />;
       case 'searchJobs':

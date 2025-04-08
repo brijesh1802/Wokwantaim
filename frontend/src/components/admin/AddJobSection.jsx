@@ -302,6 +302,7 @@ const AddJobSection = () => {
               value={job.applicationDeadline}
               onChange={handleChange}
               required
+              min={new Date().toISOString().split("T")[0]}
             />
           </div>
         </div>

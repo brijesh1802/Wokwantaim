@@ -258,6 +258,7 @@ const getCompanies = async (req, res) => {
 const addIndustry = async (req, res) => {
     try {
         const name = req.body.name;
+console.log("Name",name);
 
         if (!name) {
             return res.status(400).json({ message: 'Name is required' });
@@ -383,11 +384,12 @@ const addExperienceLevel = async (req, res) => {
 // Delete Experience Level
 const deleteExperienceLevel = async (req, res) => {
     try {
+        
         const ExperienceLevel = await experienceLevel.findById(req.params.id);
         if (!ExperienceLevel) {
             return res.status(404).json({ message: 'Experience Level not found' });
         }
-        await experienceLevel.deleteOne();
+        await ExperienceLevel.deleteOne();
         res.status(200).json({ message: 'Experience Level deleted successfully' });
 
     } catch (error) {

@@ -30,7 +30,11 @@ const ProfileSection = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
+       
+        
         setProfile(data.admin);
+  
+        
       } catch (error) {
         console.error("Error fetching user data:", error);
       }

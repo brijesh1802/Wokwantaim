@@ -24,7 +24,7 @@ const JobResults = ({ filteredJob }) => {
       sorted.sort((a, b) => b.company.localeCompare(a.company));
     }
     setSortedJobs(sorted);
-    setCurrentPage(1);  // Reset to first page when filteredJob or sorting changes
+    setCurrentPage(1);  
   }, [sortOrder, filteredJob]);
 
   const handleJobClick = (jobId) => {

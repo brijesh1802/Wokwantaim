@@ -1,15 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
-import { FiSearch, FiTrash2, FiEye, FiX, FiAlertTriangle } from 'react-icons/fi';
+import { FiSearch, FiEye, FiX } from 'react-icons/fi';
 
-const SearchJobsSection = () => {
+const SearchJobSection = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedJob, setSelectedJob] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [jobToDelete, setJobToDelete] = useState(null);
 
   useEffect(() => {
     fetchJobs();
@@ -34,28 +32,6 @@ const SearchJobsSection = () => {
     }
   };
 
-  const initiateDelete = (jobId) => {
-    setJobToDelete(jobId);
-    setShowDeleteModal(true);
-  };
-
-  const handleDelete = async () => {
-    if (!jobToDelete) return;
-    try {
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/jobs/delete/${jobToDelete}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-        }
-      });
-      if (!response.ok) throw new Error('Failed to delete job');
-      setJobs(jobs.filter(job => job.job.id !== jobToDelete));
-      setShowDeleteModal(false);
-      setJobToDelete(null);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
 
   const viewJobDetails = (job) => {
     setSelectedJob(job);
@@ -75,7 +51,7 @@ const SearchJobsSection = () => {
   if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
 
   return (
-    <div className="bg-gradient-to-br from-orange-50 to-white p-8 rounded-3xl shadow-xl max-h-[85vh] overflow-y-hidden" >
+    <div className="bg-gradient-to-br from-orange-50 to-white p-8 rounded-3xl shadow-xl max-h-[85vh] overflow-y-hidden">
       <h2 className="text-4xl font-bold text-orange-600 mb-8">Search Jobs</h2>
       <div className="mb-8 relative">
         <input
@@ -115,11 +91,8 @@ const SearchJobsSection = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{job.job.location}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${job.job.salary.toLocaleString()}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button className="text-orange-600 hover:text-orange-800 mr-3 transition-colors duration-200" onClick={() => viewJobDetails(job.job)}>
+                    <button className="text-orange-600 hover:text-orange-800  transition-colors duration-200 ml-6" onClick={() => viewJobDetails(job.job)}>
                       <FiEye size={20} />
-                    </button>
-                    <button onClick={() => initiateDelete(job.job.id)} className="text-red-500 hover:text-red-700 transition-colors duration-200">
-                      <FiTrash2 size={20} />
                     </button>
                   </td>
                 </tr>
@@ -129,37 +102,9 @@ const SearchJobsSection = () => {
         )}
       </div>
   
-      {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl">
-            <div className="flex items-center justify-center text-red-500 mb-6">
-              <FiAlertTriangle size={56} />
-            </div>
-            <h3 className="text-2xl font-bold text-center mb-4">Confirm Deletion</h3>
-            <p className="text-gray-700 text-center mb-8">
-              Are you sure you want to delete this job? This action cannot be undone.
-            </p>
-            <div className="flex justify-center space-x-4">
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className="px-6 py-3 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 transition-colors duration-200"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDelete}
-                className="px-6 py-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors duration-200"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-  
       {selectedJob && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"onClick={closeDetails}>
-          <div className="bg-white rounded-2xl p-8 max-h-[60vh] w-[70vw] max-w-3xl overflow-y-auto relative">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
+          <div className="bg-white rounded-2xl p-8 max-h-[60vh] w-[60vw] ml-60 max-w-3xl overflow-y-auto relative ">
             <button onClick={closeDetails} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors duration-200">
               <FiX size={28} />
             </button>
@@ -207,4 +152,4 @@ const SearchJobsSection = () => {
   
 };
 
-export default SearchJobsSection;
+export default SearchJobSection;

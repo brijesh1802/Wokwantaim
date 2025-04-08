@@ -258,6 +258,7 @@ const getCompanies = async (req, res) => {
 const addIndustry = async (req, res) => {
     try {
         const name = req.body.name;
+console.log("Name",name);
 
         if (!name) {
             return res.status(400).json({ message: 'Name is required' });

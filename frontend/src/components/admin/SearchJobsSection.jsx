@@ -158,8 +158,8 @@ const SearchJobsSection = () => {
       )}
   
       {selectedJob && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"onClick={closeDetails}>
-          <div className="bg-white rounded-2xl p-8 max-h-[60vh] w-[70vw] max-w-3xl overflow-y-auto relative">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={closeDetails}>
+          <div className="bg-white rounded-2xl p-8 max-h-[60vh] w-[70vw] max-w-3xl overflow-y-auto relative" onClick={(e) => e.stopPropagation()}>
             <button onClick={closeDetails} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors duration-200">
               <FiX size={28} />
             </button>

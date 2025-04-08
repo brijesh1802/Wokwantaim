@@ -603,7 +603,9 @@ const JobDetail = () => {
 
   useEffect(() => {
     console.log("isApllied ", applied);
-  }, [applied, isApplied]);
+    console.log("Job ID:", jobId); // Make sure this isn't undefined/null
+
+  }, [applied, isApplied,jobId]);
 
   useEffect(() => {
     const checkApplicationStatus = async () => {

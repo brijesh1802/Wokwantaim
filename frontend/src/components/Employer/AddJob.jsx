@@ -687,6 +687,7 @@ const AddJob = () => {
               name="applicationDeadline"
               value={job.applicationDeadline}
               onChange={handleChange}
+              min={new Date().toISOString().split("T")[0]}
               required
             />
           </div>

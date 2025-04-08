@@ -390,6 +390,7 @@ const AddJob = () => {
     industry: "",
     applicationDeadline: "",
     applicationPostedDate: new Date().toISOString().split("T")[0],
+    addedBy:""
   });
 
   const [formError, setFormError] = useState("");
@@ -397,7 +398,8 @@ const AddJob = () => {
   const [experienceLevels, setExperienceLevels] = useState([]);
   const [industries, setIndustries] = useState([]);
   const [companies, setCompanies] = useState([]);
-  const [employerJobIds,setEmployerJobIds]=useState([]);
+
+  const [isApplied, setIsApplied] = useState(false);
   
   const [isOpen, setIsOpen] = useState({
     company: false,
@@ -500,12 +502,21 @@ const AddJob = () => {
     };
 
     try {
+      const token = localStorage.getItem("authToken") || localStorage.getItem("adminToken");
+    const userType = localStorage.getItem("userType");
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/v1/jobs/addJob`,
-        formattedJob
+        formattedJob,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            userType: userType
+          }
+        }
       );
 
       console.log("Job added successfully:", response.data);
+      setIsApplied(true);
       // Reset form
       setJob({
         title: "",
@@ -520,6 +531,7 @@ const AddJob = () => {
         industry: "",
         applicationDeadline: "",
         applicationPostedDate: new Date().toISOString().split("T")[0],
+        addedBy:""
       });
       
     } catch (error) {
@@ -736,6 +748,11 @@ const AddJob = () => {
           Add Job
         </motion.button>
       </form>
+      {isApplied && (
+              <div className="mt-4 text-center text-green-600 font-semibold bg-green-100 p-3 rounded-lg">
+                Job added successfully!
+              </div>
+      )}
     </motion.div>
   );
   

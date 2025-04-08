@@ -12,30 +12,31 @@ const Application  =  require('../models/application.model');
 const getAllJobs = async (req, res) => {
     try {
         const jobs = await Job.find();
+
         const jobData = await Promise.all(
             jobs.map(async (job) => {
-                const company = await Company.findById(job.company._id);
-                const experienceLevel = await ExperienceLevel.findById(job.experienceLevel._id);
-                const jobType = await JobType.findById(job.jobType._id);
-                const industry = await Industry.findById(job.industry._id);
+                const company = job.company?._id ? await Company.findById(job.company._id) : null;
+                const experienceLevel = job.experienceLevel?._id ? await ExperienceLevel.findById(job.experienceLevel._id) : null;
+                const jobType = job.jobType?._id ? await JobType.findById(job.jobType._id) : null;
+                const industry = job.industry?._id ? await Industry.findById(job.industry._id) : null;
 
                 return {
-                     job : {
+                    job: {
                         id: job._id,
                         title: job.title,
-                        companyLogo: company.logo,
-                        company: company.name,
+                        companyLogo: company?.logo || '',
+                        company: company?.name || 'Unknown',
                         location: job.location,
                         description: job.description,
                         requirements: job.requirements,
                         salary: job.salary,
-                        jobType: jobType.name,
-                        experienceLevel: experienceLevel.name,
+                        jobType: jobType?.name || 'N/A',
+                        experienceLevel: experienceLevel?.name || 'N/A',
                         skills: job.skills,
-                        industry: industry.name,
+                        industry: industry?.name || 'N/A',
                         applicationDeadline: job.applicationDeadline,
                         applicationPostedDate: job.applicationPostedDate
-                     }
+                    }
                 };
             })
         );
@@ -45,7 +46,6 @@ const getAllJobs = async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 };
-
 
 const getJobById = async (req, res) => {
     try {

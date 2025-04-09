@@ -155,9 +155,9 @@ const ApplicationSection = () => {
   useEffect(() => {
       const fetchApplications = async () => {
         try {
-          const token = localStorage.getItem("adminToken");
+          const token = localStorage.getItem("authToken");
           const response = await fetch(
-            `${import.meta.env.VITE_BASE_URL}/api/v1/applications/getAllApplications`,
+            `${import.meta.env.VITE_BASE_URL}/api/v1/applications/getApplications`,
             {
               method: "GET",
               headers: {
@@ -172,8 +172,6 @@ const ApplicationSection = () => {
           }
   
           const data = await response.json();
-
-
           setApplications(data);
         } catch (error) {
           console.error("Error fetching user applications:", error);
@@ -196,7 +194,7 @@ const ApplicationSection = () => {
     const handleSaveEdit = async () => {
       if (!editingApplication) return;
       try {
-        const token = localStorage.getItem("adminToken");
+        const token = localStorage.getItem("authToken");
         const response = await fetch(
           `${import.meta.env.VITE_BASE_URL}/api/v1/applications/editApplication/${editingApplication._id}`,
           {
@@ -232,7 +230,7 @@ const ApplicationSection = () => {
     }
     const deleteApplication = async (applicationId) => {
       try {
-        const token = localStorage.getItem("adminToken");
+        const token = localStorage.getItem("authToken");
         const response = await fetch(
           `${import.meta.env.VITE_BASE_URL}/api/v1/applications/deleteApplication/${applicationId}`,
           {
@@ -337,9 +335,14 @@ const ApplicationSection = () => {
                     ) : application.status === "interview" ? (
                       <FiEye className="mr-1 text-blue-800" />
                     ) : (
-                      <FiCheckCircle className="mr-1 text-green-800" />
-                    )}
-                    {application.status}
+                      <FiCheckCircle className={`mr-1${
+                        application.status === "pending"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : application.status === "interview"
+                          ? "bg-blue-100 text-blue-800"
+                          :application.status === "accepted"? "bg-green-100 text-green-800" :"bg-red-100 text-red-800"
+                      }`} />)}
+                    {application.status }
                   </span>
                 </td>
                 <td className="px-6 py-8 flex text-orange-500 gap-3">
@@ -354,8 +357,8 @@ const ApplicationSection = () => {
 
     {/* Edit Modal */}
     {editingApplication && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-md ml-40 w-2/5">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={() => setEditingApplication(null)}>
+          <div className="bg-white p-6 rounded-lg shadow-md ml-40 w-2/5" onClick={(e) => e.stopPropagation()}>
             <h2 className="text-xl font-bold mb-4">Edit Application Status</h2>
             <select defaultValue={newStatus} onChange={(e) => setNewStatus(e.target.value)}  className='w-full border-2 p-2 mt-4 mb-2' >
               <option value="pending">Pending</option>

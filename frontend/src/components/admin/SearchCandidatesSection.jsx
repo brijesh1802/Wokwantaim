@@ -135,7 +135,7 @@ const SearchCandidatesSection = () => {
                 : 'N/A';
     
               return (
-                <div key={candidate._id} className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-100 cursor-pointer" onClick={() => openModal(candidate)}>
+                <div key={candidate._id} className="bg-white overflow-hidden p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-100 cursor-pointer " onClick={() => openModal(candidate)}>
                   <div className="flex items-center mb-4">
                     <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-orange-500 font-bold text-xl mr-4">
                       {candidateName.charAt(0).toUpperCase()}
@@ -180,7 +180,7 @@ const SearchCandidatesSection = () => {
 
       {selectedCandidate && (
         <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-all duration-300" onClick={closeModal}>
-          <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden animate-modal-appear" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-3xl shadow-2xl mt-20 max-w-3xl md:w-[60vh] md:ml-40 lg:w-full lg:ml-60  max-h-[90vh] overflow-hidden animate-modal-appear" onClick={(e) => e.stopPropagation()}>
             <div className="sticky top-0 bg-gradient-to-r from-orange-500 to-orange-600 z-10 px-8 py-6">
               <div className="flex justify-between items-center">
                 <h3 className="text-3xl font-bold text-white">
@@ -193,8 +193,8 @@ const SearchCandidatesSection = () => {
             </div>
             
             <div className="px-8 py-6 space-y-8 overflow-y-auto max-h-[calc(90vh-180px)]">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="bg-orange-50 p-6 rounded-2xl shadow-inner">
+              <div className="grid lg:grid-cols-2 md:grid-cols-1 gap-8">
+                <div className="bg-orange-50  p-6 rounded-2xl shadow-inner">
                   <h4 className="text-2xl font-semibold text-orange-700 mb-4">Contact Information</h4>
                   <div className="space-y-4">
                     <p className="flex items-center text-gray-700">

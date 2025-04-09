@@ -146,6 +146,8 @@ const ApplicationSection = () => {
   const [applicationToDelete, setApplicationToDelete] = useState(null);
   const [isDelete,setDelete]=useState(false);
   const [newStatus, setNewStatus] = useState("");
+  const [loading, setLoading] = useState(true);
+  
 
   useEffect(()=>{
     console.log("applications",applications);
@@ -153,6 +155,7 @@ const ApplicationSection = () => {
   },[applications])
 
   useEffect(() => {
+      setLoading(true);
       const fetchApplications = async () => {
         try {
           const token = localStorage.getItem("authToken");
@@ -175,6 +178,9 @@ const ApplicationSection = () => {
           setApplications(data);
         } catch (error) {
           console.error("Error fetching user applications:", error);
+        }
+        finally {
+          setLoading(false);
         }
       };
   
@@ -252,6 +258,7 @@ const ApplicationSection = () => {
       }
     };
     
+    if (loading) return <div className="text-center py-10">Loading...</div>;
 
 
   return (

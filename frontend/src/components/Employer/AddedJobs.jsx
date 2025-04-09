@@ -89,7 +89,7 @@ const AddedJobs = () => {
   if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
 
   return (
-    <div className="bg-gradient-to-br from-orange-50 to-white p-8 rounded-3xl shadow-xl max-h-[85vh] overflow-y-hidden" >
+    <div className="bg-gradient-to-br from-orange-50 to-white p-8 rounded-3xl shadow-xl overflow-y-hidden" >
       <h2 className="text-4xl font-bold text-orange-600 mb-8">Added Jobs</h2>
       <div className="mb-8 relative">
         <input
@@ -145,7 +145,7 @@ const AddedJobs = () => {
   
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowDeleteModal(false)}>
-          <div className="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-2xl p-8 max-w-sm md:ml-60 w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-center text-red-500 mb-6">
               <FiAlertTriangle size={56} />
             </div>
@@ -173,7 +173,7 @@ const AddedJobs = () => {
   
       {selectedJob && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={closeDetails}>
-          <div className="bg-white rounded-2xl p-8 max-h-[60vh] w-[70vw] max-w-3xl overflow-y-auto relative" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-2xl p-8 max-h-[60vh] w-[60vw] md:ml-60  max-w-3xl overflow-y-auto relative" onClick={(e) => e.stopPropagation()}>
             <button onClick={closeDetails} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors duration-200">
               <FiX size={28} />
             </button>

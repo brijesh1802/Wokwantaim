@@ -586,7 +586,7 @@ const JobDetail = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { userType } = useContext(AuthContext);
-  const jobId = location.state?.jobId; // Use optional chaining to avoid undefined
+  const jobId = location.state?.jobId; 
   const [message, setMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [isApplied, setIsApplied] = useState(false);
@@ -611,6 +611,7 @@ const JobDetail = () => {
     const checkApplicationStatus = async () => {
       try {
         const token = localStorage.getItem("authToken");
+
         const checkResponse = await fetch(
           `${import.meta.env.VITE_BASE_URL}/api/v1/applications/apply/${jobId}`,
           {
@@ -830,6 +831,7 @@ const JobDetail = () => {
             </div>
 
             {/* Apply Button */}
+            {(userType == "candidate" || userType=="undefined") && (
             <div className="flex justify-center mt-8">
               <button
                 onClick={onHandleClick}
@@ -841,7 +843,7 @@ const JobDetail = () => {
               >
                 {applied ? "Applied" : "Apply Now"}
               </button>
-            </div>
+            </div>)}
             {isApplied && (
               <div className="mt-4 text-center text-green-600 font-semibold bg-green-100 p-3 rounded-lg">
                 You have successfully applied for this job!

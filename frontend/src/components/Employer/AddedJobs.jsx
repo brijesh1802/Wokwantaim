@@ -89,7 +89,7 @@ const AddedJobs = () => {
   if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
 
   return (
-    <div className="bg-gradient-to-br from-orange-50 to-white p-8 rounded-3xl shadow-xl max-h-[85vh] overflow-y-hidden" >
+    <div className="bg-gradient-to-br from-orange-50 to-white p-8 rounded-3xl shadow-xl overflow-y-hidden" >
       <h2 className="text-4xl font-bold text-orange-600 mb-8">Added Jobs</h2>
       <div className="mb-8 relative">
         <input

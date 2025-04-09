@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import AddEmployerSection from '../components/Employer/AddEmployerSection';
 import ApplicationSection from '../components/Employer/ApplicationSection';
 import EmployerProfileSection from '../components/Employer/EmployerProfileSection';
-import ManageEntitySection from '../components/Employer/ManageEntitySection';
 import SearchCandidateSection from '../components/Employer/SearchCandidateSection';
 import SearchJobSection from '../components/Employer/SearchJobSection';
 import ViewEmployersSection from '../components/Employer/ViewEmployersSection';
@@ -23,7 +22,6 @@ const EmployerDashboard = () => {
     { id: 'searchCandidates', icon: FiSearch, label: 'Search Candidates' },
     { id: 'addEmployer', icon: FiUserPlus, label: 'Add Employer' },
     { id: 'viewEmployer', icon: FiUsers, label: 'View Employers' },
-    { id: 'manageEntities', icon: FiDatabase, label: 'Manage Entities' },
   ]);
 
   const navigate = useNavigate();
@@ -44,8 +42,6 @@ const EmployerDashboard = () => {
         return <AddEmployerSection />;
       case 'viewEmployer':
         return <ViewEmployersSection />;
-      case 'manageEntities':
-        return <ManageEntitySection />;
       default:
         return <ProfileSection />;
     }

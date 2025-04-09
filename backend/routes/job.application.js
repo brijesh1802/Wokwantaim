@@ -52,7 +52,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { applyJob,getMyApplications, getAllApplications,editApplication,deleteApplication } = require('../controllers/jobApplicationController');
+const { applyJob,getMyApplications, getAllApplications,getApplications,editApplication,deleteApplication } = require('../controllers/jobApplicationController');
 const authMiddleware = require('../middleware/authMiddleware'); // Ensure authentication
 
 // router.post('/apply/:id', authMiddleware, applyJob);
@@ -61,6 +61,7 @@ router.route('/apply/:id')
     .post(authMiddleware, applyJob);
 router.get('/myApplications', authMiddleware, getMyApplications);
 router.get('/getAllApplications', authMiddleware, getAllApplications);
+router.get('/getApplications', authMiddleware, getApplications);
 router.put("/editApplication/:applicationId",authMiddleware, editApplication);
 router.delete("/deleteApplication/:applicationId", authMiddleware, deleteApplication);
 

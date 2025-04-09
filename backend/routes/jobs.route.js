@@ -1,9 +1,11 @@
 const express = require('express');
+const authMiddleware = require('../middleware/authMiddleware'); 
 const router = express.Router();
 const { upload } = require('../middleware/upload');
-const { getAllJobs, getJobById, getLimitedJobs, addJob, deleteJob } = require('../controllers/jobController');
+const { getAllJobs, getJobById, getLimitedJobs, addJob, deleteJob, getAllJob } = require('../controllers/jobController');
 
-router.get('/getAll', getAllJobs);
+router.get('/getAll',getAllJobs);
+router.get('/getAllJob',authMiddleware,getAllJob);
 
 router.get('/getJob/:id', getJobById);
 

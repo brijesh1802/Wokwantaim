@@ -2,14 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { FiUserPlus, FiUsers, FiBriefcase, FiSearch, FiPlusCircle, FiMenu, FiUser, FiX, FiDatabase, FiArrowLeft } from 'react-icons/fi';
 
 import { useNavigate } from 'react-router-dom';
-import AddEmployerSection from '../components/Employer/AddEmployerSection';
 import ApplicationSection from '../components/Employer/ApplicationSection';
 import EmployerProfileSection from '../components/Employer/EmployerProfileSection';
-import SearchCandidateSection from '../components/Employer/SearchCandidateSection';
-import SearchJobSection from '../components/Employer/SearchJobSection';
-import ViewEmployersSection from '../components/Employer/ViewEmployersSection';
 import AddJob from '../components/Employer/AddJob';
-//import AddJobSection from '../components/admin/AddJobSection';
+import AddedJobs from '../components/Employer/AddedJobs';
+
 
 const EmployerDashboard = () => {
   const [activeTab, setActiveTab] = useState('profile');
@@ -18,10 +15,7 @@ const EmployerDashboard = () => {
     { id: 'profile', icon: FiUser, label: 'Profile' },
     { id: 'addJob', icon: FiPlusCircle, label: 'Add Job' },
     { id: 'applications', icon: FiBriefcase, label: 'Applications' },
-    { id: 'searchJobs', icon: FiSearch, label: 'Search Jobs' },
-    { id: 'searchCandidates', icon: FiSearch, label: 'Search Candidates' },
-    { id: 'addEmployer', icon: FiUserPlus, label: 'Add Employer' },
-    { id: 'viewEmployer', icon: FiUsers, label: 'View Employers' },
+    { id: 'addedJobs', icon: FiSearch, label: 'Added Jobs' },
   ]);
 
   const navigate = useNavigate();
@@ -34,14 +28,8 @@ const EmployerDashboard = () => {
         return <AddJob />;
       case 'applications':
         return <ApplicationSection />;
-      case 'searchJobs':
-        return <SearchJobSection />;
-      case 'searchCandidates':
-        return <SearchCandidateSection />;
-      case 'addEmployer':
-        return <AddEmployerSection />;
-      case 'viewEmployer':
-        return <ViewEmployersSection />;
+      case 'addedJobs':
+        return <AddedJobs />;
       default:
         return <ProfileSection />;
     }

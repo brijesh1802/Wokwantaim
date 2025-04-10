@@ -447,7 +447,7 @@ function Header() {
                     </NavLink>
 
                     <NavLink
-                      to="/about"
+                      to="/aboutus"
                       className="py-2 text-lg hover:text-orange-500"
                       onClick={() => setNavOpen(false)}
                     >

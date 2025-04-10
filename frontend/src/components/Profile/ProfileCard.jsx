@@ -30,7 +30,8 @@ const ProfileCard = ({ user }) => {
   const [tempFormData, setTempFormData] = useState({ ...formData });
 
   const handleChange = (e, field) => {
-    const file = e.target.files[0];
+    //console.log("e",e.target)
+    const file = e.target.files?.[0];
 
     if (field === "resume" && file) {
       const fileURL = URL.createObjectURL(file);

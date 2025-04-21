@@ -12,6 +12,7 @@ const EmployerDashboard = () => {
   const [activeTab, setActiveTab] = useState('profile');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [menuItems, setMenuItems] = useState([
+    {id : 'back', icon: FiArrowLeft, label: 'Back', className: 'text-orange-600'},
     { id: 'profile', icon: FiUser, label: 'Profile' },
     { id: 'addJob', icon: FiPlusCircle, label: 'Add Job' },
     { id: 'applications', icon: FiBriefcase, label: 'Applications' },
@@ -22,6 +23,8 @@ const EmployerDashboard = () => {
 
   const renderContent = () => {
     switch(activeTab) {
+      case 'back': 
+        return navigate('/');
       case 'profile':
         return <EmployerProfileSection />;
       case 'addJob':
@@ -41,17 +44,13 @@ const EmployerDashboard = () => {
         <div className="flex items-center justify-center h-20 shadow-md">
           <h1 className="text-3xl font-bold text-orange-600">Menu</h1>
         </div>
-        <div className='flex gap-2 mt-6 ml-2 text-orange-500 cursor-pointer' onClick={()=>navigate('/')}>
-          <FiArrowLeft size={20}/>
-          <p>Back</p>
-        </div>
         <ul className="flex flex-col py-4">
           {menuItems.map((item) => (
             <li key={item.id}>
               <a
                 href="#"
                 onClick={() => setActiveTab(item.id)}
-                className={`flex items-center px-6 py-3 text-gray-700 hover:bg-orange-100 ${activeTab === item.id ? 'bg-orange-100' : ''}`}
+                className={`flex items-center px-6 py-3 hover:bg-orange-100 ${activeTab === item.id ? 'bg-orange-100' : ''} ${item.className || 'text-gray-700'}`}
               >
                 <item.icon className="mr-3" />
                 {item.label}
@@ -66,7 +65,7 @@ const EmployerDashboard = () => {
           <div className="flex items-center">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className=" text-gray-500 focus:outline-none md:hidden "
+              className="focus:outline-none md:hidden"
             >
               <FiMenu className="h-6 w-6" />
             </button>
@@ -94,7 +93,7 @@ const EmployerDashboard = () => {
                       setActiveTab(item.id);
                       setIsMobileMenuOpen(false);
                     }}
-                    className={`flex items-center px-6 py-3 text-gray-700 hover:bg-orange-100 ${activeTab === item.id ? 'bg-orange-100' : ''}`}
+                    className={`flex items-center px-6 py-3  ${item.className || 'text-gray-700'} hover:bg-orange-100 ${activeTab === item.id ? 'bg-orange-100' : ''}`}
                   >
                     <item.icon className="mr-3" />
                     {item.label}

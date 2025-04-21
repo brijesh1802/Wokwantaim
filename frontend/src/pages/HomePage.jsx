@@ -225,9 +225,11 @@ function HomePage() {
 
 
       {/* Featured Categories */}
-      {jobsInfo.length>0&&(<section className="py-5 px-5 bg-gradient-to-b from-orange-50 to-white">
+      {jobsInfo.length > 0 && (
+        <section className="py-5 px-5 bg-gradient-to-b from-orange-50 to-white">
         <FeaturedJobCategories sectionTitle="Featured Job Categories" />
-      </section>)}
+      </section>
+      )}
 
       <section className="py-16 bg-gradient-to-b from-orange-50 to-white">
         {userType === "candidate" ? <JobInterviews /> : null}

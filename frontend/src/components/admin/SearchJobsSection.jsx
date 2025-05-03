@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { FiSearch, FiTrash2, FiEye, FiX, FiAlertTriangle } from 'react-icons/fi';
+import { AlertTriangle } from 'lucide-react';
 
 const SearchJobsSection = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -75,7 +76,7 @@ const SearchJobsSection = () => {
   if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
 
   return (
-    <div className="bg-gradient-to-br from-orange-50 to-white p-8 rounded-3xl shadow-xl  overflow-y-hidden " >
+    <div className="bg-gradient-to-br from-orange-50 to-white p-8 rounded-3xl shadow-xl  overflow-y-hidden ">
       <h2 className="text-4xl font-bold text-orange-600 mb-8">Search Jobs</h2>
       <div className="mb-8 relative">
         <input
@@ -87,38 +88,71 @@ const SearchJobsSection = () => {
         />
         <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-orange-400 text-xl" />
       </div>
-  
+
       <div className="overflow-x-auto max-h-[60vh] rounded-xl shadow-md">
         {filteredJobs.length === 0 ? (
-          <div className="text-center text-gray-500 py-8 bg-white rounded-xl">No jobs found</div>
+          <div className="text-center text-gray-500 py-8 bg-white rounded-xl">
+            No jobs found
+          </div>
         ) : (
           <table className="min-w-full bg-white rounded-xl overflow-hidden">
             <thead>
               <tr className="bg-orange-100">
-                <th className="px-6 py-4 text-left text-sm font-semibold text-orange-800 uppercase tracking-wider">Company</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-orange-800 uppercase tracking-wider">Job Title</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-orange-800 uppercase tracking-wider">Location</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-orange-800 uppercase tracking-wider">Salary</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-orange-800 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-orange-800 uppercase tracking-wider">
+                  Company
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-orange-800 uppercase tracking-wider">
+                  Job Title
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-orange-800 uppercase tracking-wider">
+                  Location
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-orange-800 uppercase tracking-wider">
+                  Salary
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-orange-800 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-orange-100">
               {filteredJobs.map((job) => (
-                <tr key={job.job.id} className="hover:bg-orange-50 transition-colors duration-200">
+                <tr
+                  key={job.job.id}
+                  className="hover:bg-orange-50 transition-colors duration-200"
+                >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <img src={job.job.companyLogo} alt={job.job.company} className="h-10 w-10 rounded-full mr-3" />
-                      <span className="text-sm font-medium text-gray-900">{job.job.company}</span>
+                      <img
+                        src={job.job.companyLogo}
+                        alt={job.job.company}
+                        className="h-10 w-10 rounded-full mr-3"
+                      />
+                      <span className="text-sm font-medium text-gray-900">
+                        {job.job.company}
+                      </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{job.job.title}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{job.job.location}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${job.job.salary.toLocaleString()}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {job.job.title}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {job.job.location}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    ${job.job.salary.toLocaleString()}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button className="text-orange-600 hover:text-orange-800 mr-3 transition-colors duration-200" onClick={() => viewJobDetails(job.job)}>
+                    <button
+                      className="text-orange-600 hover:text-orange-800 mr-3 transition-colors duration-200"
+                      onClick={() => viewJobDetails(job.job)}
+                    >
                       <FiEye size={20} />
                     </button>
-                    <button onClick={() => initiateDelete(job.job.id)} className="text-red-500 hover:text-red-700 transition-colors duration-200">
+                    <button
+                      onClick={() => initiateDelete(job.job.id)}
+                      className="text-red-500 hover:text-red-700 transition-colors duration-200"
+                    >
                       <FiTrash2 size={20} />
                     </button>
                   </td>
@@ -128,51 +162,87 @@ const SearchJobsSection = () => {
           </table>
         )}
       </div>
-  
+
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 max-w-sm w-full md:ml-40 shadow-2xl">
-            <div className="flex items-center justify-center text-red-500 mb-6">
-              <FiAlertTriangle size={56} />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 w-[90%] max-w-md transition-all duration-300">
+            <div className="flex items-center gap-3 mb-4">
+              {/* Uncomment if using icon */}
+              {/* <FiAlertTriangle size={24} className="text-red-600" /> */}
+              <h2 className="text-xl font-semibold text-orange-600">
+                Confirm Deletion
+              </h2>
             </div>
-            <h3 className="text-2xl font-bold text-center mb-4">Confirm Deletion</h3>
-            <p className="text-gray-700 text-center mb-8">
-              Are you sure you want to delete this job? This action cannot be undone.
-            </p>
-            <div className="flex justify-center space-x-4">
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className="px-6 py-3 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 transition-colors duration-200"
-              >
-                Cancel
-              </button>
+            <p className="text-gray-600 text-sm"></p>
+            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-5 rounded-md flex items-start space-x-3 mb-2">
+              <AlertTriangle className="text-yellow-400 w-6 h-6" />
+              <div>
+                <p className="text-sm text-yellow-700">
+                  Are you sure you want to delete this application? This action
+                  cannot be undone.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-4 mt-3">
               <button
                 onClick={handleDelete}
-                className="px-6 py-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors duration-200"
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl transition duration-200"
               >
-                Delete
+                Yes, Delete
+              </button>
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-xl transition duration-200"
+              >
+                Cancel
               </button>
             </div>
           </div>
         </div>
       )}
-  
+
       {selectedJob && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={closeDetails}>
-          <div className="bg-white rounded-2xl p-8 max-h-[60vh] w-[60vw] md:ml-60 max-w-3xl overflow-y-auto relative" onClick={(e) => e.stopPropagation()}>
-            <button onClick={closeDetails} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors duration-200">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={closeDetails}
+        >
+          <div
+            className="bg-white rounded-2xl p-8 max-h-[60vh] w-[60vw] md:ml-60 max-w-3xl overflow-y-auto relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={closeDetails}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors duration-200"
+            >
               <FiX size={28} />
             </button>
             <div className="text-center mb-6">
-              <img src={selectedJob.companyLogo} alt={selectedJob.company} className="h-20 w-20 mx-auto rounded-full mb-4 shadow-md" />
-              <h3 className="text-3xl font-bold text-orange-600">{selectedJob.title}</h3>
-              <p className="text-xl text-gray-600">{selectedJob.company} - {selectedJob.location}</p>
+              <img
+                src={selectedJob.companyLogo}
+                alt={selectedJob.company}
+                className="h-20 w-20 mx-auto rounded-full mb-4 shadow-md"
+              />
+              <h3 className="text-3xl font-bold text-orange-600">
+                {selectedJob.title}
+              </h3>
+              <p className="text-xl text-gray-600">
+                {selectedJob.company} - {selectedJob.location}
+              </p>
             </div>
             <div className="space-y-6 text-gray-700">
-              <p className="text-2xl font-semibold text-orange-500">Salary: ${selectedJob.salary.toLocaleString()}</p>
-              <p><strong>Job Type:</strong> {selectedJob.jobType}</p>
-              <p><strong>Experience Level:</strong> {selectedJob.experienceLevel}</p>
-              <p><strong>Industry:</strong> {selectedJob.industry}</p>
+              <p className="text-2xl font-semibold text-orange-500">
+                Salary: ${selectedJob.salary.toLocaleString()}
+              </p>
+              <p>
+                <strong>Job Type:</strong> {selectedJob.jobType}
+              </p>
+              <p>
+                <strong>Experience Level:</strong> {selectedJob.experienceLevel}
+              </p>
+              <p>
+                <strong>Industry:</strong> {selectedJob.industry}
+              </p>
               <div>
                 <strong>Description:</strong>
                 <p className="mt-2">{selectedJob.description}</p>
@@ -193,10 +263,19 @@ const SearchJobsSection = () => {
                   ))}
                 </ul>
               </div>
-              <p><strong>Application Deadline:</strong> {new Date(selectedJob.applicationDeadline).toDateString()}</p>
-              <p><strong>Posted Date:</strong> {new Date(selectedJob.applicationPostedDate).toDateString()}</p>
+              <p>
+                <strong>Application Deadline:</strong>{" "}
+                {new Date(selectedJob.applicationDeadline).toDateString()}
+              </p>
+              <p>
+                <strong>Posted Date:</strong>{" "}
+                {new Date(selectedJob.applicationPostedDate).toDateString()}
+              </p>
             </div>
-            <button onClick={closeDetails} className="mt-8 w-full px-6 py-3 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors duration-200 text-lg font-semibold">
+            <button
+              onClick={closeDetails}
+              className="mt-8 w-full px-6 py-3 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors duration-200 text-lg font-semibold"
+            >
               Close
             </button>
           </div>
@@ -204,6 +283,7 @@ const SearchJobsSection = () => {
       )}
     </div>
   );
+
   
 };
 

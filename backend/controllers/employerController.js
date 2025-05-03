@@ -260,23 +260,21 @@ const deleteAccount = async (req, res) => {
     try {
         const userEmail = req.user.email;
 
-        const password =  req.body.password;
+        //const password =  req.body.password;
 
         const employer = await Employer.findOne({
             email: userEmail
         });
 
-        const isMatch = await bcrypt.compare(password, employer.password);
-        
-        if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials' });
-        }
+
 
         if (!employer) {
             return res.status(404).json({ message: 'Employer not found' });
         }
 
-        await employer.deleteOne();
+        await employer.deleteOne()
+
+        res.status(201).json({ message: "Employer deleted" });
     } catch (err) {
         console.error(err.message);
         res.status(500).json({ message: 'Server error while deleting account' });

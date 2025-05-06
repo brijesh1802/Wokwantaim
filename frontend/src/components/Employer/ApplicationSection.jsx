@@ -218,10 +218,11 @@ const ApplicationSection = () => {
         }
   
         const updatedApp = await response.json();
+        console.log("updatedApp",updatedApp);
         setApplications((prevApps) =>
           prevApps.map((app) =>
             
-            app._id === editingApplication._id ? updatedApp.application : app
+            app._id === editingApplication._id ?{...app, ...updatedApp.application} : app
           )
         );
         setEditingApplication(null);

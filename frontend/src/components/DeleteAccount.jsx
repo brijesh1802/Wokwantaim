@@ -87,6 +87,8 @@ const DeleteAccount = () => {
       setTimeout(() => {
         setLoading(false);
         navigate("/"); // Redirect to home page after deletion
+        
+        window.location.reload();// Reload the page to reflect changes
       }, 2000);
     } catch (err) {
       console.error("Network error:", err);

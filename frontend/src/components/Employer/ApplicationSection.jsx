@@ -147,7 +147,8 @@ const ApplicationSection = () => {
   const [isDelete,setDelete]=useState(false);
   const [newStatus, setNewStatus] = useState("");
   const [loading, setLoading] = useState(true);
-  
+  const [isSaving, setIsSaving] = useState(false);
+
 
   useEffect(()=>{
     console.log("applications",applications);
@@ -199,6 +200,7 @@ const ApplicationSection = () => {
   
     const handleSaveEdit = async () => {
       if (!editingApplication) return;
+      setIsSaving(true);
       try {
         const token = localStorage.getItem("authToken");
         const response = await fetch(
@@ -228,6 +230,10 @@ const ApplicationSection = () => {
         setEditingApplication(null);
       } catch (error) {
         console.error("Error updating application:", error);
+      }
+      finally
+      {
+        setIsSaving(false)
       }
     };
 
@@ -376,7 +382,7 @@ const ApplicationSection = () => {
             </select>
             
             <div className="flex justify-end mt-4">
-              <button onClick={handleSaveEdit} className="mr-2 bg-blue-500 text-white px-2 py-2 rounded">Save</button>
+              <button onClick={handleSaveEdit} className="mr-2 bg-blue-500 text-white px-2 py-2 rounded">{isSaving?"Saving..":"Save"}</button>
               <button onClick={() => setEditingApplication(null)} className="bg-gray-500 text-white px-2 py-2 rounded">Cancel</button>
             </div>
           </div>

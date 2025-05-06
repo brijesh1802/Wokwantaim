@@ -16,9 +16,8 @@ import DeleteAccount from "../components/DeleteAccount";
 import LogoutConfirmation from "../components/LogoutConfirmation";
 import PersonalProjects from "../components/Profile/PersonalProjects";
 import MultiStepEducationForm from "../components/Profile/MultiStepEducationForm";
-import { FiLogOut,FiMail } from 'react-icons/fi';
-import { motion } from 'framer-motion';
-
+import { FiLogOut, FiMail } from "react-icons/fi";
+import { motion } from "framer-motion";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -149,8 +148,7 @@ const Profile = () => {
       setWorkExperience(data.workExperience || []);
       setEducations(data.education || []);
     };
-
-    fetchUserData();
+    if (userType === "candidate") fetchUserData();
   }, []);
 
   const togglePopup = () => {
@@ -177,14 +175,14 @@ const Profile = () => {
   if (!user) {
     return <Error message="User not found. Please log in." />;
   }
-  
-  if(userType==="candidate" || userType==="undefined"){
+
+  if (userType === "candidate" || userType === "undefined") {
     return (
       <div className="mx-auto mt-12 flex flex-col lg:flex-row h-full w-full mb-2 sm:ml-4 ">
         <div className="flex flex-col items-center xl:items-start xl:ml-2 xl:px-5 lg:w-max xl:w-1/3 mt-10 xl:mt-5">
           <ProfileCard user={user} className="xl:ml-2 xl:mr-2" />
         </div>
-  
+
         <div className="flex flex-col w-full lg:py-8 xl:w-2/3 mt-1 xl:mt-0 xl:mr-5 space-y-4">
           <EditableSection user={user} title="About Me" />
           <ProfileSection
@@ -211,7 +209,7 @@ const Profile = () => {
               setWorkExperience={setWorkExperience}
             />
           </ProfileSection>
-  
+
           <ProfileSection
             title="Education"
             onAdd={toggleEducationForm}
@@ -222,7 +220,7 @@ const Profile = () => {
               setEducations={setEducations}
             />
           </ProfileSection>
-  
+
           <ProfileSection
             title="Skills"
             contentExists={skills.length > 0}
@@ -234,7 +232,7 @@ const Profile = () => {
           >
             <SkillSection skills={skills} setSkills={setSkills} />
           </ProfileSection>
-  
+
           <ProfileSection
             title="Personal Projects"
             onAdd={() => {
@@ -256,7 +254,7 @@ const Profile = () => {
               setPersonalProjects={setPersonalProjects}
             />
           </ProfileSection>
-  
+
           <ProfileSection
             title="Certifications"
             onAdd={() => {
@@ -279,7 +277,7 @@ const Profile = () => {
               setCertifications={setCertifications}
             />
           </ProfileSection>
-  
+
           <ProfileSection
             title="Social Links"
             onAdd={() => {
@@ -298,7 +296,7 @@ const Profile = () => {
               setSocialLinks={setSocialLinks}
             />
           </ProfileSection>
-  
+
           <div className="p-4 flex flex-col bg-white rounded-lg shadow-lg w-full mt-5 items-center space-y-3">
             <button
               className="text-zinc-700 text-xl font-semibold hover:text-zinc-900 transition"
@@ -316,7 +314,7 @@ const Profile = () => {
             </button>
           </div>
         </div>
-  
+
         {showPopup && (
           <Popup
             type={popupType}
@@ -326,7 +324,7 @@ const Profile = () => {
             updateParentState={updateParentState}
           />
         )}
-  
+
         {showEducationForm && (
           <MultiStepEducationForm
             toggleForm={toggleEducationForm}
@@ -336,9 +334,9 @@ const Profile = () => {
             setData={setPopupData}
           />
         )}
-  
+
         {deletemodal && <DeleteAccount onClose={() => setDeleteModal(false)} />}
-  
+
         {logoutConfirmOpen && (
           <LogoutConfirmation
             onConfirm={handleLogoutConfirm}
@@ -347,24 +345,27 @@ const Profile = () => {
         )}
       </div>
     );
-  }
-  else if(userType==="employer"){
+  } else if (userType === "employer") {
     return (
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="bg-gray-100 p-8 rounded-2xl shadow-gray-500 shadow-2xl max-w-lg mx-auto mt-28"
       >
-        <h2 className="text-3xl font-bold text-black mb-8 text-center">Employer Profile</h2>
+        <h2 className="text-3xl font-bold text-black mb-8 text-center">
+          Employer Profile
+        </h2>
         <div className="flex flex-col items-center mb-8">
-          <motion.div 
+          <motion.div
             whileHover={{ scale: 1.05 }}
             className="w-40 h-40 bg-orange-100 rounded-full flex items-center justify-center text-orange-500 font-bold text-6xl mr-4 mb-4"
           >
             {user.name.charAt(0).toUpperCase()}
           </motion.div>
-          <h3 className="text-2xl font-semibold text-gray-700">{user.name || 'Loading...'}</h3>
+          <h3 className="text-2xl font-semibold text-gray-700">
+            {user.name || "Loading..."}
+          </h3>
           <p className="text-gray-500 mt-2">Employer</p>
         </div>
         <div className="space-y-6">
@@ -372,7 +373,9 @@ const Profile = () => {
             <FiMail className="w-4 h-6 text-orange-500" />
             <div>
               {/* <p className="text-sm text-gray-500">Email</p> */}
-              <p className="sm:text-l text-lg font-medium text-gray-700">{user.email || 'Loading...'}</p>
+              <p className="sm:text-l text-lg font-medium text-gray-700">
+                {user.email || "Loading..."}
+              </p>
             </div>
           </div>
           <motion.button
@@ -386,7 +389,6 @@ const Profile = () => {
         </div>
       </motion.div>
     );
-  
-  
-}}
+  }
+};
 export default Profile;

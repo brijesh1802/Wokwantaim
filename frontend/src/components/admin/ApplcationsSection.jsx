@@ -85,7 +85,7 @@ const ApplicationsSection = () => {
         setApplications((prevApps) =>
           prevApps.map((app) =>
             
-            app._id === editingApplication._id ? updatedApp.application : app
+            app._id === editingApplication._id ? {...app,...updatedApp.application} : app
           )
         );
         setEditingApplication(null);

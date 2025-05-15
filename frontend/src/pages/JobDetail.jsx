@@ -562,6 +562,7 @@ import {
   Briefcase,
   HandCoins,
   ArrowLeft,
+  Loader,
 } from "lucide-react";
 import Banner from "../components/Banner";
 import companyLogo from "../assets/comlogo-1.png";
@@ -594,6 +595,7 @@ const JobDetail = () => {
   const [allowApply, setAllowApply] = useState(true);
   const [deadlineDate, setDeadlineDate] = useState(null);
   const [applied, setApplied] = useState(false);
+  const [loading,setLoading]=useState(false);
 
   // Handle invalid jobId
   useEffect(() => {
@@ -662,7 +664,7 @@ const JobDetail = () => {
       setMessage("Application is closed!");
       return;
     }
-    
+    setLoading(true);
       try {
         const token = localStorage.getItem("authToken");
         const response = await fetch(
@@ -694,6 +696,7 @@ const JobDetail = () => {
         setShowAlert(true);
         setMessage("An error occurred. Please try again.");
       }
+      setLoading(false);
 
   };
   const closeAlert = () => {
@@ -849,7 +852,7 @@ const JobDetail = () => {
                       : "px-8 py-3 bg-orange-500 text-white rounded-full font-semibold  hover:bg-orange-600 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 "
                   }`}
                 >
-                  {applied ? "Applied" : "Apply Now"}
+                  {loading?<Loader></Loader>:applied ? "Applied" : "Apply Now"}
                 </button>
               </div>
             )}

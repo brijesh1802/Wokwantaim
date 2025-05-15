@@ -608,6 +608,7 @@ const JobDetail = () => {
   }, [applied, isApplied,jobId]);
 
   useEffect(() => {
+    
     const checkApplicationStatus = async () => {
       try {
         const token = localStorage.getItem("authToken");

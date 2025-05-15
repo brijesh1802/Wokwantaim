@@ -236,11 +236,11 @@ const ApplicationsSection = () => {
       {/* Edit Modal */}
       {editingApplication && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm "
           onClick={() => setEditingApplication(null)}
         >
           <div
-            className="bg-white p-6 rounded-2xl shadow-2xl w-[90%] max-w-md transition-all duration-300"
+            className="bg-white p-6 rounded-2xl shadow-2xl w-[90%] max-w-md ml-40 min-w-80 transition-all duration-300"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-2xl font-semibold text-gray-800 mb-6">
@@ -282,7 +282,7 @@ const ApplicationsSection = () => {
 
       {isDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 w-[90%] max-w-md transition-all duration-300">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 w-[90%] max-w-md transition-all duration-300 ml-40">
             <div className="flex items-center gap-3 mb-4">
               {/* Uncomment if using icon */}
               {/* <FiAlertTriangle size={24} className="text-red-600" /> */}

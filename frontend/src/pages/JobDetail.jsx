@@ -586,11 +586,12 @@ const JobDetail = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { userType } = useContext(AuthContext);
-  const jobId = location.state?.jobId; 
+  const jobId = location.state?.jobId;
   const [message, setMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [isApplied, setIsApplied] = useState(false);
-  const [showApplied, setShowApplied] = useState(false);
+  //const [showApplied, setShowApplied] = useState(false);
+  const [allowApply, setAllowApply] = useState(true);
   const [deadlineDate, setDeadlineDate] = useState(null);
   const [applied, setApplied] = useState(false);
 
@@ -602,10 +603,11 @@ const JobDetail = () => {
   }, [jobId, navigate]);
 
   useEffect(() => {
-    console.log("isApllied ", applied);
+    console.log("applied ", applied);
     console.log("Job ID:", jobId); // Make sure this isn't undefined/null
-
-  }, [applied, isApplied,jobId]);
+    console.log("allow apply:", allowApply); // Check the userType
+  });
+  
 
   useEffect(() => {
     const checkApplicationStatus = async () => {
@@ -624,11 +626,11 @@ const JobDetail = () => {
         );
 
         const existingApplications = await checkResponse.json();
-
+        console.log("Existing Applications:", existingApplications.applied);
         if (checkResponse.ok && existingApplications.applied) {
-          // //setMessage("You have already applied for this job!");
           setShowAlert(false);
           setApplied(true);
+          setAllowApply(false);
         }
       } catch (error) {
         console.error("Error checking application status!", error);
@@ -640,25 +642,28 @@ const JobDetail = () => {
   }, [jobId]);
 
   const onHandleClick = async () => {
+    
+    
     if (applied) return;
-
-    setShowApplied(false);
+    
+    //setShowApplied(false);
     if (userType !== "candidate") {
       setShowAlert(true);
       setMessage("Login to apply");
       return;
     }
-
+    
     const currentDate = new Date();
     if (deadlineDate && currentDate > deadlineDate) {
-      setShowApplied(true);
+      //setShowApplied(true);
       setShowAlert(true);
+      setAllowApply(false);
       setMessage("Application is closed!");
       return;
     }
+    
       try {
         const token = localStorage.getItem("authToken");
-        // 2. If no existing application, proceed with applying
         const response = await fetch(
           `${import.meta.env.VITE_BASE_URL}/api/v1/applications/apply/${jobId}`,
           {
@@ -669,13 +674,15 @@ const JobDetail = () => {
             },
           }
         );
-
-        const result = await response.json();
         
+        const result = await response.json();
+        console.log("Result:", result);
+        
+
         if (response.ok) {
           setIsApplied(true);
           setApplied(true);
-          setShowApplied(true);
+          setAllowApply(false);
           setMessage("Application Submitted");
         } else {
           setShowAlert(true);
@@ -686,7 +693,7 @@ const JobDetail = () => {
         setShowAlert(true);
         setMessage("An error occurred. Please try again.");
       }
-    
+
   };
   const closeAlert = () => {
     setShowAlert(false);
@@ -831,19 +838,20 @@ const JobDetail = () => {
             </div>
 
             {/* Apply Button */}
-            {(userType == "candidate" || userType=="undefined") && (
-            <div className="flex justify-center mt-8">
-              <button
-                onClick={onHandleClick}
-                className={`${
-                  applied
-                    ? "px-8 py-3 bg-orange-500 text-white rounded-full font-semibold bg-opacity-60 cursor-not-allowed"
-                    : "px-8 py-3 bg-orange-500 text-white rounded-full font-semibold  hover:bg-orange-600 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 "
-                }`}
-              >
-                {applied ? "Applied" : "Apply Now"}
-              </button>
-            </div>)}
+            {(userType == "candidate" || userType == "undefined") && (
+              <div className="flex justify-center mt-8">
+                <button
+                  onClick={onHandleClick}
+                  className={`${
+                    applied
+                      ? "px-8 py-3 bg-orange-500 text-white rounded-full font-semibold bg-opacity-60 cursor-not-allowed"
+                      : "px-8 py-3 bg-orange-500 text-white rounded-full font-semibold  hover:bg-orange-600 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 "
+                  }`}
+                >
+                  {applied ? "Applied" : "Apply Now"}
+                </button>
+              </div>
+            )}
             {isApplied && (
               <div className="mt-4 text-center text-green-600 font-semibold bg-green-100 p-3 rounded-lg">
                 You have successfully applied for this job!

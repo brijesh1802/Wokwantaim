@@ -135,7 +135,6 @@
 // //   }
 // // };
 
-
 // const applyJob = async (req, res) => {
 //   try {
 //     const jobId = req.params.id;
@@ -271,7 +270,6 @@
 //     </body>
 //     </html>
 //     `;
-    
 
 //     await sendEmail(candidate.email, emailSubject, emailBody);
 //     return res.json({ message: "Applied successfully" });
@@ -330,7 +328,7 @@
 //     const jobs=await Job.find({addedBy:userID}).select('_id');
 //     const jobIDs=jobs.map((job)=>job._id.toString());
 //     if (jobIDs.length === 0) {
-//         return res.status(200).json([]); 
+//         return res.status(200).json([]);
 //       }
 
 //     const applications = await Application.find({
@@ -638,7 +636,6 @@
 //   }
 // };
 
-
 // const deleteApplication = async (req, res) => {
 //   try {
 //     const { applicationId } = req.params;
@@ -668,8 +665,6 @@
 //   getApplications,
 // };
 
-
-
 const Application = require("../models/application.model");
 const Job = require("../models/job.model");
 const Candidate = require("../models/candidate.model");
@@ -677,6 +672,7 @@ const Admin = require("../models/admin.model");
 const Employer = require("../models/employer.model");
 const CandidateProfile = require("../models/candidate.profile.model");
 const sendEmail = require("../utils/emailService");
+const { request } = require("express");
 
 // 🔧 Helper Functions
 function isIncompleteProfile(profile) {
@@ -788,66 +784,80 @@ const applyJob = async (req, res) => {
 
     if (!userEmail) return res.status(401).json({ message: "Unauthorized" });
 
+    const candidate = await Candidate.findOne({ email: userEmail });
+    if (!candidate)
+      return res.status(404).json({ message: "Candidate not found" });
+    if (!candidate.resume)
+      return res.status(400).json({ message: "Resume not found" });
+
     const job = await Job.findById(jobId)
-      .populate('company', 'name')
-      .populate('jobType', 'name') 
-      .populate('experienceLevel', 'level');
+      .populate("company", "name")
+      .populate("jobType", "name")
+      .populate("experienceLevel", "level");
 
     if (!job) return res.status(404).json({ message: "Job not found" });
 
-    const candidate = await Candidate.findOne({ email: userEmail });
-    if (!candidate) return res.status(404).json({ message: "Candidate not found" });
-    if (!candidate.resume) return res.status(400).json({ message: "Resume not found" });
+    if (req.method === "GET") {
+      const existingApplication = await Application.findOne({
+        candidateId: candidate._id,
+        jobId,
+      });
 
-    const existingApplication = await Application.findOne({
-      candidateId: candidate._id,
-      jobId: job._id,
-    });
-
-    if (existingApplication) {
-      return res.status(400).json({ message: "You have already applied for this job" });
-    }
-
-    const candidateProfile = await CandidateProfile.findOne({ candidateId: candidate._id });
-    if (!candidateProfile || isIncompleteProfile(candidateProfile)) {
-      return res.status(400).json({
-        message: "Please complete your profile (skills, education, experience, projects) before applying.",
+      return res.json({
+        applied: !!existingApplication,
+        message: "You have already applied for this job"
       });
     }
+    if (req.method === "POST") {
+      const candidateProfile = await CandidateProfile.findOne({
+        candidateId: candidate._id,
+      });
+      if (!candidateProfile || isIncompleteProfile(candidateProfile)) {
+        return res.status(400).json({
+          message:
+            "Please complete your profile (skills, education, experience, projects) before applying.",
+        });
+      }
 
-    const matchingSkills = getMatchingSkills(candidateProfile.skills, job.skills);
-    if (matchingSkills.length === 0) {
-      return res.status(400).json({ message: "Your skills don’t align with the job requirements" });
-    }
+      const matchingSkills = getMatchingSkills(
+        candidateProfile.skills,
+        job.skills
+      );
+      if (matchingSkills.length === 0) {
+        return res.status(400).json({
+          message: "Your skills don’t align with the job requirements",
+        });
+      }
 
-    const application = new Application({
-      jobId: job._id,
-      candidateId: candidate._id,
-      skillsMatching: matchingSkills,
-      status: 'pending',
-      dateApplied: new Date(),
-      jobName: job.title,
-      companyName: job.company.name,
-      resume: candidate.resume,
-    });
+      console.log("candidate ",candidate);
+      const application = new Application({
+        jobId: job._id,
+        candidateId: candidate._id,
+        skillsMatching: matchingSkills,
+        status: "pending",
+        dateApplied: new Date(),
+        jobName: job.title,
+        companyName: job.company.name,
+        resume: candidate.resume,
+      });
 
-    await application.save();
+      await application.save();
 
-    job.applicationCount += 1;
-    job.viewCount += 1;
-    await job.save();
+      job.applicationCount += 1;
+      job.viewCount += 1;
+      await job.save();
 
-    // Define the dashboard URL (you can change this to your real dashboard link)
-    const dashboardURL = "https://wokwantaim.com/dashboard";
-    const unsubscribeURL = `${dashboardURL}/unsubscribe`;
+      // Define the dashboard URL (you can change this to your real dashboard link)
+      const dashboardURL = "https://wokwantaim.com/dashboard";
+      const unsubscribeURL = `${dashboardURL}/unsubscribe`;
 
-    const emailSubject = `✅ Application Received – ${job.title}`;
-    const emailBody = `
+      const emailSubject = `✅ Application Received – ${job.title}`;
+      const emailBody = `
       <div style="font-family: Arial, sans-serif; padding: 40px; background-color: #f4f4f4; text-align: center;">
         <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
           <h2 style="color: #333;">🎉 Application Submitted</h2>
           <p style="color: #555; font-size: 16px; line-height: 1.6;">
-            Hello <strong>${candidate.name}</strong>,<br/><br/>
+            Hello <strong>${candidate.fullName.firstName } ${candidate.fullName.lastName}</strong>,<br/><br/>
             Thank you for applying to <strong>${job.title}</strong> at <strong>${job.company.name}</strong>.<br/><br/>
             We'll review your profile and get back to you if you're shortlisted.<br/><br/>
             Good luck!<br/><br/>
@@ -864,22 +874,21 @@ const applyJob = async (req, res) => {
       </div>
     `;
 
-    await sendEmail(candidate.email, emailSubject, emailBody);
+      await sendEmail(candidate.email, emailSubject, emailBody);
 
-    res.json({ message: "Applied successfully" });
-
+      res.json({ message: "Applied successfully" });
+    }
   } catch (err) {
     console.error("Server Error:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
-
-
 const getMyApplications = async (req, res) => {
   try {
     const candidate = await Candidate.findOne({ email: req.user.email });
-    if (!candidate) return res.status(400).json({ message: "Candidate not found" });
+    if (!candidate)
+      return res.status(400).json({ message: "Candidate not found" });
 
     const applications = await Application.find({ candidateId: candidate._id });
     res.status(200).json(applications);
@@ -890,11 +899,13 @@ const getMyApplications = async (req, res) => {
 
 const getApplications = async (req, res) => {
   try {
-    let user = await Admin.findOne({ email: req.user.email }) || await Employer.findOne({ email: req.user.email });
+    let user =
+      (await Admin.findOne({ email: req.user.email })) ||
+      (await Employer.findOne({ email: req.user.email }));
     if (!user) return res.status(400).json({ message: "User not found" });
 
-    const jobs = await Job.find({ addedBy: user._id }).select('_id');
-    const jobIDs = jobs.map(job => job._id.toString());
+    const jobs = await Job.find({ addedBy: user._id }).select("_id");
+    const jobIDs = jobs.map((job) => job._id.toString());
 
     if (!jobIDs.length) return res.status(200).json([]);
 
@@ -902,11 +913,11 @@ const getApplications = async (req, res) => {
       .populate("candidateId", "fullName")
       .lean();
 
-    const formattedApplications = applications.map(app => ({
+    const formattedApplications = applications.map((app) => ({
       ...app,
       name: app.candidateId
         ? `${app.candidateId.fullName.firstName} ${app.candidateId.fullName.lastName}`
-        : "Unknown"
+        : "Unknown",
     }));
 
     res.status(200).json(formattedApplications);
@@ -922,11 +933,11 @@ const getAllApplications = async (req, res) => {
       .populate("candidateId", "fullName")
       .lean();
 
-    const formattedApplications = applications.map(app => ({
+    const formattedApplications = applications.map((app) => ({
       ...app,
       name: app.candidateId
         ? `${app.candidateId.fullName.firstName} ${app.candidateId.fullName.lastName}`
-        : "Unknown"
+        : "Unknown",
     }));
 
     res.json(formattedApplications);
@@ -987,25 +998,24 @@ const getAllApplications = async (req, res) => {
 //   }
 // };
 
-
 const editApplication = async (req, res) => {
   try {
     const { applicationId } = req.params;
     const { status } = req.body;
 
     if (!applicationId || !status)
-      return res.status(400).json({ message: "Application ID and status are required" });
+      return res
+        .status(400)
+        .json({ message: "Application ID and status are required" });
 
     // Step 1: Find and update the application status
     const application = await Application.findByIdAndUpdate(
       applicationId,
       { status },
       { new: true }
-    )
-    .populate("candidateId", "fullName email")
+    ).populate("candidateId", "fullName email");
 
-    const applicationDetails = await Application.findById(applicationId)
-
+    const applicationDetails = await Application.findById(applicationId);
 
     const candidateName = application.candidateId
       ? `${application.candidateId.fullName.firstName} ${application.candidateId.fullName.lastName}`
@@ -1014,20 +1024,24 @@ const editApplication = async (req, res) => {
     const email = application.candidateId?.email;
 
     // Step 2: Find the corresponding job using jobId from application
-    const job = await Job.findById(application.jobId)
-      .populate('company', 'companyName');  // Populate company to get companyName from the Company model
+    const job = await Job.findById(application.jobId).populate(
+      "company",
+      "companyName"
+    ); // Populate company to get companyName from the Company model
 
     if (!job) return res.status(404).json({ message: "Job not found" });
 
     const jobTitle = job.title;
     const companyName = applicationDetails.companyName || "Unknown Company";
     DateApplied = applicationDetails.dateApplied || "Unknown Date";
-    const formattedDateApplied = new Date(DateApplied).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-    
+    const formattedDateApplied = new Date(DateApplied).toLocaleDateString(
+      "en-US",
+      {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }
+    );
 
     // Define the dashboard URL (you can change this to your real dashboard link)
     const dashboardURL = "https://wokwantaim.com/dashboard";
@@ -1070,17 +1084,13 @@ const editApplication = async (req, res) => {
   }
 };
 
-
-
-
-
-
 const deleteApplication = async (req, res) => {
   try {
     const { applicationId } = req.params;
     const deleted = await Application.findByIdAndDelete(applicationId);
 
-    if (!deleted) return res.status(404).json({ message: "Application not found" });
+    if (!deleted)
+      return res.status(404).json({ message: "Application not found" });
 
     res.status(200).json({ message: "Application deleted successfully" });
   } catch (error) {

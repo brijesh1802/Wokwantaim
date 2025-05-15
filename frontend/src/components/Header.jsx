@@ -343,7 +343,7 @@ function Header() {
                             {userData?.modeofLogin === "email" && (
                               <motion.button
                                 onClick={() => {
-                                  setDropdownOpen(false);
+                                  // setDropdownOpen(false);
                                   handleChangePasswordClick();
                                 }}
                                 className="block w-full px-4 py-2 text-left text-gray-800 hover:bg-gray-100"

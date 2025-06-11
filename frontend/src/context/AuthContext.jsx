@@ -404,7 +404,7 @@ import { isTokenExpired } from "./auth";
 
 export const AuthContext = createContext();
 
-const publicRoutes = ["/login", "/signup", "/admin/login", "/", "/joblist"]; // Added home route '/'
+const publicRoutes = ["/login", "/signup", "/admin/login", "/", "/joblist","/aboutus","/safety"]; // Added home route '/'
 
 export const AuthProvider = ({ children }) => {
   const [industry, setIndustry] = useState([]);
